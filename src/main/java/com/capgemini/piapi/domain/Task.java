@@ -70,6 +70,7 @@ public class Task {
 	/**
 	 * TeamLeader 
 	 */
+	@JsonIgnore
 	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
 	private TeamLeader teamLeader;
 	/**
@@ -81,6 +82,7 @@ public class Task {
 	/**
 	 * List of authorized clients on the task Given By Product Owner
 	 */
+	@JsonIgnore
 	@ManyToMany
 	private List<Client> client=new ArrayList<>();
 	/**
