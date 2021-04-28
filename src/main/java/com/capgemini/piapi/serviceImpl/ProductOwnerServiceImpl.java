@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.capgemini.piapi.domain.ProductOwner;
 import com.capgemini.piapi.domain.Task;
+import com.capgemini.piapi.exception.TaskNotFoundException;
 import com.capgemini.piapi.repository.ProductOwnerRepository;
 import com.capgemini.piapi.repository.TaskRepository;
 import com.capgemini.piapi.service.ProductOwnerService;
@@ -27,12 +28,19 @@ public class ProductOwnerServiceImpl implements ProductOwnerService {
 
 	@Override
 	public List<Task> getAllTasks() {
-		return taskRepository.findAll();
+		List<Task> task=taskRepository.findAll();
+		if(task==null) {
+			throw new TaskNotFoundException("Tasks not available");
+		}
+		return task;
 	}
 
 	@Override
 	public Task getTaskByTaskIdentifier(String taskIdentifier) {
 		Task task=taskRepository.findByTaskIdentifier(taskIdentifier);
+		if(task==null) {
+			throw new TaskNotFoundException("Task with id : '"+taskIdentifier+"' does not exists");
+		}
 		return task;
 	}
 
@@ -78,7 +86,7 @@ public class ProductOwnerServiceImpl implements ProductOwnerService {
 		
 		session.setAttribute("userType", "ProductOwner");
 		session.setAttribute("productOwnerId", productOwner.getId());
-		session.setAttribute("productOwnerName", productOwner.getLoginName());
+		session.setAttribute("productOwner", productOwner);
 
 		
 	}

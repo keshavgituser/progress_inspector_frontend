@@ -12,6 +12,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 /**
  * This ProductOwner Domain is used as data transfer object between layers
  * @author Aadesh Juvekar
@@ -49,6 +51,7 @@ public class ProductOwner {
 	/**
 	 * List of the tasks in the sprint
 	 */
+	@JsonIgnore
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "productOwner")
 	private List<Task> task;
 

@@ -22,112 +22,134 @@ import com.capgemini.piapi.domain.Task;
 import com.capgemini.piapi.service.ProductOwnerService;
 import com.capgemini.piapi.serviceImpl.mapValidationErrorService;
 
-
 @RestController
 @RequestMapping("/api/owner/")
 public class ProductOwnerController {
-	
-	//TO DO : Logger - INFO , ERROR in log file
-	
-	
+
+	// TO DO : Logger - INFO , ERROR in log file
+
 	@Autowired
 	private ProductOwnerService productOwnerService;
-	
-	
+
 	@Autowired
 	private mapValidationErrorService mapValidationErrorService;
 
 	/**
 	 * Method for handling Product Owner login and creating session.
-	 * @param productOwner 
-	 * @param result contains the result and error of validation 
-	 * @param session Creates New Session
+	 * 
+	 * @param productOwner
+	 * @param result       contains the result and error of validation
+	 * @param session      Creates New Session
 	 * @return Response Entity with logged In Product Owner with HTTP Status
 	 */
 	@PostMapping("/login")
-	public ResponseEntity<?> handleProductOwnerLogin(@RequestBody ProductOwner productOwner,BindingResult result, HttpSession session) {
-		ResponseEntity<?> errorMap= mapValidationErrorService.mapValidationError(result);
-		if(errorMap != null) return errorMap;
-		ProductOwner loggedInOwner= productOwnerService.authenticateProductOwner(productOwner.getLoginName(),productOwner.getPwd(),session);
-		return new ResponseEntity<ProductOwner>(loggedInOwner,HttpStatus.OK);
+	public ResponseEntity<?> handleProductOwnerLogin(@RequestBody ProductOwner productOwner, BindingResult result,
+			HttpSession session) {
+		ResponseEntity<?> errorMap = mapValidationErrorService.mapValidationError(result);
+		if (errorMap != null)
+			return errorMap;
+		ProductOwner loggedInOwner = productOwnerService.authenticateProductOwner(productOwner.getLoginName(),
+				productOwner.getPwd(), session);
+		return new ResponseEntity<ProductOwner>(loggedInOwner, HttpStatus.OK);
 	}
-	
-	//TO DO  REMOVE TEST METHOD
+
+	// TO DO REMOVE TEST METHOD
 	@GetMapping("/test")
-	public ResponseEntity<?> test(HttpSession session){
-		return new ResponseEntity<Object>(session.getAttribute("productOwnerName"),HttpStatus.OK);	
+	public ResponseEntity<?> test(HttpSession session) {
+		return new ResponseEntity<Object>(session.getAttribute("productOwnerName"), HttpStatus.OK);
 	}
-	
+
 	/**
 	 * Method for logging out ProductOwner and terminating existing session.
+	 * 
 	 * @param session get current session details
 	 * @return Success message
 	 */
 	@GetMapping("/logout")
-	public ResponseEntity<?> handleProductOwnerLogout(HttpSession session){
+	public ResponseEntity<?> handleProductOwnerLogout(HttpSession session) {
 		session.invalidate();
-		return new ResponseEntity<String>("Logout Successfully | Have a nice day",HttpStatus.OK);	
+		return new ResponseEntity<String>("Logout Successfully | Have a nice day", HttpStatus.OK);
 	}
-	
+
 	/**
 	 * Method for Registration of new Product Owner and storing data to database.
+	 * 
 	 * @param productOwner Data collected to save.
-	 * @param result contains validation result and errors.
+	 * @param result       contains validation result and errors.
 	 * @return saved productOwner in database
 	 */
 	@PostMapping("/add")
-	public ResponseEntity<?> addOrUpdateOwner(@Valid @RequestBody ProductOwner productOwner, BindingResult result){
-		ResponseEntity<?> errorMap= mapValidationErrorService.mapValidationError(result);
-		if(errorMap != null) return errorMap;
-		ProductOwner savedProductOwner= productOwnerService.saveOrUpdateProductOwner(productOwner);
-		return new ResponseEntity<ProductOwner>(savedProductOwner,HttpStatus.CREATED);
+	public ResponseEntity<?> addOrUpdateOwner(@Valid @RequestBody ProductOwner productOwner, BindingResult result) {
+		ResponseEntity<?> errorMap = mapValidationErrorService.mapValidationError(result);
+		if (errorMap != null)
+			return errorMap;
+		ProductOwner savedProductOwner = productOwnerService.saveOrUpdateProductOwner(productOwner);
+		return new ResponseEntity<ProductOwner>(savedProductOwner, HttpStatus.CREATED);
 	}
+
 	/**
 	 * Method to find productOwner by loginName
+	 * 
 	 * @param loginName of the ProductOwner
 	 * @return productOwner if found
 	 */
 	@GetMapping("/{loginName}")
-	public ResponseEntity<?> findProductOwnerByLoginName(@PathVariable String loginName){
-		ProductOwner productOwner= productOwnerService.findProductOwnerByLoginName(loginName);
-		return new ResponseEntity<ProductOwner>(productOwner,HttpStatus.OK);
+	public ResponseEntity<?> findProductOwnerByLoginName(@PathVariable String loginName) {
+		ProductOwner productOwner = productOwnerService.findProductOwnerByLoginName(loginName);
+		return new ResponseEntity<ProductOwner>(productOwner, HttpStatus.OK);
 	}
+
 	/**
-	 * Method to find all productOwners 
+	 * Method to find all productOwners
+	 * 
 	 * @return list of all productOwner
 	 */
 	@GetMapping("/all")
-	public ResponseEntity<?> findAll(){
-		List<ProductOwner> owners= productOwnerService.findAll();
-		return new ResponseEntity<List<ProductOwner>>(owners,HttpStatus.OK);
+	public ResponseEntity<?> findAll() {
+		List<ProductOwner> owners = productOwnerService.findAll();
+		return new ResponseEntity<List<ProductOwner>>(owners, HttpStatus.OK);
 	}
+
 	/**
 	 * Method to delete productOwner by loginName
+	 * 
 	 * @param loginName of the productOwner
 	 */
-	
+
 	@DeleteMapping("/{loginName}")
 	public ResponseEntity<?> deleteProductOwner(@PathVariable String loginName) {
 		productOwnerService.deleteProductOwnerByLoginName(loginName);
-		return new ResponseEntity<String>("Product Owner with loginName :"+loginName+" is deleted",HttpStatus.OK);
+		return new ResponseEntity<String>("Product Owner with loginName :" + loginName + " is deleted", HttpStatus.OK);
 	}
+
 	/**
 	 * Method to get all the tasks
+	 * 
 	 * @return list of all tasks
 	 */
 	@GetMapping("/tasks")
-	public ResponseEntity<?> getTaskList(){
-		List<Task> tasks= productOwnerService.getAllTasks();
-		return new ResponseEntity<List<Task>>(tasks,HttpStatus.OK);
+	public ResponseEntity<?> getTaskList(HttpSession session) {
+		if (session.getAttribute("userType") != null && session.getAttribute("userType").equals("ProductOwner")) {
+			List<Task> tasks = productOwnerService.getAllTasks();
+			return new ResponseEntity<List<Task>>(tasks, HttpStatus.OK);
+		}
+		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
 	}
+
 	/**
 	 * Method to find the Task by taskIdentifier
+	 * 
 	 * @param taskIdentifier
 	 * @return task if found
 	 */
 	@GetMapping("/task/{taskIdentifier}")
-	public ResponseEntity<?> getTaskByTaskIdentifier(@PathVariable String taskIdentifier){
-		Task task= productOwnerService.getTaskByTaskIdentifier(taskIdentifier);
-		return new ResponseEntity<Task>(task,HttpStatus.OK);
+	public ResponseEntity<?> getTaskByTaskIdentifier(@PathVariable String taskIdentifier, HttpSession session) {
+		if (session.getAttribute("userType") != null && session.getAttribute("userType").equals("ProductOwner")) {
+
+			Task task = productOwnerService.getTaskByTaskIdentifier(taskIdentifier);
+			return new ResponseEntity<Task>(task, HttpStatus.OK);
+		}
+		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
+
 	}
 }
