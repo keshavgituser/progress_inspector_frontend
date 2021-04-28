@@ -45,7 +45,6 @@ public class ProductOwner {
 	 */
 	@NotNull(message = "Password is required")
 	private String pwd;
-
 	/**
 	 * List of the tasks in the sprint
 	 */
