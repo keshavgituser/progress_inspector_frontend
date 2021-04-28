@@ -22,4 +22,14 @@ public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptio
 		TaskNotFoundExceptionResponse exceptionResponse=new TaskNotFoundExceptionResponse(ex.getMessage());
 		return new ResponseEntity<Object>(exceptionResponse,HttpStatus.BAD_REQUEST);
 	}
+	@ExceptionHandler
+	public final ResponseEntity<Object> handleClientNotFoundException(ClientNotFoundException ex, WebRequest request){		
+		ClientNotFoundExceptionResponse exceptionResponse=new ClientNotFoundExceptionResponse(ex.getMessage());
+		return new ResponseEntity<Object>(exceptionResponse,HttpStatus.BAD_REQUEST);
+	}
+	@ExceptionHandler
+	public final ResponseEntity<Object> handleProductOwnerNotFoundException(ProductOwnerNotFoundException ex, WebRequest request){		
+		ProductOwnerNotFoundExceptionResponse exceptionResponse=new ProductOwnerNotFoundExceptionResponse(ex.getMessage());
+		return new ResponseEntity<Object>(exceptionResponse,HttpStatus.BAD_REQUEST);
+	}
 }

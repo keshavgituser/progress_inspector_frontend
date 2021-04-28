@@ -7,9 +7,12 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.capgemini.piapi.domain.Client;
 import com.capgemini.piapi.domain.ProductOwner;
 import com.capgemini.piapi.domain.Task;
+import com.capgemini.piapi.exception.ProductOwnerNotFoundException;
 import com.capgemini.piapi.exception.TaskNotFoundException;
+import com.capgemini.piapi.repository.ClientRepository;
 import com.capgemini.piapi.repository.ProductOwnerRepository;
 import com.capgemini.piapi.repository.TaskRepository;
 import com.capgemini.piapi.service.ProductOwnerService;
@@ -25,6 +28,8 @@ public class ProductOwnerServiceImpl implements ProductOwnerService {
 	
 	@Autowired
 	private TaskRepository taskRepository;
+	@Autowired
+	private ClientRepository clientRepository;
 
 	@Override
 	public List<Task> getAllTasks() {
@@ -45,9 +50,20 @@ public class ProductOwnerServiceImpl implements ProductOwnerService {
 	}
 
 	@Override
-	public ProductOwner saveOrUpdateProductOwner(ProductOwner productOwner) {
+	public ProductOwner saveProductOwner(ProductOwner productOwner) {
 		// TODO Auto-generated method stub
 		return productOwnerRepository.save(productOwner);
+	}
+	
+	@Override
+	public ProductOwner updateProductOwner(ProductOwner productOwner) {
+		// TODO Auto-generated method stub
+		ProductOwner oldProductOwner=productOwnerRepository.findByLoginName(productOwner.getLoginName());
+		if(oldProductOwner==null) {
+			throw new ProductOwnerNotFoundException("Product Owner with loginName : "+productOwner.getLoginName()+" does not exists");
+		}
+		oldProductOwner=productOwner;
+		return productOwnerRepository.save(oldProductOwner);
 	}
 
 	@Override
@@ -90,5 +106,18 @@ public class ProductOwnerServiceImpl implements ProductOwnerService {
 
 		
 	}
+	
+	
+	@Override
+	public Client addTaskToClient(String clientloginName, String taskIdentifier) {
+		Client client  = clientRepository.findByLoginName(clientloginName);
+		Task task=taskRepository.findByTaskIdentifier(taskIdentifier);
+		List<Task> listOfTask = client.getTask();
+		listOfTask.add(task);
+		client.setTask(listOfTask);
+		clientRepository.save(client);
+		return client;
+	}
+
 
 }

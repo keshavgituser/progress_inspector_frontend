@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
+import com.capgemini.piapi.domain.Client;
 import com.capgemini.piapi.domain.ProductOwner;
 import com.capgemini.piapi.domain.Task;
 /**
@@ -13,11 +14,17 @@ import com.capgemini.piapi.domain.Task;
  */
 public interface ProductOwnerService {
 	/**
-	 * This saveProductOwner method will save/register user in system.
+	 * This saveProductOwner method will register user in system.
 	 * @param productOwner to be registered
 	 * @return Registered productOwner if successfully registered otherwise null
 	 */
-	public ProductOwner saveOrUpdateProductOwner(ProductOwner productOwner);
+	public ProductOwner saveProductOwner(ProductOwner productOwner);
+	/**
+	 * This updateProductOwner method will update user in system.
+	 * @param productOwner to be updated
+	 * @return Registered productOwner if successfully updated 
+	 */
+	public ProductOwner updateProductOwner(ProductOwner productOwner);
 	/**
 	 * This method is used for deleting productOwner details in database.
 	 * @param loginName of the productOwner
@@ -53,5 +60,12 @@ public interface ProductOwnerService {
 	 * @return logged in productOwner
 	 */
 	ProductOwner authenticateProductOwner(String loginName, String pwd, HttpSession session);
+	/**
+	 * This function will authorize client to view task by adding task to client
+	 * @param Login Name of the client
+	 * @param taskIdentifier of the task
+	 * @return Client with authorized task
+	 */
+	public Client addTaskToClient(String clientLoginName,String taskIdentifier);
 	
 }

@@ -11,14 +11,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.capgemini.piapi.domain.Client;
 import com.capgemini.piapi.domain.ProductOwner;
 import com.capgemini.piapi.domain.Task;
+import com.capgemini.piapi.service.ClientService;
 import com.capgemini.piapi.service.ProductOwnerService;
 import com.capgemini.piapi.serviceImpl.MapValidationErrorService;
 
@@ -30,6 +33,9 @@ public class ProductOwnerController {
 
 	@Autowired
 	private ProductOwnerService productOwnerService;
+
+	@Autowired
+	private ClientService clientService;
 
 	@Autowired
 	private MapValidationErrorService mapValidationErrorService;
@@ -79,11 +85,20 @@ public class ProductOwnerController {
 	 * @return saved productOwner in database
 	 */
 	@PostMapping("/add")
-	public ResponseEntity<?> addOrUpdateOwner(@Valid @RequestBody ProductOwner productOwner, BindingResult result) {
+	public ResponseEntity<?> registerOwner(@Valid @RequestBody ProductOwner productOwner, BindingResult result) {
 		ResponseEntity<?> errorMap = mapValidationErrorService.mapValidationError(result);
 		if (errorMap != null)
 			return errorMap;
-		ProductOwner savedProductOwner = productOwnerService.saveOrUpdateProductOwner(productOwner);
+		ProductOwner savedProductOwner = productOwnerService.saveProductOwner(productOwner);
+		return new ResponseEntity<ProductOwner>(savedProductOwner, HttpStatus.CREATED);
+	}
+
+	@PatchMapping("/update")
+	public ResponseEntity<?> updateOwner(@Valid @RequestBody ProductOwner productOwner, BindingResult result) {
+		ResponseEntity<?> errorMap = mapValidationErrorService.mapValidationError(result);
+		if (errorMap != null)
+			return errorMap;
+		ProductOwner savedProductOwner = productOwnerService.updateProductOwner(productOwner);
 		return new ResponseEntity<ProductOwner>(savedProductOwner, HttpStatus.CREATED);
 	}
 
@@ -148,6 +163,25 @@ public class ProductOwnerController {
 
 			Task task = productOwnerService.getTaskByTaskIdentifier(taskIdentifier);
 			return new ResponseEntity<Task>(task, HttpStatus.OK);
+		}
+		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
+	}
+
+	/**
+	 * Method to authorize client to view task
+	 * 
+	 * @param clientLoginName
+	 * @param taskIdentifier
+	 * @return client if task is authorized
+	 */
+
+	@GetMapping("/addClient/{clientLoginName}/{taskIdentifier}")
+	public ResponseEntity<?> addTaskToClient(@PathVariable String clientLoginName, @PathVariable String taskIdentifier,
+			HttpSession session) {
+		if (session.getAttribute("userType") != null && session.getAttribute("userType").equals("ProductOwner")) {
+
+			Client client = productOwnerService.addTaskToClient(clientLoginName, taskIdentifier);
+			return new ResponseEntity<Client>(client, HttpStatus.OK);
 		}
 		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
 
