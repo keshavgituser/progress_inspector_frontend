@@ -46,11 +46,11 @@ public class ProductOwner {
 	 */
 	@OneToOne
 	private Client client;
-	/**
-	 * List of the tasks in the sprint
-	 */
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "productOwner")
-	private List<Task> task;
+//	/**
+//	 * List of the tasks in the sprint
+//	 */
+//	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "productOwner")
+//	private List<Task> task;
 
 	public ProductOwner() {
 		super();
@@ -97,12 +97,12 @@ public class ProductOwner {
 		this.client = client;
 	}
 
-	public List<Task> getTask() {
-		return task;
-	}
-
-	public void setTask(List<Task> task) {
-		this.task = task;
-	}
+//	public List<Task> getTask() {
+//		return task;
+//	}
+//
+//	public void setTask(List<Task> task) {
+//		this.task = task;
+//	}
 
 }
