@@ -43,11 +43,7 @@ public class ProductOwner {
 	 */
 	@NotNull(message = "Password is required")
 	private String pwd;
-	/**
-	 * Client of the ProductOwner
-	 */
-	@OneToOne
-	private Client client;
+
 	/**
 	 * List of the tasks in the sprint
 	 */
@@ -89,15 +85,6 @@ public class ProductOwner {
 
 	public void setPwd(String pwd) {
 		this.pwd = pwd;
-	}
-
-
-	public Client getClient() {
-		return client;
-	}
-
-	public void setClient(Client client) {
-		this.client = client;
 	}
 
 	public List<Task> getTask() {

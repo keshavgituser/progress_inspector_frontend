@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.capgemini.piapi.domain.ProductOwner;
 import com.capgemini.piapi.domain.Task;
 import com.capgemini.piapi.service.ProductOwnerService;
-import com.capgemini.piapi.serviceImpl.mapValidationErrorService;
+import com.capgemini.piapi.serviceImpl.MapValidationErrorService;
 
 @RestController
 @RequestMapping("/api/owner/")
@@ -32,7 +32,7 @@ public class ProductOwnerController {
 	private ProductOwnerService productOwnerService;
 
 	@Autowired
-	private mapValidationErrorService mapValidationErrorService;
+	private MapValidationErrorService mapValidationErrorService;
 
 	/**
 	 * Method for handling Product Owner login and creating session.
