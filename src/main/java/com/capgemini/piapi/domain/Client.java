@@ -44,6 +44,14 @@ public class Client {
 		super();
 	}
 
+	public List<Task> getTask() {
+		return task;
+	}
+
+	public void setTask(List<Task> task) {
+		this.task = task;
+	}
+
 	public Long getId() {
 		return id;
 	}

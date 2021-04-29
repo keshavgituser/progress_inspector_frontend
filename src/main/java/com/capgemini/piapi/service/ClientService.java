@@ -1,5 +1,7 @@
 package com.capgemini.piapi.service;
 
+import java.util.List;
+
 import com.capgemini.piapi.domain.Remark;
 import com.capgemini.piapi.domain.Task;
 
@@ -14,7 +16,7 @@ public interface ClientService {
 	 * @param taskIdentifier is the unique identifier for the task
 	 * @return the saved Task Object.
 	 */
-	public Task viewTask(String taskIdentifier);
+	public Task viewTask(String loginName, String taskIdentifier);
 	/**
 	 * This method will be used for adding the remark for specific Task.
 	 * @param remark is the object of the Remark containing all the information about Remark.
@@ -23,10 +25,10 @@ public interface ClientService {
 	 */
 	public Remark addRemark(Remark remark, String task_id);
 	/**
-	 * This is a temporary method just to add task before we can test view task method.
-	 * Should be removed at the time of INTEGRATION.
-	 * @param task is the object which contains all the information of task.
-	 * @return the saved Task Object. 
+	 * 
+	 * @param loginName
+	 * @return
 	 */
-	public Task createNewTask(Task task); 
+	public List<Task> viewAllTask(String loginName);
+
 }

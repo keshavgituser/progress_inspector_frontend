@@ -8,4 +8,5 @@ import com.capgemini.piapi.domain.Client;
 @Repository
 public interface ClientRepository  extends JpaRepository<Client,Long>{
 
+	Client findByLoginName(String loginName);
 }

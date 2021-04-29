@@ -1,8 +1,6 @@
 package com.capgemini.piapi.web;
 
-import java.io.IOException;
-import java.util.logging.FileHandler;
-import java.util.logging.SimpleFormatter;
+import java.util.List;
 
 import javax.validation.Valid;
 
@@ -37,29 +35,22 @@ public class ClientController{
 	@Autowired
 	private MapValidationErrorService mapValidationErrorService;
 	
-	/**
-	 * This is a temporary method to add the task.
-	 * Only added this method for testing the view task method.
-	 * Should be removed at the time of INTEGRATION.  
-	 * 
-	 */
-	@PostMapping("")
-	public ResponseEntity<?> createNewTask(@Valid @RequestBody Task task, BindingResult bindingResult) {
+	@GetMapping("/viewtask/{loginName}/{task_id}")
+	public ResponseEntity<?> getTaskByTaskIdentifier(@PathVariable String task_id,@PathVariable String loginName){
 		
-		ResponseEntity <?> errorMap =mapValidationErrorService.mapValidationError(bindingResult);
-		if(errorMap!=null) return errorMap;
-		
-		Task savedTask = clientService.createNewTask(task);
-		return new ResponseEntity<Task>(savedTask, HttpStatus.CREATED);
-	}
-	
-	@GetMapping("/viewtask/{task_id}")
-	public ResponseEntity<?> getTaskByTaskIdentifier(@Valid @PathVariable String task_id){
-		
-		Task task = clientService.viewTask(task_id);
+		Task task = clientService.viewTask(loginName, task_id);
 		
 		logger.info("--TASK--"+task);
 		return new ResponseEntity<Task>(task,HttpStatus.OK);
+		
+	}
+	@GetMapping("/viewalltask/{loginName}")
+	public ResponseEntity<?> getAllTask(@PathVariable String loginName){
+		
+		List<Task> taskList = clientService.viewAllTask(loginName);
+		
+		logger.info("--TASK--"+taskList);
+		return new ResponseEntity<List<Task>>(taskList,HttpStatus.OK);
 		
 	}
 	@PostMapping("/addremark/{task_id}")
