@@ -5,10 +5,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.BAD_REQUEST)
 public class TaskIdException extends RuntimeException {
-	private static final long serialVersionUID = 1L;
+
 	/**
 	 * Create TaskIdException object without error message
 	 */
+	private static final long serialVersionUID = 1L;
+
 	public TaskIdException() {
 		super();
 	}
@@ -17,5 +19,6 @@ public class TaskIdException extends RuntimeException {
 	 */
 	public TaskIdException(String errMsg) {
 		super(errMsg);
+
 	}
 }

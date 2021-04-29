@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -22,6 +23,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 
 @Entity
+@Table(name="clients")
 public class Client {
 
 	//Id is the Id number for the client. Will be used to identify the Client. Should be unique. 
@@ -42,6 +44,14 @@ public class Client {
 	
 	public Client() {
 		super();
+	}
+
+	public List<Task> getTask() {
+		return task;
+	}
+
+	public void setTask(List<Task> task) {
+		this.task = task;
 	}
 
 	public Long getId() {

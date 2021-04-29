@@ -1,10 +1,10 @@
 package com.capgemini.piapi.exception;
 
-public class ClientNotFoundExceptionResponse {
+public class ClientAlreadyExistExceptionResponse {
 	private String loginName;
 	
 
-	public ClientNotFoundExceptionResponse(String loginName) {
+	public ClientAlreadyExistExceptionResponse(String loginName) {
 		super();
 		this.loginName = loginName;
 	}
@@ -13,7 +13,7 @@ public class ClientNotFoundExceptionResponse {
 		return loginName;
 	}
 
-	public void setTaskIdentifier(String loginName) {
+	public void setLoginName(String loginName) {
 		this.loginName = loginName;
 	}
 	
