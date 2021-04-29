@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.capgemini.piapi.domain.Client;
 import com.capgemini.piapi.domain.ProductOwner;
 import com.capgemini.piapi.domain.Task;
+import com.capgemini.piapi.exception.ProductOwnerAlreadyExistException;
 import com.capgemini.piapi.service.ProductOwnerService;
 import com.capgemini.piapi.serviceImpl.MapValidationErrorService;
 
@@ -32,7 +33,6 @@ public class ProductOwnerController {
 
 	@Autowired
 	private ProductOwnerService productOwnerService;
-
 
 	@Autowired
 	private MapValidationErrorService mapValidationErrorService;
@@ -46,12 +46,11 @@ public class ProductOwnerController {
 	 * @return Response Entity with logged In Product Owner with HTTP Status
 	 */
 	@PostMapping("/login")
-	public ResponseEntity<?> handleProductOwnerLogin(@RequestBody Object owner, BindingResult result,
+	public ResponseEntity<?> handleProductOwnerLogin(@RequestBody ProductOwner productOwner, BindingResult result,
 			HttpSession session) {
 		ResponseEntity<?> errorMap = mapValidationErrorService.mapValidationError(result);
 		if (errorMap != null)
 			return errorMap;
-		ProductOwner productOwner=(ProductOwner) owner;
 		ProductOwner loggedInOwner = productOwnerService.authenticateProductOwner(productOwner.getLoginName(),
 				productOwner.getPwd(), session);
 		return new ResponseEntity<ProductOwner>(loggedInOwner, HttpStatus.OK);
@@ -87,10 +86,21 @@ public class ProductOwnerController {
 		ResponseEntity<?> errorMap = mapValidationErrorService.mapValidationError(result);
 		if (errorMap != null)
 			return errorMap;
-		ProductOwner savedProductOwner = productOwnerService.saveProductOwner(productOwner);
-		return new ResponseEntity<ProductOwner>(savedProductOwner, HttpStatus.CREATED);
+		try {
+			ProductOwner savedProductOwner = productOwnerService.saveProductOwner(productOwner);
+			return new ResponseEntity<ProductOwner>(savedProductOwner, HttpStatus.CREATED);
+		} catch (Exception e) {
+			throw new ProductOwnerAlreadyExistException("Product Owner Already exists ! Please Login");
+		}
 	}
 
+	/**
+	 * Method for updating Product Owner in database.
+	 * 
+	 * @param productOwner Data collected to update.
+	 * @param result contains validation result and errors.
+	 * @return saved productOwner in database
+	 */
 	@PatchMapping("/update")
 	public ResponseEntity<?> updateOwner(@Valid @RequestBody ProductOwner productOwner, BindingResult result) {
 		ResponseEntity<?> errorMap = mapValidationErrorService.mapValidationError(result);

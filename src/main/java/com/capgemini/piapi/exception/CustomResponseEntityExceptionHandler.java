@@ -32,4 +32,9 @@ public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptio
 		ProductOwnerNotFoundExceptionResponse exceptionResponse=new ProductOwnerNotFoundExceptionResponse(ex.getMessage());
 		return new ResponseEntity<Object>(exceptionResponse,HttpStatus.BAD_REQUEST);
 	}
+	@ExceptionHandler
+	public final ResponseEntity<Object> handleProductOwnerAlreadyExistException(ProductOwnerAlreadyExistException ex, WebRequest request){		
+		ProductOwnerAlreadyExistExceptionResponse exceptionResponse=new ProductOwnerAlreadyExistExceptionResponse(ex.getMessage());
+		return new ResponseEntity<Object>(exceptionResponse,HttpStatus.BAD_REQUEST);
+	}
 }

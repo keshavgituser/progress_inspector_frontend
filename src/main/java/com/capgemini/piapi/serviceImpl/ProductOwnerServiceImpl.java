@@ -33,28 +33,14 @@ public class ProductOwnerServiceImpl implements ProductOwnerService {
 	@Autowired
 	private ClientRepository clientRepository;
 
-	@Override
-	public List<Task> getAllTasks() {
-		try {
-			return taskRepository.findAll();
-		} catch (Exception e) {
-			throw new TaskNotFoundException("Tasks not available");
-		}
-
-	}
-
-	@Override
-	public Task getTaskByTaskIdentifier(String taskIdentifier) {
-		Task task = taskRepository.findByTaskIdentifier(taskIdentifier);
-		if (task == null) {
-			throw new TaskNotFoundException("Task with id : '" + taskIdentifier + "' does not exists");
-		}
-		return task;
-	}
+	
 
 	@Override
 	public ProductOwner saveProductOwner(ProductOwner productOwner) {
 		// TODO Auto-generated method stub
+		if(productOwner==null) {
+			throw new ProductOwnerNotFoundException("Please Fill the Required Fields");
+		}
 		return productOwnerRepository.save(productOwner);
 	}
 
@@ -73,7 +59,12 @@ public class ProductOwnerServiceImpl implements ProductOwnerService {
 	@Override
 	public void deleteProductOwnerByLoginName(String loginName) {
 		// TODO Auto-generated method stub
-		productOwnerRepository.deleteByLoginName(loginName);
+		ProductOwner productOwner = productOwnerRepository.findByLoginName(loginName);
+		if (productOwner == null) {
+			throw new ProductOwnerNotFoundException(
+					"Product Owner with loginName : " + loginName + " does not exists");
+		}
+		productOwnerRepository.delete(productOwner);
 
 	}
 
@@ -107,6 +98,25 @@ public class ProductOwnerServiceImpl implements ProductOwnerService {
 		session.setAttribute("userType", "ProductOwner");
 		session.setAttribute("productOwnerId", productOwner.getId());
 
+	}
+	
+	@Override
+	public List<Task> getAllTasks() {
+		try {
+			return taskRepository.findAll();
+		} catch (Exception e) {
+			throw new TaskNotFoundException("Tasks not available");
+		}
+
+	}
+
+	@Override
+	public Task getTaskByTaskIdentifier(String taskIdentifier) {
+		Task task = taskRepository.findByTaskIdentifier(taskIdentifier);
+		if (task == null) {
+			throw new TaskNotFoundException("Task with id : '" + taskIdentifier + "' does not exists");
+		}
+		return task;
 	}
 
 	@Override
