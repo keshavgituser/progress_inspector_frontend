@@ -2,6 +2,10 @@ package com.capgemini.piapi.service;
 
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
+
+import com.capgemini.piapi.domain.Client;
 import com.capgemini.piapi.domain.Remark;
 import com.capgemini.piapi.domain.Task;
 
@@ -30,5 +34,54 @@ public interface ClientService {
 	 * @return
 	 */
 	public List<Task> viewAllTask(String loginName);
+	
+	
+	/**
+	 * This method adds Client to database and Registers it
+	 * if client already exist it asks user to login
+	 * @param client -the client object as request body
+	 * @param result -the result 
+	 * @return response entity to 
+	 *
+	 * @param client
+	 * @return savedclient object for addCLient method in controller
+	 */
+	public Client saveClient(Client client);
 
+	/**
+	 * This method will fetch all the clients in the database
+	 * @return list of client objects
+	 */
+	public List<Client> getAllClients();
+	
+	/**
+	 * This Method Updates The Client
+	 * @param client
+	 * @param result
+	 * @return
+	 */
+	public Client updateClient(@Valid Client client);
+	
+	/**
+	 * This Method Finds CLient With LoginName For Admin User
+	 * @param loginName
+	 * @return
+	 */
+	public Client findByLoginName(String loginName);
+	/**
+	 * This Method Deletes The Client With LoginName
+	 * @param loginName
+	 */
+	public void deleteClientByLoginName(String loginName);
+	/**
+	 * This method Authenticates the client with login Name and PAssword 
+	 * @param loginName
+	 * @param pwd
+	 * @param session
+	 * @return
+	 */
+	public Client authenticateClient(String loginName, String pwd, HttpSession session);
+
+
+	
 }

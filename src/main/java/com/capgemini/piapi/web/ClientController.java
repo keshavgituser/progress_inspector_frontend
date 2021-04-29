@@ -2,6 +2,7 @@ package com.capgemini.piapi.web;
 
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
@@ -10,15 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import com.capgemini.piapi.domain.Client;
 import com.capgemini.piapi.domain.Remark;
 import com.capgemini.piapi.domain.Task;
+import com.capgemini.piapi.exception.ClientAlreadyExistException;
 import com.capgemini.piapi.service.ClientService;
 import com.capgemini.piapi.serviceImpl.MapValidationErrorService;
 
@@ -62,4 +60,91 @@ public class ClientController{
 		return new ResponseEntity<>(addedRemark,HttpStatus.OK);
 		
 	}
+	
+	
+	@PostMapping("/addClient")
+	public ResponseEntity<?> addClient(@Valid @RequestBody Client client, BindingResult result) {
+		ResponseEntity<?> errorMap = mapValidationErrorService.mapValidationError(result);
+		if (errorMap != null)
+			return errorMap;
+		try {
+			Client savedClient = clientService.saveClient(client);
+			return new ResponseEntity<Client>(savedClient, HttpStatus.CREATED);
+		} catch (Exception e) {
+			throw new ClientAlreadyExistException("Client Already exists ! Please Login");
+		}
+	}
+
+	@PatchMapping("/updateClient")
+	public ResponseEntity<?> updateClient(@Valid @RequestBody Client client, BindingResult result,HttpSession session) 
+	{
+		if (session.getAttribute("userType") != null && session.getAttribute("userType").equals("Client"))
+		{
+			
+		
+		ResponseEntity<?> errorMap = mapValidationErrorService.mapValidationError(result);
+		if (errorMap != null)
+			return errorMap;
+		Client savedClient = clientService.updateClient(client);
+		
+		return new ResponseEntity<Client>(savedClient, HttpStatus.CREATED);
+		}
+		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
+	}
+
+	@DeleteMapping("/deleteClient/{loginName}")
+	public ResponseEntity<?> deleteClient(@PathVariable String loginName,HttpSession session) 
+	{
+		if (session.getAttribute("userType") != null && session.getAttribute("userType").equals("Client"))
+		{
+		clientService.deleteClientByLoginName(loginName);
+		return new ResponseEntity<String>("Client with loginName :" + loginName + " is deleted", HttpStatus.OK);
+		}
+		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
+	}
+	
+	@GetMapping("/{loginName}")
+	public ResponseEntity<?> findClientByLoginName(@PathVariable String loginName) 
+	{
+		Client client = clientService.findByLoginName(loginName);
+		return new ResponseEntity<Client>(client, HttpStatus.OK);
+	}
+
+	@GetMapping("/allClients")
+	public ResponseEntity<?> findAllClients() {
+		
+		List<Client> clients = clientService.getAllClients();
+		return new ResponseEntity<List<Client>>(clients, HttpStatus.OK);
+	}
+	
+	
+	/*
+	 * Login Mappings
+	 */
+	
+	/**
+	 * This Method Is REsponsible for login purpose of client
+	 * @param Client
+	 * @param result
+	 * @param session
+	 * @return
+	 */
+	@PostMapping("/loginClient")
+	public ResponseEntity<?> handleClientLogin(@RequestBody Client client, BindingResult result,
+			HttpSession session) {
+		ResponseEntity<?> errorMap = mapValidationErrorService.mapValidationError(result);
+		if (errorMap != null)
+			return errorMap;
+		Client loggedInClient = clientService.authenticateClient(client.getLoginName(),
+				client.getPwd(), session);
+		return new ResponseEntity<Client>(loggedInClient, HttpStatus.OK);
+	}
+
+	@GetMapping("/logoutClient")
+	public ResponseEntity<?> handleClientLogout(HttpSession session) {
+		session.invalidate();
+		return new ResponseEntity<String>("Logout Successfully | Have a nice day", HttpStatus.OK);
+	}
+	
+	
 }
