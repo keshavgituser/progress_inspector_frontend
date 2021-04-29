@@ -7,13 +7,13 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class ProductOwnerNotFoundException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 	/**
-	 * Create ProjectIdException object without error message
+	 * Create ProductOwnerNotFoundException object without error message
 	 */
 	public ProductOwnerNotFoundException() {
 		super();
 	}
 	/**
-	 * Create ProjectIdException object with error message
+	 * Create ProductOwnerNotFoundException object with error message
 	 */
 	public ProductOwnerNotFoundException(String errMsg) {
 		super(errMsg);

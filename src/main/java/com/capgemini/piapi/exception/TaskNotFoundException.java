@@ -7,13 +7,13 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class TaskNotFoundException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 	/**
-	 * Create ProjectIdException object without error message
+	 * Create TaskIdException object without error message
 	 */
 	public TaskNotFoundException() {
 		super();
 	}
 	/**
-	 * Create ProjectIdException object with error message
+	 * Create TaskIdException object with error message
 	 */
 	public TaskNotFoundException(String errMsg) {
 		super(errMsg);

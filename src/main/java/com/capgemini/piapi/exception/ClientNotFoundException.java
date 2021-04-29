@@ -7,13 +7,13 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class ClientNotFoundException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 	/**
-	 * Create ProjectIdException object without error message
+	 * Create ClientNotFoundException object without error message
 	 */
 	public ClientNotFoundException() {
 		super();
 	}
 	/**
-	 * Create ProjectIdException object with error message
+	 * Create ClientNotFoundException object with error message
 	 */
 	public ClientNotFoundException(String errMsg) {
 		super(errMsg);
