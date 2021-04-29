@@ -17,7 +17,7 @@ public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptio
 		
 		ClientAlreadyExistExceptionResponse exceptionResponse =  new ClientAlreadyExistExceptionResponse(ex.getMessage());
 		return new ResponseEntity<Object>(exceptionResponse, HttpStatus.BAD_REQUEST);
-
+	}
 	@ExceptionHandler
 	public final ResponseEntity<Object> handleTaskIdException(TaskIdException ex, WebRequest request){		
 		TaskIdExceptionResponse exceptionResponse=new TaskIdExceptionResponse(ex.getMessage());

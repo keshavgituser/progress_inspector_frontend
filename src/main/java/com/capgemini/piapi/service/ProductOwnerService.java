@@ -45,13 +45,13 @@ public interface ProductOwnerService {
 	 * This method will return list of tasks 
 	 * @return list of tasks
 	 */
-	public List<Task> getAllTasks();
+	public List<Task> getAllTasks(HttpSession session);
 	/**
 	 * This method is used to return task by taskIdentifier
 	 * @param taskIdentifier of the task
 	 * @return task if found otherwise null
 	 */
-	public Task getTaskByTaskIdentifier(String taskIdentifier);
+	public Task getTaskByTaskIdentifier(String taskIdentifier, HttpSession session);
 	/**
 	 * This method is used for authentication and login of productOwner
 	 * @param loginName of the productOwner

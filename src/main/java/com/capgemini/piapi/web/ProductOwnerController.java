@@ -153,7 +153,7 @@ public class ProductOwnerController {
 	@GetMapping("/tasks")
 	public ResponseEntity<?> getTaskList(HttpSession session) {
 		if (session.getAttribute("userType") != null && session.getAttribute("userType").equals("ProductOwner")) {
-			List<Task> tasks = productOwnerService.getAllTasks();
+			List<Task> tasks = productOwnerService.getAllTasks(session);
 			return new ResponseEntity<List<Task>>(tasks, HttpStatus.OK);
 		}
 		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
@@ -169,7 +169,7 @@ public class ProductOwnerController {
 	public ResponseEntity<?> getTaskByTaskIdentifier(@PathVariable String taskIdentifier, HttpSession session) {
 		if (session.getAttribute("userType") != null && session.getAttribute("userType").equals("ProductOwner")) {
 
-			Task task = productOwnerService.getTaskByTaskIdentifier(taskIdentifier);
+			Task task = productOwnerService.getTaskByTaskIdentifier(taskIdentifier,session);
 			return new ResponseEntity<Task>(task, HttpStatus.OK);
 		}
 		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
