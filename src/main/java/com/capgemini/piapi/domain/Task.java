@@ -63,10 +63,10 @@ public class Task {
 	/**
 	 * Owner of the product
 	 */
-//	@JsonIgnore
-//	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
-//	@JoinColumn(name = "task_id", updatable = false, nullable = false)
-//	private ProductOwner productOwner;
+	@JsonIgnore
+	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
+	@JoinColumn(name = "task_id", updatable = false, nullable = false)
+	private ProductOwner productOwner;
 	/**
 	 * TeamLeader 
 	 */
@@ -160,13 +160,13 @@ public class Task {
 		this.updatedAt = updatedAt;
 	}
 
-//	public ProductOwner getProductOwner() {
-//		return productOwner;
-//	}
-//
-//	public void setProductOwner(ProductOwner productOwner) {
-//		this.productOwner = productOwner;
-//	}
+	public ProductOwner getProductOwner() {
+		return productOwner;
+	}
+
+	public void setProductOwner(ProductOwner productOwner) {
+		this.productOwner = productOwner;
+	}
 
 	public List<Remark> getRemark() {
 		return remark;
