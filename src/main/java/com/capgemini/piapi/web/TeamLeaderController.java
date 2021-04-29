@@ -1,5 +1,7 @@
 package com.capgemini.piapi.web;
 
+import java.util.List;
+
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.capgemini.piapi.domain.Task;
 import com.capgemini.piapi.domain.TeamLeader;
 import com.capgemini.piapi.service.TeamLeaderService;
 import com.capgemini.piapi.serviceImpl.MapValidationErrorService;
@@ -35,7 +38,7 @@ public class TeamLeaderController {
 	@PostMapping("/register")
 	public ResponseEntity<?> registerTeamLeader( @Valid @RequestBody TeamLeader teamLeader,BindingResult result){
 		
-		//If Error Occured Display error otherwise save  and display the TeamLeader 
+		//If Error occurred Display error otherwise save  and return the TeamLeader 
 		ResponseEntity <?> errorMap =mapValidationErrorService.mapValidationError(result);
 		if(errorMap!=null) return errorMap;
 		
@@ -49,6 +52,9 @@ public class TeamLeaderController {
 		ResponseEntity <?> errorMap =mapValidationErrorService.mapValidationError(result);
 		if(errorMap!=null) return errorMap;
 		
+		//Authenticating TeamLeader Credentials
+		//If Authentication succeed then put the LoginName in session
+		//Otherwise Return LoginFailed
 		 TeamLeader validTeamLeader = teamLeaderService.authenticateTeamLeader(teamLeader.getLoginName(),teamLeader.getPwd(), session);
 		return new  ResponseEntity<TeamLeader>(validTeamLeader,HttpStatus.CREATED);
 	}
@@ -69,5 +75,17 @@ public class TeamLeaderController {
 	public ResponseEntity<?> deleteTeamLeader(@PathVariable Long teamLeaderId){
 		teamLeaderService.deleteTeamLeader(teamLeaderId);
 		return new ResponseEntity<String>("TeamLeader Deleted with Id "+ teamLeaderId,HttpStatus.OK);
+	}
+	
+	@GetMapping("task/{taskId}")
+	public ResponseEntity<?> getTaskByTaskIdentifier(@PathVariable String taskId){
+		Task task = teamLeaderService.findByTaskIdentifier(taskId);
+		logger.info("--TASK--"+task);
+		return new ResponseEntity<Task>(task, HttpStatus.OK);
+	}
+	
+	@GetMapping("/all")
+	public List<Task> getAllTasks(){
+		return teamLeaderService.findAllTasks();
 	}
 }

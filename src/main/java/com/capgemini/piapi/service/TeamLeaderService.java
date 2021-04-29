@@ -1,6 +1,10 @@
 package com.capgemini.piapi.service;
 
+import java.util.List;
+
 import javax.servlet.http.HttpSession;
+
+import com.capgemini.piapi.domain.Task;
 import com.capgemini.piapi.domain.TeamLeader;
 
 /**
@@ -41,4 +45,19 @@ public interface TeamLeaderService {
 	 */
 	
 	public void deleteTeamLeader(Long teamLeaderId);
+	
+	/**
+	 * This is to find the specific task according to taskIdentifier
+	 * @param taskIdentifier 
+	 * @return
+	 */
+
+	public Task findByTaskIdentifier(String taskIdentifier);
+	
+	/**
+	 * This will show all the tasks of product
+	 * @return
+	 */
+	
+	public List<Task> findAllTasks();
 }
