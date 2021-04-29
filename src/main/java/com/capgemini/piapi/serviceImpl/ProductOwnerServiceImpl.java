@@ -16,8 +16,10 @@ import com.capgemini.piapi.repository.ClientRepository;
 import com.capgemini.piapi.repository.ProductOwnerRepository;
 import com.capgemini.piapi.repository.TaskRepository;
 import com.capgemini.piapi.service.ProductOwnerService;
+
 /**
  * This ProdcuctOwnerServiceImpl implements the business logic on the database.
+ * 
  * @author Aadesh Juvekar
  *
  */
@@ -25,7 +27,7 @@ import com.capgemini.piapi.service.ProductOwnerService;
 public class ProductOwnerServiceImpl implements ProductOwnerService {
 	@Autowired
 	private ProductOwnerRepository productOwnerRepository;
-	
+
 	@Autowired
 	private TaskRepository taskRepository;
 	@Autowired
@@ -33,18 +35,19 @@ public class ProductOwnerServiceImpl implements ProductOwnerService {
 
 	@Override
 	public List<Task> getAllTasks() {
-		List<Task> task=taskRepository.findAll();
-		if(task==null) {
+		try {
+			return taskRepository.findAll();
+		} catch (Exception e) {
 			throw new TaskNotFoundException("Tasks not available");
 		}
-		return task;
+
 	}
 
 	@Override
 	public Task getTaskByTaskIdentifier(String taskIdentifier) {
-		Task task=taskRepository.findByTaskIdentifier(taskIdentifier);
-		if(task==null) {
-			throw new TaskNotFoundException("Task with id : '"+taskIdentifier+"' does not exists");
+		Task task = taskRepository.findByTaskIdentifier(taskIdentifier);
+		if (task == null) {
+			throw new TaskNotFoundException("Task with id : '" + taskIdentifier + "' does not exists");
 		}
 		return task;
 	}
@@ -54,23 +57,24 @@ public class ProductOwnerServiceImpl implements ProductOwnerService {
 		// TODO Auto-generated method stub
 		return productOwnerRepository.save(productOwner);
 	}
-	
+
 	@Override
 	public ProductOwner updateProductOwner(ProductOwner productOwner) {
 		// TODO Auto-generated method stub
-		ProductOwner oldProductOwner=productOwnerRepository.findByLoginName(productOwner.getLoginName());
-		if(oldProductOwner==null) {
-			throw new ProductOwnerNotFoundException("Product Owner with loginName : "+productOwner.getLoginName()+" does not exists");
+		ProductOwner oldProductOwner = productOwnerRepository.findByLoginName(productOwner.getLoginName());
+		if (oldProductOwner == null) {
+			throw new ProductOwnerNotFoundException(
+					"Product Owner with loginName : " + productOwner.getLoginName() + " does not exists");
 		}
-		oldProductOwner=productOwner;
+		oldProductOwner = productOwner;
 		return productOwnerRepository.save(oldProductOwner);
 	}
 
 	@Override
 	public void deleteProductOwnerByLoginName(String loginName) {
 		// TODO Auto-generated method stub
-		productOwnerRepository.deleteByLoginName(loginName);;
-		
+		productOwnerRepository.deleteByLoginName(loginName);
+
 	}
 
 	@Override
@@ -87,37 +91,33 @@ public class ProductOwnerServiceImpl implements ProductOwnerService {
 
 	@Override
 	public ProductOwner authenticateProductOwner(String loginName, String pwd, HttpSession session) {
-		ProductOwner productOwner = productOwnerRepository.findByLoginNameAndPwd(loginName,pwd);
+		ProductOwner productOwner = productOwnerRepository.findByLoginNameAndPwd(loginName, pwd);
 		addProductOwnerInSession(productOwner, session);
 		return productOwner;
 	}
-	
-	
+
 	/**
 	 * This method is used to add the productOwner to the session
+	 * 
 	 * @param productOwner to be added to session
-	 * @param session created during login
+	 * @param session      created during login
 	 */
 	private void addProductOwnerInSession(ProductOwner productOwner, HttpSession session) {
-		
+
 		session.setAttribute("userType", "ProductOwner");
 		session.setAttribute("productOwnerId", productOwner.getId());
-		session.setAttribute("productOwner", productOwner);
 
-		
 	}
-	
-	
+
 	@Override
 	public Client addTaskToClient(String clientloginName, String taskIdentifier) {
-		Client client  = clientRepository.findByLoginName(clientloginName);
-		Task task=taskRepository.findByTaskIdentifier(taskIdentifier);
+		Client client = clientRepository.findByLoginName(clientloginName);
+		Task task = taskRepository.findByTaskIdentifier(taskIdentifier);
 		List<Task> listOfTask = client.getTask();
 		listOfTask.add(task);
 		client.setTask(listOfTask);
 		clientRepository.save(client);
 		return client;
 	}
-
 
 }

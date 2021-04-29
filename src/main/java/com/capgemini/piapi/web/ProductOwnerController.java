@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.capgemini.piapi.domain.Client;
 import com.capgemini.piapi.domain.ProductOwner;
 import com.capgemini.piapi.domain.Task;
-import com.capgemini.piapi.service.ClientService;
 import com.capgemini.piapi.service.ProductOwnerService;
 import com.capgemini.piapi.serviceImpl.MapValidationErrorService;
 
@@ -34,8 +33,6 @@ public class ProductOwnerController {
 	@Autowired
 	private ProductOwnerService productOwnerService;
 
-	@Autowired
-	private ClientService clientService;
 
 	@Autowired
 	private MapValidationErrorService mapValidationErrorService;
@@ -49,11 +46,12 @@ public class ProductOwnerController {
 	 * @return Response Entity with logged In Product Owner with HTTP Status
 	 */
 	@PostMapping("/login")
-	public ResponseEntity<?> handleProductOwnerLogin(@RequestBody ProductOwner productOwner, BindingResult result,
+	public ResponseEntity<?> handleProductOwnerLogin(@RequestBody Object owner, BindingResult result,
 			HttpSession session) {
 		ResponseEntity<?> errorMap = mapValidationErrorService.mapValidationError(result);
 		if (errorMap != null)
 			return errorMap;
+		ProductOwner productOwner=(ProductOwner) owner;
 		ProductOwner loggedInOwner = productOwnerService.authenticateProductOwner(productOwner.getLoginName(),
 				productOwner.getPwd(), session);
 		return new ResponseEntity<ProductOwner>(loggedInOwner, HttpStatus.OK);
