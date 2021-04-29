@@ -48,7 +48,6 @@ public class Developer {
 	@Size(min = 8, max = 20, message = "Please Enter password of Minimum 8 and Maximum 20")
 	private String pwd;
 	private String status;
-	@JsonIgnore
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "developer")
 	private List<Task> tasks = new ArrayList<>();
 
@@ -97,7 +96,7 @@ public class Developer {
 		this.status = status;
 	}
 
-	public String getDevId() {
+	public String getDevIdentifier() {
 		return devId;
 	}
 

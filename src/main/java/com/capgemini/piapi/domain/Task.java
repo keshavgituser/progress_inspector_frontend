@@ -35,8 +35,8 @@ public class Task {
 	/**
 	 * id of the Task
 	 */
-	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Id
 	private long id;
 	/**
 	 * Title of the task
@@ -58,31 +58,31 @@ public class Task {
 	/**
 	 * Progress of the task
 	 */
-	@NotNull(message = "Task Progress is required")
 	private String progress;
 	/**
 	 * Owner of the product
 	 */
 	@JsonIgnore
 	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
-	@JoinColumn(name = "task_id", updatable = false, nullable = false)
+	@JoinColumn(name = "task_id", updatable = false, nullable = true) //Product Owner is mandatory to save task
 	private ProductOwner productOwner;
 	/**
-	 * TeamLeader 
+	 * TeamLeader
 	 */
 	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+	@JsonIgnore
 	private TeamLeader teamLeader;
 	/**
 	 * List of remarks on the task Given By Developer as well as client
 	 */
-	@JsonIgnore
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "task")
 	private List<Remark> remark = new ArrayList<>();
 	/**
 	 * List of authorized clients on the task Given By Product Owner
 	 */
 	@ManyToMany
-	private List<Client> client=new ArrayList<>();
+	@JsonIgnore
+	private List<Client> client = new ArrayList<>();
 	/**
 	 * List of developers on the task Given By Team Leader
 	 */
@@ -176,6 +176,14 @@ public class Task {
 		this.remark = remark;
 	}
 
+	public Developer getDeveloper() {
+		return developer;
+	}
+
+	public void setDeveloper(Developer developer) {
+		this.developer = developer;
+	}
+
 	@PrePersist()
 	protected void onCreate() {
 		this.createdAt = new Date();
@@ -185,4 +193,12 @@ public class Task {
 	protected void onUpdate() {
 		this.updatedAt = new Date();
 	}
+
+	@Override
+	public String toString() {
+		return "Task [id=" + id + ", title=" + title + ", taskIdentifier=" + taskIdentifier + ", description="
+				+ description + ", progress=" + progress + ", productOwner=" + productOwner + ", teamLeader="
+				+ teamLeader + ", remark=" + remark + ", client=" + client + ", developer=" + developer + "]";
+	}
+
 }

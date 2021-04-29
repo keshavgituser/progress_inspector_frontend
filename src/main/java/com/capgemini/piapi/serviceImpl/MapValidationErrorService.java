@@ -10,14 +10,14 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
 /**
- * This mapValidationErrorService manages the errors occurred in the result of
+ * This MapValidationErrorService manages the errors occurred in the result of
  * the validation.
  * 
  * @author Aadesh Juvekar
  *
  */
 @Service
-public class mapValidationErrorService {
+public class MapValidationErrorService {
 	/**
 	 * This method is used to process the errors in the result of the validation
 	 * 
