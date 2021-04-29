@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.capgemini.piapi.domain.Client;
 import com.capgemini.piapi.domain.ProductOwner;
 import com.capgemini.piapi.domain.Task;
+import com.capgemini.piapi.exception.ProductOwnerAlreadyExistException;
 import com.capgemini.piapi.exception.ProductOwnerNotFoundException;
 import com.capgemini.piapi.exception.TaskNotFoundException;
 import com.capgemini.piapi.repository.ClientRepository;
@@ -33,24 +34,30 @@ public class ProductOwnerServiceImpl implements ProductOwnerService {
 	@Autowired
 	private ClientRepository clientRepository;
 
-	
-
 	@Override
 	public ProductOwner saveProductOwner(ProductOwner productOwner) {
 		// TODO Auto-generated method stub
-		if(productOwner==null) {
+		if (productOwner.getLoginName() == null) {
 			throw new ProductOwnerNotFoundException("Please Fill the Required Fields");
+		} 
+		else if ((productOwnerRepository.findByLoginName(productOwner.getLoginName())) != null) {
+			throw new ProductOwnerAlreadyExistException("Product owner already exists !!!");
+		} 
+		else {
+			return productOwnerRepository.save(productOwner);
 		}
-		return productOwnerRepository.save(productOwner);
+
 	}
 
 	@Override
 	public ProductOwner updateProductOwner(ProductOwner productOwner) {
 		// TODO Auto-generated method stub
+		if (productOwner.getLoginName() == null) {
+			throw new ProductOwnerNotFoundException("Please Fill the Required Fields");
+		} 
 		ProductOwner oldProductOwner = productOwnerRepository.findByLoginName(productOwner.getLoginName());
 		if (oldProductOwner == null) {
-			throw new ProductOwnerNotFoundException(
-					"Product Owner with loginName : " + productOwner.getLoginName() + " does not exists");
+			throw new ProductOwnerNotFoundException("Product Owner with loginName : " + productOwner.getLoginName() + " does not exists");
 		}
 		oldProductOwner = productOwner;
 		return productOwnerRepository.save(oldProductOwner);
@@ -59,11 +66,10 @@ public class ProductOwnerServiceImpl implements ProductOwnerService {
 	@Override
 	public void deleteProductOwnerByLoginName(String loginName) {
 		// TODO Auto-generated method stub
-		ProductOwner productOwner = productOwnerRepository.findByLoginName(loginName);
-		if (productOwner == null) {
-			throw new ProductOwnerNotFoundException(
-					"Product Owner with loginName : " + loginName + " does not exists");
-		}
+		ProductOwner productOwner=null;
+		if ((productOwner=productOwnerRepository.findByLoginName(loginName)) == null) {
+			throw new ProductOwnerNotFoundException("Product Owner with loginName : " + loginName + " does not exists");
+		} 
 		productOwnerRepository.delete(productOwner);
 
 	}
@@ -71,18 +77,30 @@ public class ProductOwnerServiceImpl implements ProductOwnerService {
 	@Override
 	public List<ProductOwner> findAll() {
 		// TODO Auto-generated method stub
-		return productOwnerRepository.findAll();
+		try {
+			return productOwnerRepository.findAll();
+		} catch (Exception e) {
+			throw new ProductOwnerNotFoundException("No Product Owner Found");
+		}
 	}
 
 	@Override
 	public ProductOwner findProductOwnerByLoginName(String loginName) {
 		// TODO Auto-generated method stub
-		return productOwnerRepository.findByLoginName(loginName);
+		try {
+			return productOwnerRepository.findByLoginName(loginName);
+		} catch (Exception e) {
+			throw new ProductOwnerNotFoundException("Product Owner with loginName : " + loginName + " does not exist");
+		}
+
 	}
 
 	@Override
 	public ProductOwner authenticateProductOwner(String loginName, String pwd, HttpSession session) {
-		ProductOwner productOwner = productOwnerRepository.findByLoginNameAndPwd(loginName, pwd);
+		ProductOwner productOwner=null;
+		if ((productOwner=productOwnerRepository.findByLoginNameAndPwd(loginName, pwd)) == null) {
+			throw new ProductOwnerNotFoundException("Product Owner with loginName : " + loginName + " does not exists");
+		} 
 		addProductOwnerInSession(productOwner, session);
 		return productOwner;
 	}
@@ -97,9 +115,9 @@ public class ProductOwnerServiceImpl implements ProductOwnerService {
 
 		session.setAttribute("userType", "ProductOwner");
 		session.setAttribute("productOwnerId", productOwner.getId());
-
+		session.setAttribute("loginName", productOwner.getLoginName());
 	}
-	
+
 	@Override
 	public List<Task> getAllTasks() {
 		try {
@@ -121,8 +139,14 @@ public class ProductOwnerServiceImpl implements ProductOwnerService {
 
 	@Override
 	public Client addTaskToClient(String clientloginName, String taskIdentifier) {
-		Client client = clientRepository.findByLoginName(clientloginName);
-		Task task = taskRepository.findByTaskIdentifier(taskIdentifier);
+		Client client=null;
+		if ((client=clientRepository.findByLoginName(clientloginName)) == null) {
+			throw new ProductOwnerNotFoundException("Client with loginName : " + clientloginName + " does not exists");
+		} 
+		Task task=null;
+		if ((task =taskRepository.findByTaskIdentifier(taskIdentifier))== null) {
+			throw new TaskNotFoundException("Task with id : '" + taskIdentifier + "' does not exists");
+		}
 		List<Task> listOfTask = client.getTask();
 		listOfTask.add(task);
 		client.setTask(listOfTask);
