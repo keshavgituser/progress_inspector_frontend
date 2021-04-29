@@ -20,6 +20,11 @@ import com.capgemini.piapi.repository.TaskRepository;
 import com.capgemini.piapi.service.ClientService;
 
 
+/**
+ * This ClientServiceImpl implements the business logic on the database.
+ * @author tejas
+ *
+ */
 @Service
 public class ClientServiceImpl implements ClientService {
 
@@ -79,7 +84,7 @@ public class ClientServiceImpl implements ClientService {
 
 	
 	/**
-	 * @author Keshav Register and Authentication
+	 * Register and Authentication
 	 */
 	@Override
 	public Client saveClient(Client client) {
@@ -154,6 +159,10 @@ public class ClientServiceImpl implements ClientService {
 		session.setAttribute("loginName", client.getLoginName());
 		
 	}
-	
+  @Override
+	public Client getClientById(Long Id) {
+		// TODO Auto-generated method stub
+		return clientRepository.findByid(Id);
+	}
 	
 }

@@ -81,7 +81,10 @@ public interface ClientService {
 	 * @return
 	 */
 	public Client authenticateClient(String loginName, String pwd, HttpSession session);
-
-
-	
+/**
+	 * This function will get client by client's id
+	 * @param client
+	 * @return client if available
+	 */
+	public Client getClientById(Long id);
 }

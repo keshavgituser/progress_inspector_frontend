@@ -1,8 +1,10 @@
 package com.capgemini.piapi.exception;
 
-public class TaskIdExceptionResponse {
+public class TaskNotFoundExceptionResponse {
 	private String taskIdentifier;
-	public TaskIdExceptionResponse(String taskIdentifier) {
+	
+
+	public TaskNotFoundExceptionResponse(String taskIdentifier) {
 		super();
 		this.taskIdentifier = taskIdentifier;
 	}
@@ -14,4 +16,5 @@ public class TaskIdExceptionResponse {
 	public void setTaskIdentifier(String taskIdentifier) {
 		this.taskIdentifier = taskIdentifier;
 	}
+	
 }

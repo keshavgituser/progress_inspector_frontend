@@ -93,6 +93,14 @@ public class Client {
 	public void setStatus(String status) {
 		this.status = status;
 	}
+
+	public List<Task> getTask() {
+		return task;
+	}
+
+	public void setTask(List<Task> task) {
+		this.task = task;
+	}
 	
 	
 	

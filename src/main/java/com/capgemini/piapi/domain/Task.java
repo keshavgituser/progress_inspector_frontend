@@ -65,11 +65,12 @@ public class Task {
 	 */
 	@JsonIgnore
 	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
-	@JoinColumn(name = "task_id", updatable = false, nullable = false)
+	@JoinColumn(name = "owner_id", updatable = false, nullable = false)
 	private ProductOwner productOwner;
 	/**
 	 * TeamLeader 
 	 */
+	@JsonIgnore
 	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
 	private TeamLeader teamLeader;
 	/**
@@ -81,6 +82,7 @@ public class Task {
 	/**
 	 * List of authorized clients on the task Given By Product Owner
 	 */
+	@JsonIgnore
 	@ManyToMany
 	private List<Client> client=new ArrayList<>();
 	/**
