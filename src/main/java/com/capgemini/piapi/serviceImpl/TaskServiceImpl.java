@@ -11,11 +11,17 @@ import org.springframework.stereotype.Service;
 import com.capgemini.piapi.constant.DeveloperConstant;
 import com.capgemini.piapi.constant.TaskConstants;
 import com.capgemini.piapi.domain.Developer;
+import com.capgemini.piapi.domain.ProductOwner;
 import com.capgemini.piapi.domain.Task;
+import com.capgemini.piapi.domain.TeamLeader;
 import com.capgemini.piapi.exception.DeveloperIdException;
 import com.capgemini.piapi.exception.TaskIdException;
+import com.capgemini.piapi.exception.TaskNotFoundException;
+import com.capgemini.piapi.exception.TeamLeaderNotFoundException;
 import com.capgemini.piapi.repository.DeveloperRepository;
+import com.capgemini.piapi.repository.ProductOwnerRepository;
 import com.capgemini.piapi.repository.TaskRepository;
+import com.capgemini.piapi.repository.TeamLeaderRepository;
 import com.capgemini.piapi.service.TaskServcie;
 
 @Service
@@ -31,13 +37,39 @@ public class TaskServiceImpl implements TaskServcie {
 
 	@Autowired
 	private DeveloperRepository developerRepository;
+	
+	@Autowired
+	private ProductOwnerRepository productOwnerRepository;
+	
+	@Autowired
+	private TeamLeaderRepository teamLeaderRepository;
 
 	@Override
-	public Task createTask(Task task) {
+	public Task createTask(Task task , String productOwnerLoginName,String teamleaderLoginName) {
 		try {
+			ProductOwner productOwner = productOwnerRepository.findByLoginName(productOwnerLoginName);
+			if(productOwner == null) {
+				//TODO Product Owner Not Found Exception
+				throw new Exception();
+			}
+			TeamLeader teamLeader = teamLeaderRepository.findByLoginName(teamleaderLoginName);
+			if(teamLeader == null) {
+				throw new TeamLeaderNotFoundException("Team Leader not found");
+			}
 			task.setTaskIdentifier(task.getTaskIdentifier().toUpperCase());
 			task.setProgress(taskConstants.TASK_STATUS_PENDING);
-			return taskRepository.save(task);
+			List<Task> productOwnerTaskList = productOwner.getTask();
+			productOwnerTaskList.add(task);
+			productOwner.setTask(productOwnerTaskList);
+			task.setProductOwner(productOwner);
+			Task newTask = taskRepository.save(task);
+			List<Task> teamLeaderTaskList = teamLeader.getTask();
+			teamLeaderTaskList.add(task);
+			teamLeader.setTask(teamLeaderTaskList);
+			task.setTeamLeader(teamLeader);
+			teamLeaderRepository.save(teamLeader);
+			productOwnerRepository.save(productOwner);
+			return newTask;
 		} catch (Exception ex) {
 			throw new TaskIdException("Task id " + task.getTaskIdentifier().toUpperCase() + " is already available");
 		}
@@ -50,7 +82,11 @@ public class TaskServiceImpl implements TaskServcie {
 
 	@Override
 	public List<Task> findAllTasks() {
-		return taskRepository.findAll();
+		List<Task> taskList = taskRepository.findAll();
+		if(taskList.isEmpty()) {
+			throw new TaskNotFoundException("Currently there are no tasks available");
+		}
+		return taskList;
 	}
 
 	@Override
@@ -63,13 +99,13 @@ public class TaskServiceImpl implements TaskServcie {
 	}
 
 	@Override
-	public Task assignDeveloper(String taskID, String DevId) {
+	public Task assignDeveloper(String taskID, String developerLoginName) {
 		// get developer
-		Developer developer = developerRepository.findByDevId(DevId);
+		Developer developer = developerRepository.findByLoginName(developerLoginName);
 		// check if available or not
 		// throw exception not found
 		if (developer == null) {
-			throw new DeveloperIdException("Developer with Identifer " + DevId.toUpperCase() + " doesn't exist");
+			throw new DeveloperIdException("Developer with Identifer " + developerLoginName + " doesn't exist");
 		}
 		Task task = taskRepository.findByTaskIdentifier(taskID);
 		if (task == null) {
@@ -81,6 +117,7 @@ public class TaskServiceImpl implements TaskServcie {
 		List<Task> taskList = new ArrayList<>();
 		taskList.add(task);
 		developer.setTasks(taskList);
+		developerRepository.save(developer);
 		task.setProgress(taskConstants.TASK_STATUS_INPROGRESS);
 		return taskRepository.save(task);
 	}

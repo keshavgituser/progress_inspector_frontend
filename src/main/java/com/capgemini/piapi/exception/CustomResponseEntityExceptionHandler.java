@@ -18,7 +18,15 @@ public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptio
 		DeveloperIdExceptionResponse exceptionResponse = new DeveloperIdExceptionResponse(ex.getMessage());
 		return new ResponseEntity<Object>(exceptionResponse, HttpStatus.BAD_REQUEST);
 	}
-	
+
+	@ExceptionHandler
+	public final ResponseEntity<Object> handleDeveloperNotFoundException(DeveloperNotFoundException ex,
+			WebRequest request) {
+
+		DeveloperIdExceptionResponse exceptionResponse = new DeveloperIdExceptionResponse(ex.getMessage());
+		return new ResponseEntity<Object>(exceptionResponse, HttpStatus.BAD_REQUEST);
+	}
+
 	@ExceptionHandler
 	public final ResponseEntity<Object> handleTaskIdException(TaskIdException ex, WebRequest request) {
 
@@ -26,4 +34,29 @@ public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptio
 		return new ResponseEntity<Object>(exceptionResponse, HttpStatus.BAD_REQUEST);
 	}
 
+	@ExceptionHandler
+	public final ResponseEntity<Object> handleTaskNotFoundException(TaskNotFoundException ex, WebRequest request) {
+
+		TaskNotFoundExceptionResponse exceptionResponse = new TaskNotFoundExceptionResponse(ex.getMessage());
+		return new ResponseEntity<Object>(exceptionResponse, HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler
+	public final ResponseEntity<Object> handleTeamLeaderAlreadyExists(TeamLeaderAlreadyExistsException ex,
+			WebRequest request) {
+
+		TeamLeaderAlreadyExistsExceptionResponse exceptionResponse = new TeamLeaderAlreadyExistsExceptionResponse(
+				ex.getMessage());
+
+		return new ResponseEntity<Object>(exceptionResponse, HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler
+	public final ResponseEntity<Object> handleTeamLeaderNotFound(TeamLeaderNotFoundException ex, WebRequest request) {
+
+		TeamLeaderNotFoundExceptionResponse exceptionResponse = new TeamLeaderNotFoundExceptionResponse(
+				ex.getMessage());
+
+		return new ResponseEntity<Object>(exceptionResponse, HttpStatus.BAD_REQUEST);
+	}
 }

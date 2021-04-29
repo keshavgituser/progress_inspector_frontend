@@ -4,25 +4,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.BAD_REQUEST)
-public class TaskIdException extends RuntimeException {
-
-	/**
-	 * 
-	 */
+public class DeveloperNotFoundException extends RuntimeException{
+	
 	private static final long serialVersionUID = 1L;
-
 	/**
-	 * Create TaskIdException object without error message
+	 * Create DeveloperNotFoundException object without error message
 	 */
-	public TaskIdException() {
+	public DeveloperNotFoundException() {
 		super();
 	}
-
 	/**
-	 * Create TaskIdException object with error message
+	 * Create DeveloperNotFoundException object with error message
 	 */
-	public TaskIdException(String errMsg) {
+	public DeveloperNotFoundException(String errMsg) {
 		super(errMsg);
 	}
-
 }

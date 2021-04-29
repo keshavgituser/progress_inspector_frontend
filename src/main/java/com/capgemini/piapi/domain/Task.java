@@ -64,7 +64,7 @@ public class Task {
 	 */
 	@JsonIgnore
 	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
-	@JoinColumn(name = "task_id", updatable = false, nullable = true) //Product Owner is mandatory to save task
+	@JoinColumn(name = "task_id", updatable = false, nullable = false) // Product Owner is mandatory to save task
 	private ProductOwner productOwner;
 	/**
 	 * TeamLeader
@@ -92,12 +92,12 @@ public class Task {
 	/**
 	 * Creation Date of the task
 	 */
-	@JsonFormat(pattern = "dd/mm/yyyy")
+	@JsonFormat(pattern = "dd/MM/yyyy")
 	private Date createdAt;
 	/**
 	 * Last Update done on the task
 	 */
-	@JsonFormat(pattern = "dd/mm/yyyy")
+	@JsonFormat(pattern = "dd/MM/yyyy")
 	private Date updatedAt;
 
 	public Task() {
@@ -192,6 +192,22 @@ public class Task {
 	@PreUpdate
 	protected void onUpdate() {
 		this.updatedAt = new Date();
+	}
+
+	public TeamLeader getTeamLeader() {
+		return teamLeader;
+	}
+
+	public void setTeamLeader(TeamLeader teamLeader) {
+		this.teamLeader = teamLeader;
+	}
+
+	public List<Client> getClient() {
+		return client;
+	}
+
+	public void setClient(List<Client> client) {
+		this.client = client;
 	}
 
 	@Override

@@ -36,14 +36,11 @@ public class Developer {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Id
 	private Long id;
-	@NotNull(message = "Name is required")
+	@NotNull(message = "Developer Name is required")
 	private String name;
-	@NotNull(message = " Developer Id is Required")
-	@Size(min = 2, max = 8, message = "Developer Id should be in between 4 to 8 Characters")
-	@Column(updatable = false, unique = true)
-	private String devId;
 	@NotNull(message = "Login name can not be null")
-	private String loginname;
+	@Column(unique = true, updatable = false)
+	private String loginName;
 	@NotNull(message = "Password is required")
 	@Size(min = 8, max = 20, message = "Please Enter password of Minimum 8 and Maximum 20")
 	private String pwd;
@@ -72,14 +69,6 @@ public class Developer {
 		this.name = name;
 	}
 
-	public String getLoginname() {
-		return loginname;
-	}
-
-	public void setLoginname(String loginname) {
-		this.loginname = loginname;
-	}
-
 	public String getPwd() {
 		return pwd;
 	}
@@ -96,14 +85,6 @@ public class Developer {
 		this.status = status;
 	}
 
-	public String getDevIdentifier() {
-		return devId;
-	}
-
-	public void setDevIdentifier(String devId) {
-		this.devId = devId;
-	}
-
 	public List<Task> getTasks() {
 		return tasks;
 	}
@@ -112,9 +93,17 @@ public class Developer {
 		this.tasks = tasks;
 	}
 
+	public String getLoginName() {
+		return loginName;
+	}
+
+	public void setLoginName(String loginName) {
+		this.loginName = loginName;
+	}
+
 	@Override
 	public String toString() {
-		return "Developer [id=" + id + ", name=" + name + ", devId=" + devId + ", loginname=" + loginname + ", pwd="
+		return "Developer [id=" + id + ", name=" + name + ",  loginname=" + loginName + ", pwd="
 				+ pwd + ", status=" + status + ", task=" + tasks + "]";
 	}
 

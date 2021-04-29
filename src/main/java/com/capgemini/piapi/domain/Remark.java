@@ -32,9 +32,9 @@ public class Remark {
 	@JsonIgnore
 	private Task task;
 
-	@JsonFormat(pattern = "yyyy-MM-dd")
+	@JsonFormat(pattern = "dd/MM/yyyy")
 	private Date created_At;
-	@JsonFormat(pattern = "yyyy-MM-dd")
+	@JsonFormat(pattern = "dd/MM/yyyy")
 	private Date updated_At;
 	public Long getId() {
 		return id;

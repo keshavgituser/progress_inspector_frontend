@@ -1,5 +1,6 @@
 package com.capgemini.piapi.web;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
@@ -24,7 +25,7 @@ import com.capgemini.piapi.service.DeveloperService;
 import com.capgemini.piapi.serviceImpl.MapValidationErrorService;
 
 @RestController
-@RequestMapping("api/developers")
+@RequestMapping("/piapi/developers")
 public class DeveloperController {
 
 	private static final Logger log = LoggerFactory.getLogger(DeveloperController.class);
@@ -35,6 +36,13 @@ public class DeveloperController {
 	@Autowired
 	private DeveloperService developerService;
 
+	/**
+	 * This method is used to create new developer in data base
+	 * 
+	 * @param developer
+	 * @param result
+	 * @return Response Entity with new created developer
+	 */
 	@PostMapping("/register")
 	public ResponseEntity<?> createNewDeveloper(@Valid @RequestBody Developer developer, BindingResult result) {
 		ResponseEntity<?> errorMap = mapValidationErrorService.mapValidationError(result);
@@ -44,35 +52,88 @@ public class DeveloperController {
 		return new ResponseEntity<Developer>(savedDeveloper, HttpStatus.CREATED);
 	}
 
-	@GetMapping("/viewbyid/{devId}")
-	public ResponseEntity<?> getDeveloperByDeveloperIdentifier(@PathVariable String devId) {
-		Developer developer = developerService.findDeveloperByDevId(devId);
-		return new ResponseEntity<Developer>(developer, HttpStatus.OK);
+	/**
+	 * This method is used to delete developer on the basis of
+	 * 
+	 * @param loginname
+	 * @return Response Entity with Deleted Developer if Developer exist
+	 */
+	@DeleteMapping("/{loginname}")
+	public ResponseEntity<?> deleteDeveloper(@PathVariable String loginname) {
+		developerService.deleteDeveloperbyDeveloperLoginName(loginname);
+		return new ResponseEntity<String>("Developer with " + loginname + " deleted successfully", HttpStatus.OK);
 	}
 
-	@GetMapping("/all")
-	public Iterable<Developer> getAllDevelopers() {
-		return developerService.fillAllDevelopers();
+	/**
+	 * This method is used to update task status with for given task identifier and
+	 * developer loginName
+	 * 
+	 * @param taskId
+	 * @param devId
+	 * @param task
+	 * @param session
+	 * @return Response Entity with updated task status if developer is logged in
+	 *         else You do not have Access message is appeared with Http Status
+	 */
+	@PostMapping("/updatestatus/{taskId}/{devloginname}")
+	public ResponseEntity<?> updateTaskStatus(@PathVariable String taskId, @PathVariable String devloginname,
+			@RequestBody Task task, HttpSession session) {
+		if (session.getAttribute("userType") != null && session.getAttribute("userType").equals("Developer")) {
+			Task updateStatus = developerService.updateTaskStatus(taskId, devloginname, task);
+			return new ResponseEntity<Task>(updateStatus, HttpStatus.OK);
+		}
+		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
 	}
 
-	@DeleteMapping("/deletedeveloper/{devId}")
-	public ResponseEntity<?> deleteDeveloper(@PathVariable String devId) {
-		developerService.deleteDeveloperbyDevIdentifier(devId);
-		return new ResponseEntity<String>("Developer with Identifier " + devId.toUpperCase() + " deleted successfully",
-				HttpStatus.OK);
-	}
-
-	@PostMapping("/updatestatus/{taskId}/{devId}")
-	public ResponseEntity<?> updateTaskStatus(@PathVariable String taskId, @PathVariable String devId,
-			@RequestBody Task task) {
-		Task updateStatus = developerService.updateTaskStatus(taskId, devId, task);
-		return new ResponseEntity<Task>(updateStatus, HttpStatus.OK);
-	}
-	
+	/**
+	 * This method is used to add remark in the data base by developer based on task
+	 * id and Developer Login name
+	 * 
+	 * @param taskId
+	 * @param devId
+	 * @param remark
+	 * @param session
+	 * @return Response Entity with added remark in task if developer is logged in
+	 *         else You do not have Access message is appeared with Http Status
+	 */
 	@PostMapping("/addremark/{taskId}/{devId}")
 	public ResponseEntity<?> addRemarkInTask(@PathVariable String taskId, @PathVariable String devId,
-			 @RequestBody Remark remark) {
-		Task addRemark = developerService.addRemark(taskId, devId,remark);
-		return new ResponseEntity<Task>(addRemark, HttpStatus.OK);
+			@RequestBody Remark remark, HttpSession session) {
+		if (session.getAttribute("userType") != null && session.getAttribute("userType").equals("Developer")) {
+			Task addRemark = developerService.addRemark(taskId, devId, remark);
+			return new ResponseEntity<Task>(addRemark, HttpStatus.OK);
+		}
+		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
+	}
+
+	/**
+	 * This method is used to login developer in the session
+	 * 
+	 * @param developer
+	 * @param result
+	 * @param session
+	 * @return Response Entity with logged in developer in session
+	 */
+	@PostMapping("/login")
+	public ResponseEntity<?> handleDeveloperLogin(@RequestBody Developer developer, BindingResult result,
+			HttpSession session) {
+		ResponseEntity<?> errorMap = mapValidationErrorService.mapValidationError(result);
+		if (errorMap != null)
+			return errorMap;
+		Developer loggedInDeveloper = developerService.authenticateDeveloper(developer.getLoginName(),
+				developer.getPwd(), session);
+		return new ResponseEntity<Developer>(loggedInDeveloper, HttpStatus.OK);
+	}
+
+	/**
+	 * This method is used to log out developer from user
+	 * 
+	 * @param session
+	 * @return Response Entity with logged out developer in session with HttpStatus
+	 */
+	@GetMapping("/logout")
+	public ResponseEntity<?> logOutDeveloper(HttpSession session) {
+		session.invalidate();
+		return new ResponseEntity<String>("LoggedOut Successfully ...", HttpStatus.OK);
 	}
 }

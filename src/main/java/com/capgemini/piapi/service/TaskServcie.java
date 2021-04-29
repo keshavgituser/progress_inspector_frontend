@@ -16,7 +16,7 @@ public interface TaskServcie {
 	 * @param task
 	 * @return created task
 	 */
-	public Task createTask(Task task);
+	public Task createTask(Task task ,String productOwnerLoginName, String teamleaderLoginName);
 	/**
 	 * This method is used to find task by task identifier
 	 * @param taskIdentifier
