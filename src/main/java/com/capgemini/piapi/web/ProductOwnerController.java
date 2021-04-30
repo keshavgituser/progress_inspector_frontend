@@ -26,7 +26,7 @@ import com.capgemini.piapi.service.ProductOwnerService;
 import com.capgemini.piapi.serviceImpl.MapValidationErrorService;
 
 @RestController
-@RequestMapping("/api/owner/")
+@RequestMapping("/api/owner")
 public class ProductOwnerController {
 
 	// TO DO : Logger - INFO , ERROR in log file
@@ -56,17 +56,11 @@ public class ProductOwnerController {
 		return new ResponseEntity<ProductOwner>(loggedInOwner, HttpStatus.OK);
 	}
 
-	// TO DO REMOVE TEST METHOD
-	@GetMapping("/test")
-	public ResponseEntity<?> test(HttpSession session) {
-		return new ResponseEntity<Object>(session.getAttribute("productOwnerName"), HttpStatus.OK);
-	}
-
 	/**
 	 * Method for logging out ProductOwner and terminating existing session.
 	 * 
 	 * @param session get current session details
-	 * @return Success message
+	 * @return Logout Success message
 	 */
 	@GetMapping("/logout")
 	public ResponseEntity<?> handleProductOwnerLogout(HttpSession session) {
@@ -81,58 +75,35 @@ public class ProductOwnerController {
 	 * @param result       contains validation result and errors.
 	 * @return saved productOwner in database
 	 */
-	@PostMapping("/add")
+	@PostMapping("/register")
 	public ResponseEntity<?> registerOwner(@Valid @RequestBody ProductOwner productOwner, BindingResult result) {
 		ResponseEntity<?> errorMap = mapValidationErrorService.mapValidationError(result);
 		if (errorMap != null)
 			return errorMap;
-		try {
-			ProductOwner savedProductOwner = productOwnerService.saveProductOwner(productOwner);
-			return new ResponseEntity<ProductOwner>(savedProductOwner, HttpStatus.CREATED);
-		} catch (Exception e) {
-			throw new ProductOwnerAlreadyExistException("Product Owner Already exists ! Please Login");
-		}
+		ProductOwner savedProductOwner = productOwnerService.saveProductOwner(productOwner);
+		return new ResponseEntity<ProductOwner>(savedProductOwner, HttpStatus.CREATED);
 	}
 
 	/**
 	 * Method for updating Product Owner in database.
 	 * 
 	 * @param productOwner Data collected to update.
-	 * @param result contains validation result and errors.
+	 * @param result       contains validation result and errors.
 	 * @return saved productOwner in database
 	 */
 	@PatchMapping("/update")
-	public ResponseEntity<?> updateOwner(@Valid @RequestBody ProductOwner productOwner, BindingResult result) {
+	public ResponseEntity<?> updateOwner(@Valid @RequestBody ProductOwner productOwner, BindingResult result,
+			HttpSession session) {
 		ResponseEntity<?> errorMap = mapValidationErrorService.mapValidationError(result);
 		if (errorMap != null)
 			return errorMap;
-		ProductOwner savedProductOwner = productOwnerService.updateProductOwner(productOwner);
-		return new ResponseEntity<ProductOwner>(savedProductOwner, HttpStatus.CREATED);
+		if (session.getAttribute("loginName") != null && session.getAttribute("userType").equals("ProductOwner") && session.getAttribute("loginName").equals(productOwner.getLoginName())) {
+			ProductOwner savedProductOwner = productOwnerService.updateProductOwner(productOwner);
+			return new ResponseEntity<ProductOwner>(savedProductOwner, HttpStatus.CREATED);
+		}
+		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
 	}
-
-	/**
-	 * Method to find productOwner by loginName
-	 * 
-	 * @param loginName of the ProductOwner
-	 * @return productOwner if found
-	 */
-	@GetMapping("/{loginName}")
-	public ResponseEntity<?> findProductOwnerByLoginName(@PathVariable String loginName) {
-		ProductOwner productOwner = productOwnerService.findProductOwnerByLoginName(loginName);
-		return new ResponseEntity<ProductOwner>(productOwner, HttpStatus.OK);
-	}
-
-	/**
-	 * Method to find all productOwners
-	 * 
-	 * @return list of all productOwner
-	 */
-	@GetMapping("/all")
-	public ResponseEntity<?> findAll() {
-		List<ProductOwner> owners = productOwnerService.findAll();
-		return new ResponseEntity<List<ProductOwner>>(owners, HttpStatus.OK);
-	}
-
+	
 	/**
 	 * Method to delete productOwner by loginName
 	 * 
@@ -140,15 +111,19 @@ public class ProductOwnerController {
 	 */
 
 	@DeleteMapping("/{loginName}")
-	public ResponseEntity<?> deleteProductOwner(@PathVariable String loginName) {
+	public ResponseEntity<?> deleteProductOwner(@PathVariable String loginName, HttpSession session) {
+		if (session.getAttribute("loginName") != null&& session.getAttribute("userType").equals("ProductOwner") && session.getAttribute("loginName").equals(loginName)) {
+
 		productOwnerService.deleteProductOwnerByLoginName(loginName);
 		return new ResponseEntity<String>("Product Owner with loginName :" + loginName + " is deleted", HttpStatus.OK);
+		}
+		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
 	}
 
 	/**
-	 * Method to get all the tasks
+	 * Method to get all the task list
 	 * 
-	 * @return list of all tasks
+	 * @return list of all task list
 	 */
 	@GetMapping("/tasks")
 	public ResponseEntity<?> getTaskList(HttpSession session) {
@@ -169,12 +144,30 @@ public class ProductOwnerController {
 	public ResponseEntity<?> getTaskByTaskIdentifier(@PathVariable String taskIdentifier, HttpSession session) {
 		if (session.getAttribute("userType") != null && session.getAttribute("userType").equals("ProductOwner")) {
 
-			Task task = productOwnerService.getTaskByTaskIdentifier(taskIdentifier,session);
+			Task task = productOwnerService.getTaskByTaskIdentifier(taskIdentifier, session);
 			return new ResponseEntity<Task>(task, HttpStatus.OK);
 		}
 		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
 	}
 
+	/**
+	 * Method to authorize client to view task
+	 * 
+	 * @param clientLoginName
+	 * @param taskIdentifier
+	 * @return client if task is authorized
+	 */
+
+	@GetMapping("/clients")
+	public ResponseEntity<?> getAllClients(HttpSession session) {
+		if (session.getAttribute("userType") != null && session.getAttribute("userType").equals("ProductOwner")) {
+
+			List<Client> clients = productOwnerService.getAllClients();
+			return new ResponseEntity<List<Client>>(clients, HttpStatus.OK);
+		}
+		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
+
+	}
 	/**
 	 * Method to authorize client to view task
 	 * 

@@ -4,12 +4,16 @@ import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.capgemini.piapi.domain.Client;
 import com.capgemini.piapi.domain.ProductOwner;
 import com.capgemini.piapi.domain.Task;
+import com.capgemini.piapi.exception.ClientNotFoundException;
+import com.capgemini.piapi.exception.LoginException;
 import com.capgemini.piapi.exception.ProductOwnerAlreadyExistException;
 import com.capgemini.piapi.exception.ProductOwnerNotFoundException;
 import com.capgemini.piapi.exception.TaskIdException;
@@ -28,16 +32,20 @@ import com.capgemini.piapi.service.ProductOwnerService;
 @Service
 public class ProductOwnerServiceImpl implements ProductOwnerService {
 	/**TO DO
-	 * Login Null values exception
-	 * LoginName correct n password wrong
-	 * loginname wrong
-	 * task id -specific exception
-	 * Loginname and password Required.
 	 * product Owner null exception
 	 * Delete and Patch API Verify
 	 * Login Test Password wrong or loginname wrong or not found.
+	 * Comments and naming conventions
+	 * Task progress and all tasks test cases
+	 * add Client to task test cases
 	 * 
+	 * Optimize Service Logic
 	 */
+	
+	
+	private static final Logger log = LoggerFactory.getLogger(ProductOwnerServiceImpl.class);
+
+	
 	@Autowired
 	private ProductOwnerRepository productOwnerRepository;
 
@@ -49,7 +57,7 @@ public class ProductOwnerServiceImpl implements ProductOwnerService {
 	@Override
 	public ProductOwner saveProductOwner(ProductOwner productOwner) {
 		// TODO Auto-generated method stub
-		if (productOwner.getLoginName() == null) {
+		if (productOwner.getLoginName() == null || productOwner.getName()==null || productOwner.getPwd()==null) {
 			throw new ProductOwnerNotFoundException("Please Fill the Required Fields");
 		} else if ((productOwnerRepository.findByLoginName(productOwner.getLoginName())) != null) {
 			throw new ProductOwnerAlreadyExistException("Product owner already exists !!!");
@@ -109,11 +117,20 @@ public class ProductOwnerServiceImpl implements ProductOwnerService {
 	@Override
 	public ProductOwner authenticateProductOwner(String loginName, String pwd, HttpSession session) {
 		ProductOwner productOwner = null;
-		if ((productOwner = productOwnerRepository.findByLoginNameAndPwd(loginName, pwd)) == null) {
-			throw new ProductOwnerNotFoundException("Product Owner with loginName : " + loginName + " does not exists");
+		if(loginName==null || pwd==null) throw new LoginException("Please Enter Credentials");
+		if ((productOwner = productOwnerRepository.findByLoginName(loginName)) == null) {
+			throw new ProductOwnerNotFoundException("Product Owner with loginName : " + loginName + " does not exist");
 		}
-		addProductOwnerInSession(productOwner, session);
-		return productOwner;
+		if (productOwner.getPwd().equals(pwd)) {
+			addProductOwnerInSession(productOwner, session);
+			log.info("-------LoginMethod------- : Login Successfull");
+			return productOwner;		
+		}
+		else {
+			throw new LoginException("Login Failed ! Invalid Credentials");
+		}
+		
+		
 	}
 
 	/**
@@ -137,13 +154,10 @@ public class ProductOwnerServiceImpl implements ProductOwnerService {
 		} catch (Exception e) {
 			throw new TaskNotFoundException("Tasks not available");
 		}
-
-	}
+}
 
 	@Override
 	public Task getTaskByTaskIdentifier(String taskIdentifier, HttpSession session) {
-		try {
-
 			ProductOwner productOwner = findProductOwnerByLoginName((String) session.getAttribute("loginName"));
 			List<Task> tasks = productOwner.getTask();
 			for (Task task : tasks) {
@@ -152,9 +166,6 @@ public class ProductOwnerServiceImpl implements ProductOwnerService {
 				}
 			}
 			throw new TaskIdException("Task with id : '" + taskIdentifier + "' does not exists");
-		} catch (Exception e) {
-			throw new TaskNotFoundException("Tasks not available");
-		}
 	}
 
 	@Override
@@ -172,6 +183,16 @@ public class ProductOwnerServiceImpl implements ProductOwnerService {
 		client.setTask(listOfTask);
 		clientRepository.save(client);
 		return client;
+	}
+
+	@Override
+	public List<Client> getAllClients() {
+		try {
+			return clientRepository.findAll();
+		} catch (Exception e) {
+			throw new ClientNotFoundException("Clients not available");
+		}
+
 	}
 
 }

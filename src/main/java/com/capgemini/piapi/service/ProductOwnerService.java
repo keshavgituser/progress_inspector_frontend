@@ -59,7 +59,7 @@ public interface ProductOwnerService {
 	 * @param session created for login
 	 * @return logged in productOwner
 	 */
-	ProductOwner authenticateProductOwner(String loginName, String pwd, HttpSession session);
+	public ProductOwner authenticateProductOwner(String loginName, String pwd, HttpSession session);
 	/**
 	 * This function will authorize client to view task by adding task to client
 	 * @param Login Name of the client
@@ -67,5 +67,7 @@ public interface ProductOwnerService {
 	 * @return Client with authorized task
 	 */
 	public Client addTaskToClient(String clientLoginName,String taskIdentifier);
+	public List<Client> getAllClients();
+	
 	
 }

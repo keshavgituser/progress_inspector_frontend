@@ -50,10 +50,33 @@ public class ProductOwner {
 	@JsonIgnore
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "productOwner")
 	private List<Task> task;
-
+	
 	public ProductOwner() {
 		super();
 	}
+	
+	/**
+	 * Product Owner Constructor for Registration
+	 * @param name of the product owner
+	 * @param loginName of the product owner
+	 * @param pwd of the product owner
+	 */
+	public ProductOwner(String name, String loginName, String pwd) {
+		this.name = name;
+		this.loginName = loginName;
+		this.pwd = pwd;
+	}
+
+	/**
+	 * Product Owner Constructor for Login
+	 * @param loginName of the product owner
+	 * @param pwd of the product owner
+	 */
+	public ProductOwner(String loginName,String pwd) {
+		this.loginName = loginName;
+		this.pwd = pwd;
+	}
+
 
 	public long getId() {
 		return id;

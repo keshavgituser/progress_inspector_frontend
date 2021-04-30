@@ -35,5 +35,6 @@ public interface ProductOwnerRepository extends JpaRepository<ProductOwner, Long
 	 * @return ProductOwner if found otherwise null.
 	 */
 	public ProductOwner findByLoginNameAndPwd(String loginName, String pwd);
+	
 
 }
