@@ -95,7 +95,7 @@ public class DeveloperServiceImpl implements DeveloperService {
 			throw new DeveloperNotFoundException(
 					"developer with " + developerLoginName + " login name is already available");
 		}
-		Task task1 = taskRepository.findByTaskIdentifier(taskId);
+		Task task1 = taskRepository.findTaskByTaskIdentifier(taskId);
 		if (task1 == null) {
 			throw new TaskIdException("Task with Identifer" + taskId.toUpperCase() + " doesn't exist");
 		}
@@ -112,7 +112,7 @@ public class DeveloperServiceImpl implements DeveloperService {
 		if (developer == null) {
 			throw new DeveloperNotFoundException("developer with " + developerLoginName + " login name is already available");
 		}
-		Task task = taskRepository.findByTaskIdentifier(taskId);
+		Task task = taskRepository.findTaskByTaskIdentifier(taskId);
 		if (task == null) {
 			throw new TaskIdException("Task with Identifer" + taskId.toUpperCase() + " doesn't exist");
 		}

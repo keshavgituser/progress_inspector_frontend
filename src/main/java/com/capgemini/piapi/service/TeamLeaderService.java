@@ -12,7 +12,7 @@ import com.capgemini.piapi.domain.TeamLeader;
  * This TeamLeaderService Interface is Responsible for Performing various
  * Business Logic in the TeamLeader
  * 
- * @author Mantu
+ * @author Mantu,Shubham,Bhaskarrao
  *
  */
 
@@ -58,5 +58,38 @@ public interface TeamLeaderService {
 	 * @return list of remarks
 	 */
 	public List<Remark> viewAllRemark();
+	/**
+	 * This method is used to find task by task identifier
+	 * @param taskIdentifier
+	 * @return task if identifier exist
+	 */
+	public Task findTaskByTaskIdentifier(String taskIdentifier);
+	/**
+	 * This method will list all tasks available
+	 * @return list of task 
+	 */
+	public List<Task> findAllTasks();
+	/**
+	 * This method is used to create task into the database
+	 * @param task
+	 * @return created task
+	 */
+	public Task createTask(Task task ,String productOwnerLoginName, String teamleaderLoginName);
+	/**
+	 * This method is used to find task by task identifier
+	 * @param taskIdentifier
+	 * @return task if identifier exist
+	 */
+	
+	public void DeleteTask(String taskIdentifier);
+	/**
+	 * This method will assign task to the developer
+	 * @param taskID
+	 * @param DevId
+	 * @return developer with assigned task
+	 */
+	public Task assignDeveloper(String taskID , String DevId);
+	
+
 
 }

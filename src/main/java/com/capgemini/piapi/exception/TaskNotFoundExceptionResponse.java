@@ -1,5 +1,10 @@
 package com.capgemini.piapi.exception;
 
+/**
+ * This class provides the response to TaskNotFoundException
+ * @author Shubham
+ *
+ */
 public class TaskNotFoundExceptionResponse {
 	private String taskNotFound;
 

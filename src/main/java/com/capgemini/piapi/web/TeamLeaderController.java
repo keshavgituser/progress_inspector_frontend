@@ -25,10 +25,14 @@ import com.capgemini.piapi.domain.Remark;
 import com.capgemini.piapi.domain.Task;
 import com.capgemini.piapi.domain.TeamLeader;
 import com.capgemini.piapi.service.DeveloperService;
-import com.capgemini.piapi.service.TaskServcie;
 import com.capgemini.piapi.service.TeamLeaderService;
 import com.capgemini.piapi.serviceImpl.MapValidationErrorService;
-
+/**
+ * This class is the controller 
+ * for teamLeader
+ * @author mantu,Shubham,Bhaskarrao
+ *
+ */
 @RestController
 @RequestMapping("/piapi/teamleader")
 public class TeamLeaderController {
@@ -37,9 +41,6 @@ public class TeamLeaderController {
 
 	@Autowired
 	private MapValidationErrorService mapValidationErrorService;
-
-	@Autowired
-	private TaskServcie taskService;
 
 	@Autowired
 	private DeveloperService developerService;
@@ -142,7 +143,7 @@ public class TeamLeaderController {
 			ResponseEntity<?> errorMap = mapValidationErrorService.mapValidationError(result);
 			if (errorMap != null)
 				return errorMap;
-			Task savedTask = taskService.createTask(task, productOwnerLoginName, teamleaderLoginName);
+			Task savedTask = teamLeaderService.createTask(task, productOwnerLoginName, teamleaderLoginName);
 			return new ResponseEntity<Task>(savedTask, HttpStatus.CREATED);
 		}
 		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
@@ -158,7 +159,7 @@ public class TeamLeaderController {
 	@GetMapping("/all/tasks")
 	public ResponseEntity<?> getAllTasks(HttpSession session) {
 		if (session.getAttribute("userType") != null && session.getAttribute("userType").equals("TeamLeader")) {
-			List<Task> tasks = taskService.findAllTasks();
+			List<Task> tasks = teamLeaderService.findAllTasks();
 			return new ResponseEntity<List<Task>>(tasks, HttpStatus.OK);
 		}
 		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
@@ -176,7 +177,7 @@ public class TeamLeaderController {
 	@GetMapping("/viewbytaskid/{taskID}")
 	public ResponseEntity<?> getTaskByTaskIdentifier(@PathVariable String taskID, HttpSession session) {
 		if (session.getAttribute("userType") != null && session.getAttribute("userType").equals("TeamLeader")) {
-			Task developer = taskService.findTaskByTaskIdentifier(taskID);
+			Task developer = teamLeaderService.findTaskByTaskIdentifier(taskID);
 			return new ResponseEntity<Task>(developer, HttpStatus.OK);
 		}
 		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
@@ -194,7 +195,7 @@ public class TeamLeaderController {
 	@DeleteMapping("/deletetask/{taskID}")
 	public ResponseEntity<?> deleteTask(@PathVariable String taskID, HttpSession session) {
 		if (session.getAttribute("userType") != null && session.getAttribute("userType").equals("TeamLeader")) {
-			taskService.DeleteTask(taskID);
+			teamLeaderService.DeleteTask(taskID);
 			return new ResponseEntity<String>("Task with Identifier " + taskID.toUpperCase() + " deleted successfully",
 					HttpStatus.OK);
 		}
@@ -248,7 +249,7 @@ public class TeamLeaderController {
 	public ResponseEntity<?> assignDeveloperToTask(@PathVariable String taskIdentifier, @PathVariable String devId,
 			HttpSession session) {
 		if (session.getAttribute("userType") != null && session.getAttribute("userType").equals("TeamLeader")) {
-			Task savedTask = taskService.assignDeveloper(taskIdentifier, devId);
+			Task savedTask = teamLeaderService.assignDeveloper(taskIdentifier, devId);
 			return new ResponseEntity<Task>(savedTask, HttpStatus.CREATED);
 		}
 		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);

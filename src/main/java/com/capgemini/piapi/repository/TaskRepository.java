@@ -9,7 +9,7 @@ import com.capgemini.piapi.domain.Task;
 /**
  * This TaskRepository will be responsible for performing all the CRUD operations 
  * on  Task
- * @author Bhaskarrao
+ * @author Shubham
  *
  */
 @Repository
@@ -20,7 +20,7 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 	 * @param taskIdentifier
 	 * @return task for given identifier if task exist
 	 */
-	public Task findByTaskIdentifier(String taskIdentifier);
+	public Task findTaskByTaskIdentifier(String taskIdentifier);
 	/**
 	 * This method will return all task available
 	 */

@@ -1,5 +1,10 @@
 package com.capgemini.piapi.exception;
 
+/**
+ * This is to provide response to TaskIdException
+ * @author Shubham
+ *
+ */
 public class TaskIdExceptionResponse {
 
 	private String taskIdentifier;
