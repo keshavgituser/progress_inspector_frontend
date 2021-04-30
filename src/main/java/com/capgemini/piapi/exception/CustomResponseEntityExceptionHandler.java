@@ -28,6 +28,15 @@ public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptio
 	}
 
 	@ExceptionHandler
+	public final ResponseEntity<Object> handleDeveloperAlreadyExistException(DeveloperAlreadyExistException ex,
+			WebRequest request) {
+
+		DeveloperAlreadyExistExceptionResponse exceptionResponse = new DeveloperAlreadyExistExceptionResponse(
+				ex.getMessage());
+		return new ResponseEntity<Object>(exceptionResponse, HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler
 	public final ResponseEntity<Object> handleTaskIdException(TaskIdException ex, WebRequest request) {
 
 		TaskIdExceptionResponse exceptionResponse = new TaskIdExceptionResponse(ex.getMessage());
@@ -59,4 +68,5 @@ public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptio
 
 		return new ResponseEntity<Object>(exceptionResponse, HttpStatus.BAD_REQUEST);
 	}
+
 }

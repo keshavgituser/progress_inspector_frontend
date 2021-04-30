@@ -45,7 +45,7 @@ public class DeveloperServiceImpl implements DeveloperService {
 	@Override
 	public Developer saveDeveloper(Developer developer) {
 		try {
-			developer.setStatus(DeveloperConstant.DEVELOPER_ACTIVE);
+			developer.setStatus(DeveloperConstant.DEVELOPER_INACTIVE);
 			// new developer is created set task no task assigned
 			if (developer.getTasks() == null) {
 				List<Task> task = new ArrayList<>();
@@ -62,7 +62,7 @@ public class DeveloperServiceImpl implements DeveloperService {
 	public Developer findDeveloperByDeveloperLoginName(String developerLoginName) {
 		Developer developer = developerRepository.findByLoginName(developerLoginName);
 		if (developer == null) {
-			throw new DeveloperNotFoundException("developer with " + developerLoginName + " login name is already available");
+			throw new DeveloperNotFoundException("developer with " + developerLoginName + " login name not found");
 		}
 		return developer;
 	}
@@ -80,7 +80,7 @@ public class DeveloperServiceImpl implements DeveloperService {
 	public void deleteDeveloperbyDeveloperLoginName(String developerLoginName) {
 		Developer developer = developerRepository.findByLoginName(developerLoginName);
 		if (developer == null) {
-			throw new DeveloperNotFoundException("developer with " + developerLoginName + " login name is already available");
+			throw new DeveloperNotFoundException("developer with " + developerLoginName + " login name not found");
 		}
 		developerRepository.delete(developer);
 	}

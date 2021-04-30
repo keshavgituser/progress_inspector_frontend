@@ -34,6 +34,9 @@ public class TaskServiceImpl implements TaskServcie {
 
 	@Autowired
 	private TaskConstants taskConstants;
+	
+	@Autowired
+	private DeveloperConstant developerConstants;
 
 	@Autowired
 	private DeveloperRepository developerRepository;
@@ -119,6 +122,7 @@ public class TaskServiceImpl implements TaskServcie {
 		developer.setTasks(taskList);
 		developerRepository.save(developer);
 		task.setProgress(taskConstants.TASK_STATUS_INPROGRESS);
+		developer.setStatus(developerConstants.DEVELOPER_ACTIVE);
 		return taskRepository.save(task);
 	}
 

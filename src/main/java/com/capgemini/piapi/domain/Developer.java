@@ -26,25 +26,43 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  *
  */
 /**
- * @author Harsh Joshi
+ * @author Harshit Verma
  *
  */
 @Entity
 @Table(name = "developers")
 public class Developer {
 
+	/**
+	 * Primary key of Developer
+	 */
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Id
 	private Long id;
+	/**
+	 * Name of developer
+	 */
 	@NotNull(message = "Developer Name is required")
 	private String name;
+	/**
+	 * Login name of developer
+	 */
 	@NotNull(message = "Login name can not be null")
 	@Column(unique = true, updatable = false)
 	private String loginName;
+	/**
+	 * Password of developer
+	 */
 	@NotNull(message = "Password is required")
 	@Size(min = 8, max = 20, message = "Please Enter password of Minimum 8 and Maximum 20")
 	private String pwd;
+	/**
+	 * Status of developer Active or Inactive
+	 */
 	private String status;
+	/**
+	 * Relationship of one developer to many task
+	 */
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "developer")
 	private List<Task> tasks = new ArrayList<>();
 
@@ -103,8 +121,8 @@ public class Developer {
 
 	@Override
 	public String toString() {
-		return "Developer [id=" + id + ", name=" + name + ",  loginname=" + loginName + ", pwd="
-				+ pwd + ", status=" + status + ", task=" + tasks + "]";
+		return "Developer [id=" + id + ", name=" + name + ",  loginname=" + loginName + ", pwd=" + pwd + ", status="
+				+ status + ", task=" + tasks + "]";
 	}
 
 }

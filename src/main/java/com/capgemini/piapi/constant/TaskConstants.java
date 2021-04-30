@@ -2,9 +2,12 @@ package com.capgemini.piapi.constant;
 
 import org.springframework.stereotype.Component;
 
-
 /**
- * Progress report to show task status
+ * Task Constant is used to show current status of task if task is pending , in
+ * progress , testing or completed as per requirements
+ * 
+ * @author Harshit Verma
+ *
  */
 @Component
 public class TaskConstants {

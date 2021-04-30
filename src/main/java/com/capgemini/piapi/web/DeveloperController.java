@@ -23,7 +23,11 @@ import com.capgemini.piapi.domain.Remark;
 import com.capgemini.piapi.domain.Task;
 import com.capgemini.piapi.service.DeveloperService;
 import com.capgemini.piapi.serviceImpl.MapValidationErrorService;
-
+/**
+ * Developer Controller is  used to navigate url request and send the 
+ * @author Harsh Joshi
+ *
+ */
 @RestController
 @RequestMapping("/piapi/developers")
 public class DeveloperController {
