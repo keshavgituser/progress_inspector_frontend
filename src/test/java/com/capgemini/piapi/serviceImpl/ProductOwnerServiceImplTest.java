@@ -52,7 +52,10 @@ class ProductOwnerServiceImplTest {
 	private Task task1;
 	private Task task2;
 	private Client client;
+	private Client client1;
+	private Client client2;
 	private List<Task> taskList;
+	private List<Client> clientList;
 
 	@BeforeEach
 	public void setup() {	
@@ -65,6 +68,8 @@ class ProductOwnerServiceImplTest {
 		taskList.add(task1);	
 		taskList.add(task2);	
 		client = new Client("Test Client", "testclient", "testclient123");
+		client1 = new Client("Test Client", "testclient", "testclient123");
+		client2 = new Client("Test Client", "testclient", "testclient123");
 
 		productOwnerList=new ArrayList<>();
 				
@@ -77,6 +82,12 @@ class ProductOwnerServiceImplTest {
 		productOwnerList.add(productOwner3);		
 		
 		productOwner=new ProductOwner();
+		
+		clientList = new ArrayList<>();
+		clientList.add(client);
+		clientList.add(client1);
+		clientList.add(client2);
+		
 
 	}
 	//-----------------------------------------------Register Test---------------------------------------------------------------------
@@ -191,8 +202,68 @@ class ProductOwnerServiceImplTest {
 			assertEquals("Please Provide Required Fields", ex.getMessage());
 		}
 		//-----------------------------------------------Get All Clients Test----------------------------------------------------------
+		
+		// GET ALL CLIENTS TEST CASE : get all clients
+		@Test
+		void test_getAllClients_ShouldReturnClientList() {			
+			BDDMockito.given(clientRepository.findAll()).willReturn(clientList);			 			
+			assertEquals(3, productOwnerServiceImpl.getAllClients().size());
+		}
+		
+		// GET ALL CLIENTS TEST CASE : not found
+		@Test
+		void test_getAllClients_ShouldThrowClientNotFoundException() {			
+			BDDMockito.given(clientRepository.findAll()).willThrow(ClientNotFoundException.class);			 			
+			Exception ex=assertThrows(ClientNotFoundException.class,() -> productOwnerServiceImpl.getAllClients());
+			assertEquals("Clients not available", ex.getMessage());
+		}
+		
 		//-----------------------------------------------Update Product Owner Test----------------------------------------------------------
+		
+		//UPDATE PRODUCTOWNER TEST : update the product owner
+		@Test
+		void test_updateProductOwner_GivenProductOwnerObject_ShouldReturnUpdatedProductOwner() {
+			BDDMockito.given(productOwnerRepository.save(productOwner2)).willReturn(new ProductOwner("Test Owner2", "Test1", "Test1234"));
+			BDDMockito.given(productOwnerRepository.findByLoginName(productOwner2.getLoginName())).willReturn(new ProductOwner("Old Test Owner", "Test1", "Test1234"));
+			assertEquals(productOwner2.getName(), productOwnerServiceImpl.updateProductOwner(productOwner2).getName());
+		}
+
+		
+		//UPDATE PRODUCTOWNER TEST : not found
+		@Test
+		void test_updateProductOwner_GivenWrongProductOwnerObject_ShouldThrowProductOwnerNotFoundException() {
+			BDDMockito.given(productOwnerRepository.findByLoginName(productOwner2.getLoginName())).willReturn(null);
+			Exception ex=assertThrows(ProductOwnerNotFoundException.class,() -> productOwnerServiceImpl.updateProductOwner(productOwner2));
+			assertEquals("Product Owner with loginName : " + productOwner2.getLoginName() + " does not exists", ex.getMessage());
+		}
+		
+		//UPDATE PRODUCTOWNER TEST : null
+		@Test
+		void test_updateProductOwner_GivenNullProductOwnerObject_ShouldThrowNullPointerException() {
+			Exception ex=assertThrows(NullPointerException.class,() -> productOwnerServiceImpl.updateProductOwner(new ProductOwner()));
+			assertEquals("Please Fill the Required Fields", ex.getMessage());
+		}
+
 		//-----------------------------------------------Delete Product Owner Test----------------------------------------------------------
+		//DELETE PRODUCTOWNER TEST : update the product owner remianing
+
+		
+		//DELETE PRODUCTOWNER TEST : not found
+		@Test
+		void test_deleteProductOwnerByLoginName_GivenWrongProductOwnerLoginName_ShouldThrowProductOwnerNotFoundException() {
+			BDDMockito.given(productOwnerRepository.findByLoginName(productOwner2.getLoginName())).willReturn(null);
+			Exception ex=assertThrows(ProductOwnerNotFoundException.class,() -> productOwnerServiceImpl.deleteProductOwnerByLoginName(productOwner2.getLoginName()));
+			assertEquals("Product Owner with loginName : " + productOwner2.getLoginName() + " does not exists", ex.getMessage());
+			
+		}
+		
+		//DELETE PRODUCTOWNER TEST : null
+		@Test
+		void test_deleteProductOwnerByLoginName_GivenNullProductOwnerObject_ShouldThrowNullPointerException() {
+			Exception ex=assertThrows(NullPointerException.class,() -> productOwnerServiceImpl.deleteProductOwnerByLoginName(null));
+			assertEquals("Please Provide Login Name", ex.getMessage());
+		}		
+		
 		//----------------------------------------------------------------------------------------------------------------------------------
 	@AfterEach
 	public void cleanUp()
