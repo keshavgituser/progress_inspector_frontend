@@ -13,10 +13,10 @@ import com.capgemini.piapi.constant.TaskConstants;
 import com.capgemini.piapi.domain.Developer;
 import com.capgemini.piapi.domain.Remark;
 import com.capgemini.piapi.domain.Task;
-import com.capgemini.piapi.exception.DeveloperIdException;
+import com.capgemini.piapi.exception.DeveloperAlreadyExistException;
 import com.capgemini.piapi.exception.DeveloperNotFoundException;
+import com.capgemini.piapi.exception.InvalidLoginException;
 import com.capgemini.piapi.exception.TaskIdException;
-import com.capgemini.piapi.exception.TaskNotFoundException;
 import com.capgemini.piapi.repository.DeveloperRepository;
 import com.capgemini.piapi.repository.RemarkRepository;
 import com.capgemini.piapi.repository.TaskRepository;
@@ -53,7 +53,7 @@ public class DeveloperServiceImpl implements DeveloperService {
 			}
 			return developerRepository.save(developer);
 		} catch (Exception ex) {
-			throw new DeveloperNotFoundException(
+			throw new DeveloperAlreadyExistException(
 					"developer with " + developer.getLoginName() + " login name is already available");
 		}
 	}
@@ -68,21 +68,27 @@ public class DeveloperServiceImpl implements DeveloperService {
 	}
 
 	@Override
-	public List<Developer> fillAllDevelopers() {
-		List<Developer> developerList = developerRepository.findAll();
-		if (developerList.isEmpty()) {
-			throw new DeveloperNotFoundException("Currently there are no developer available");
-		}
-		return developerList;
-	}
-
-	@Override
 	public void deleteDeveloperbyDeveloperLoginName(String developerLoginName) {
 		Developer developer = developerRepository.findByLoginName(developerLoginName);
 		if (developer == null) {
 			throw new DeveloperNotFoundException("developer with " + developerLoginName + " login name not found");
 		}
 		developerRepository.delete(developer);
+	}
+
+	@Override
+	public Developer updateProductOwner(Developer developer) {
+		// TODO Auto-generated method stub
+		if (developer.getLoginName() == null) {
+			throw new DeveloperNotFoundException("Please Fill the Required Fields");
+		}
+		Developer oldProductOwner = developerRepository.findByLoginName(developer.getLoginName());
+		if (oldProductOwner == null) {
+			throw new DeveloperNotFoundException(
+					"Product Owner with loginName : " + developer.getLoginName() + " does not exists");
+		}
+		oldProductOwner = developer;
+		return developerRepository.save(oldProductOwner);
 	}
 
 	@Override
@@ -110,7 +116,8 @@ public class DeveloperServiceImpl implements DeveloperService {
 		// check if available or not
 		// throw exception not found
 		if (developer == null) {
-			throw new DeveloperNotFoundException("developer with " + developerLoginName + " login name is already available");
+			throw new DeveloperNotFoundException(
+					"developer with " + developerLoginName + " login name is already available");
 		}
 		Task task = taskRepository.findByTaskIdentifier(taskId);
 		if (task == null) {
@@ -125,10 +132,10 @@ public class DeveloperServiceImpl implements DeveloperService {
 	}
 
 	@Override
-	public Developer authenticateDeveloper(String loginName, String pwd, HttpSession session) {
-		Developer developer = developerRepository.findByLoginNameAndPwd(loginName, pwd);
+	public Developer authenticateDeveloper(String developerLoginName, String pwd, HttpSession session) {
+		Developer developer = developerRepository.findByLoginNameAndPwd(developerLoginName, pwd);
 		if (developer == null) {
-			throw new DeveloperNotFoundException("Invalid Login Please Enter Details Correctly");
+			throw new InvalidLoginException("Invalid Login Please Enter Details Correctly");
 		}
 		addDeveloperInSession(developer, session);
 		return developer;
@@ -144,8 +151,27 @@ public class DeveloperServiceImpl implements DeveloperService {
 
 		session.setAttribute("userType", "Developer");
 		session.setAttribute("devloperId", developer.getId());
-		session.setAttribute("developerName", developer.getLoginName());
+		session.setAttribute("developerLoginName", developer.getLoginName());
 
+	}
+
+	@Override
+	public List<Task> viewAllTaskByDeveloperLoginName(String developerLoginName) {
+		Developer developer = developerRepository.findByLoginName(developerLoginName);
+		List<Task> taskList = developer.getTasks();
+		return taskList;
+	}
+
+	@Override
+	public Task findTaskByTaskIdentifierAndDevelpoerLoginName(String taskIdentifier, String developerLoginName) {
+		Developer developer = developerRepository.findByLoginName(developerLoginName);
+		List<Task> taskList = developer.getTasks();
+		for (Task task : taskList) {
+			if (task.getTaskIdentifier().equals(taskIdentifier)) {
+				return task;
+			}
+		}
+		throw new TaskIdException("Task with id " + taskIdentifier.toUpperCase() + " is not available");
 	}
 
 }

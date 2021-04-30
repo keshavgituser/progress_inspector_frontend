@@ -34,13 +34,6 @@ public interface DeveloperService {
 	Developer findDeveloperByDeveloperLoginName(String developerLoginName);
 
 	/**
-	 * This method will list all developers available
-	 * 
-	 * @return list of developers
-	 */
-	List<Developer> fillAllDevelopers();
-
-	/**
 	 * This method is used to update the task status
 	 * 
 	 * @param taskId
@@ -73,7 +66,30 @@ public interface DeveloperService {
 	 * @param loginName
 	 * @param pwd
 	 * @param session
-	 * @return
+	 * @return authenticated developer
 	 */
 	public Developer authenticateDeveloper(String loginName, String pwd, HttpSession session);
+
+	/**
+	 * This method is used to view all task to a specific team leader by login name
+	 * 
+	 * @param LoginName
+	 * @return list of task if available
+	 */
+	public List<Task> viewAllTaskByDeveloperLoginName(String LoginName);
+
+	/**
+	 * This method is used to find task by a specific developer and task identifier
+	 * @param taskIdentifier
+	 * @param LoginName
+	 * @return specified task if exist
+	 */
+	public Task findTaskByTaskIdentifierAndDevelpoerLoginName(String taskIdentifier,String LoginName);
+
+	/**
+	 * This method will update the developer entity if developer exist
+	 * @param developer
+	 * @return Updated Developer
+	 */
+	Developer updateProductOwner(Developer developer);
 }

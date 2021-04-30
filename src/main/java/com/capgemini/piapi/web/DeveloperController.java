@@ -23,8 +23,10 @@ import com.capgemini.piapi.domain.Remark;
 import com.capgemini.piapi.domain.Task;
 import com.capgemini.piapi.service.DeveloperService;
 import com.capgemini.piapi.serviceImpl.MapValidationErrorService;
+
 /**
- * Developer Controller is  used to navigate url request and send the 
+ * Developer Controller is used to navigate url request and send the
+ * 
  * @author Harsh Joshi
  *
  */
@@ -60,12 +62,40 @@ public class DeveloperController {
 	 * This method is used to delete developer on the basis of
 	 * 
 	 * @param loginname
+	 * @param session
 	 * @return Response Entity with Deleted Developer if Developer exist
 	 */
-	@DeleteMapping("/{loginname}")
-	public ResponseEntity<?> deleteDeveloper(@PathVariable String loginname) {
-		developerService.deleteDeveloperbyDeveloperLoginName(loginname);
-		return new ResponseEntity<String>("Developer with " + loginname + " deleted successfully", HttpStatus.OK);
+	@DeleteMapping("/{developerLoginName}")
+	public ResponseEntity<?> deleteDeveloper(@PathVariable String developerLoginName, HttpSession session) {
+		if (session.getAttribute("userType") != null && session.getAttribute("userType").equals("Developer")
+				&& session.getAttribute("developerLeaderLoginName").equals(developerLoginName)) {
+			developerService.deleteDeveloperbyDeveloperLoginName(developerLoginName);
+			return new ResponseEntity<String>("Developer with " + developerLoginName + " deleted successfully",
+					HttpStatus.OK);
+		}
+		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
+	}
+
+	/**
+	 * This method is used to update existing developer in the data base
+	 * 
+	 * @param developer
+	 * @param result
+	 * @param session
+	 * @return Response Entity with updated developer
+	 */
+	@PatchMapping("/update")
+	public ResponseEntity<?> updateDeveloper(@Valid @RequestBody Developer developer, BindingResult result,
+			HttpSession session) {
+		if (session.getAttribute("userType") != null && session.getAttribute("userType").equals("Developer")
+				&& session.getAttribute("developerLeaderLoginName").equals(developer.getLoginName())) {
+			ResponseEntity<?> errorMap = mapValidationErrorService.mapValidationError(result);
+			if (errorMap != null)
+				return errorMap;
+			Developer savedDeveloper = developerService.updateProductOwner(developer);
+			return new ResponseEntity<Developer>(savedDeveloper, HttpStatus.CREATED);
+		}
+		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
 	}
 
 	/**
@@ -73,17 +103,18 @@ public class DeveloperController {
 	 * developer loginName
 	 * 
 	 * @param taskId
-	 * @param devId
+	 * @param developerLoginName
 	 * @param task
 	 * @param session
 	 * @return Response Entity with updated task status if developer is logged in
 	 *         else You do not have Access message is appeared with Http Status
 	 */
-	@PostMapping("/updatestatus/{taskId}/{devloginname}")
-	public ResponseEntity<?> updateTaskStatus(@PathVariable String taskId, @PathVariable String devloginname,
+	@PostMapping("/updatestatus/{taskId}/{developerLoginName}")
+	public ResponseEntity<?> updateTaskStatus(@PathVariable String taskId, @PathVariable String developerLoginName,
 			@RequestBody Task task, HttpSession session) {
-		if (session.getAttribute("userType") != null && session.getAttribute("userType").equals("Developer")) {
-			Task updateStatus = developerService.updateTaskStatus(taskId, devloginname, task);
+		if (session.getAttribute("userType") != null && session.getAttribute("userType").equals("Developer")
+				&& session.getAttribute("developerLoginName").equals(developerLoginName)) {
+			Task updateStatus = developerService.updateTaskStatus(taskId, developerLoginName, task);
 			return new ResponseEntity<Task>(updateStatus, HttpStatus.OK);
 		}
 		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
@@ -94,17 +125,18 @@ public class DeveloperController {
 	 * id and Developer Login name
 	 * 
 	 * @param taskId
-	 * @param devId
+	 * @param developerLoginName
 	 * @param remark
 	 * @param session
 	 * @return Response Entity with added remark in task if developer is logged in
 	 *         else You do not have Access message is appeared with Http Status
 	 */
-	@PostMapping("/addremark/{taskId}/{devId}")
-	public ResponseEntity<?> addRemarkInTask(@PathVariable String taskId, @PathVariable String devId,
+	@PostMapping("/addremark/{taskId}/{developerLoginName}")
+	public ResponseEntity<?> addRemarkInTask(@PathVariable String taskId, @PathVariable String developerLoginName,
 			@RequestBody Remark remark, HttpSession session) {
-		if (session.getAttribute("userType") != null && session.getAttribute("userType").equals("Developer")) {
-			Task addRemark = developerService.addRemark(taskId, devId, remark);
+		if (session.getAttribute("userType") != null && session.getAttribute("userType").equals("Developer")
+				&& session.getAttribute("developerLoginName").equals(developerLoginName)) {
+			Task addRemark = developerService.addRemark(taskId, developerLoginName, remark);
 			return new ResponseEntity<Task>(addRemark, HttpStatus.OK);
 		}
 		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
@@ -139,5 +171,24 @@ public class DeveloperController {
 	public ResponseEntity<?> logOutDeveloper(HttpSession session) {
 		session.invalidate();
 		return new ResponseEntity<String>("LoggedOut Successfully ...", HttpStatus.OK);
+	}
+
+	/**
+	 * This method is used to get task by task identifier and developer login name
+	 * 
+	 * @param taskID
+	 * @param developerLoginName
+	 * @param session
+	 * @return Response Entity with Task if all executed successfully
+	 */
+	@GetMapping("/viewbytaskid/{taskID}/{developerLoginName}")
+	public ResponseEntity<?> getTaskByTaskIdentifier(@PathVariable String taskID,
+			@PathVariable String developerLoginName, HttpSession session) {
+		if (session.getAttribute("userType") != null && session.getAttribute("userType").equals("TeamLeader")
+				&& session.getAttribute("developerLoginName").equals(developerLoginName)) {
+			Task developer = developerService.findTaskByTaskIdentifierAndDevelpoerLoginName(taskID, developerLoginName);
+			return new ResponseEntity<Task>(developer, HttpStatus.OK);
+		}
+		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
 	}
 }

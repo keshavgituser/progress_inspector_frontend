@@ -63,13 +63,13 @@ public class Task {
 	 * Owner of the product
 	 */
 	@JsonIgnore
-	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
-	@JoinColumn(name = "task_id", updatable = false, nullable = false) // Product Owner is mandatory to save task
+	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@JoinColumn(name = "task_id", updatable = false, nullable = false)
 	private ProductOwner productOwner;
 	/**
 	 * TeamLeader
 	 */
-	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JsonIgnore
 	private TeamLeader teamLeader;
 	/**

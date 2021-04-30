@@ -68,5 +68,12 @@ public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptio
 
 		return new ResponseEntity<Object>(exceptionResponse, HttpStatus.BAD_REQUEST);
 	}
+	
+	@ExceptionHandler
+	public final ResponseEntity<Object> handleInvalidLoginException(InvalidLoginException ex, WebRequest request) {
+
+		InvalidLoginExcpetionResponse exceptionResponse = new InvalidLoginExcpetionResponse(ex.getMessage());
+		return new ResponseEntity<Object>(exceptionResponse, HttpStatus.BAD_REQUEST);
+	}
 
 }

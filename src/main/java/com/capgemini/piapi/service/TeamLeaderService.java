@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
+import com.capgemini.piapi.domain.Developer;
 import com.capgemini.piapi.domain.Remark;
 import com.capgemini.piapi.domain.Task;
 import com.capgemini.piapi.domain.TeamLeader;
@@ -13,6 +14,8 @@ import com.capgemini.piapi.domain.TeamLeader;
  * Business Logic in the TeamLeader
  * 
  * @author Mantu
+ * @author Shubham Sahu
+ * @author Bhaskarrao Puppala
  *
  */
 
@@ -50,13 +53,66 @@ public interface TeamLeaderService {
 	 * 
 	 */
 
-	public void deleteTeamLeaderByLoginName(String teamLeaderLoginName);
+	public void deleteTeamLeaderByLoginName(String teamLeaderLoginName);//
 
 	/**
-	 * This method is used to view all remarks
-	 * 
-	 * @return list of remarks
+	 * This method is used to list all remarks based on the task identifier
+	 * @param taskIdentifier
+	 * @return List of Remark if available
 	 */
-	public List<Remark> viewAllRemark();
+	public List<Remark> viewAllRemark(String taskIdentifier);
 
+	/**
+	 * This method is used to create task on basis of product owner and teamleader
+	 * @param task
+	 * @param productOwnerLoginName
+	 * @param teamleaderLoginName
+	 * @return Created task if executed successfully
+	 */
+	public Task createTask(Task task, String productOwnerLoginName, String teamleaderLoginName);
+
+	/**
+	 * This method will assign task to the developer
+	 * 
+	 * @param taskID
+	 * @param DevId
+	 * @return developer with assigned task
+	 */
+	public Task assignDeveloper(String taskID, String DevId);
+
+	/**
+	 * This method is used to view all task to a specific team leader by login name
+	 * 
+	 * @param LoginName
+	 * @return List of Task if available
+	 */
+	public List<Task> viewAllTaskByTeamLeaderLoginName(String LoginName);
+
+	/**
+	 * This method is used to find task by task identifier and teamleader login name
+	 * @param taskIdentifier
+	 * @param LoginName
+	 * @return Task is executed properly
+	 */
+	public Task findTaskByTaskIdentifierAndTeamLeaderLoginName(String taskIdentifier , String LoginName);
+
+	/**
+	 * This method will delete task on basis of the task identifier
+	 * 
+	 * @param taskIdentifier
+	 */
+	public void deleteTask(String taskIdentifier);
+	/**
+	 * This method is used to list all developers based on team leader login name
+	 * @param LoginName
+	 * @return
+	 */
+	List<Developer> findAllDevelopers();
+	
+	/**
+	 * This method is used to update team leader if team leader exist
+	 * @param teamLeader
+	 * @return updated TeamLeader
+	 */
+	TeamLeader updateTeamLeader(TeamLeader teamLeader);
 }

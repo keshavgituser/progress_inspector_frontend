@@ -3,15 +3,8 @@ package com.capgemini.piapi.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-/**
- * This Exception Class is used for Throwing Exception if you try to Register
- * the already Registered Developer
- * 
- * @author Harsh Joshi
- *
- */
 @ResponseStatus(HttpStatus.BAD_REQUEST)
-public class DeveloperAlreadyExistException extends RuntimeException {
+public class InvalidLoginExcpetionResponse extends RuntimeException {
 
 	/**
 	 * 
@@ -21,14 +14,14 @@ public class DeveloperAlreadyExistException extends RuntimeException {
 	/**
 	 * Create DeveloperAlreadyExistException object without error message
 	 */
-	public DeveloperAlreadyExistException() {
+	public InvalidLoginExcpetionResponse() {
 		super();
 	}
 
 	/**
 	 * Create DeveloperAlreadyExistException object with error message
 	 */
-	public DeveloperAlreadyExistException(String errMsg) {
+	public InvalidLoginExcpetionResponse(String errMsg) {
 		super(errMsg);
 	}
 

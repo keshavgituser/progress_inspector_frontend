@@ -4,14 +4,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
- * This Exception Class is used for Throwing Exception if you try to Register
- * the already Registered Developer
+ * This Exception Class is used for Throwing Exception if you try to enter invalid login credentials
  * 
- * @author Harsh Joshi
+ * @author Mantu
  *
  */
 @ResponseStatus(HttpStatus.BAD_REQUEST)
-public class DeveloperAlreadyExistException extends RuntimeException {
+public class InvalidLoginException extends RuntimeException {
 
 	/**
 	 * 
@@ -21,14 +20,14 @@ public class DeveloperAlreadyExistException extends RuntimeException {
 	/**
 	 * Create DeveloperAlreadyExistException object without error message
 	 */
-	public DeveloperAlreadyExistException() {
+	public InvalidLoginException() {
 		super();
 	}
 
 	/**
 	 * Create DeveloperAlreadyExistException object with error message
 	 */
-	public DeveloperAlreadyExistException(String errMsg) {
+	public InvalidLoginException(String errMsg) {
 		super(errMsg);
 	}
 

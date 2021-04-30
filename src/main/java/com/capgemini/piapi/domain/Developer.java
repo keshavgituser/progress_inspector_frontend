@@ -18,14 +18,7 @@ import javax.validation.constraints.Size;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
- * This is the main domain model for developer defining attributes
- * 
- * @author Harsh Joshi
- * @author Vatsal Shah
- * @author Harshit Verma
- *
- */
-/**
+ * This Developer Domain is used as data transfer object between layers
  * @author Harshit Verma
  *
  */

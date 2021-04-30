@@ -16,17 +16,32 @@ import javax.validation.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
+/**
+ * This Remark Domain is used as data transfer object between layers
+ * @author Harsh Joshi
+ *
+ */
 @Entity
 public class Remark {
+	/**
+	 * Primary key for remark entity
+	 */
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+	/**
+	 * Description given as a remark it cannot be blank
+	 */
 	@NotBlank(message = "Description is Required")
 	private String description;
+	/**
+	 * who is giving this remark and it cannot be blank
+	 */
 	@NotBlank(message = "Name is Required")
 	private String givenBy;
-	
+	/**
+	 * Many remarks are assigned to the task
+	 */
 	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
 	@JoinColumn(name = "task_id", updatable = false, nullable = false)
 	@JsonIgnore

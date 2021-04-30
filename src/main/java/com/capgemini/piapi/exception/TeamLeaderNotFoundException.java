@@ -1,5 +1,13 @@
 package com.capgemini.piapi.exception;
 
+/**
+ * This Exception Class is used for Throwing Exception if you try to access Team leader
+ * which is not registered
+ * 
+ * @author Mantu
+ *
+ */
+
 public class TeamLeaderNotFoundException extends RuntimeException {
 	/**
 	 * 

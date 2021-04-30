@@ -14,7 +14,11 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
+/**
+ * This Team Leader Domain is used as data transfer object between layers
+ * @author Mantu
+ *
+ */
 @Entity
 public class TeamLeader {
 	@Id
