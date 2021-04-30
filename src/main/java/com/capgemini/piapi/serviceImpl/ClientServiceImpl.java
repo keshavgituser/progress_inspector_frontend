@@ -13,11 +13,16 @@ import com.capgemini.piapi.domain.Remark;
 import com.capgemini.piapi.domain.Task;
 import com.capgemini.piapi.exception.ClientAlreadyExistException;
 import com.capgemini.piapi.exception.ClientNotFoundException;
+import com.capgemini.piapi.exception.ClientPassedNullException;
+import com.capgemini.piapi.exception.ProductOwnerAlreadyExistException;
+import com.capgemini.piapi.exception.ProductOwnerNotFoundException;
 import com.capgemini.piapi.exception.TaskIdException;
 import com.capgemini.piapi.repository.ClientRepository;
 import com.capgemini.piapi.repository.RemarkRepository;
 import com.capgemini.piapi.repository.TaskRepository;
 import com.capgemini.piapi.service.ClientService;
+
+import ch.qos.logback.classic.pattern.RootCauseFirstThrowableProxyConverter;
 
 
 /**
@@ -84,19 +89,36 @@ public class ClientServiceImpl implements ClientService {
 
 	
 	/**
+	 *@author Keshav
 	 * Register and Authentication
 	 */
 	@Override
 	public Client saveClient(Client client) {
 		
-		
 		try {
-		Client savedClient=clientRepository.save(client);
-		return savedClient;
+		if(client.getClientName()==null)
+		{
+			throw new ClientPassedNullException("ClientName is Null");
+		}
+		else if(client.getLoginName()==null)
+		{
+			throw new ClientPassedNullException("Login is Null");
+		}
+		else if(client.getPwd()==null)
+		{
+			throw new ClientPassedNullException("Password is Null");
+		}
+		else
+		{
+			
+			Client savedClient=clientRepository.save(client);
+			return savedClient;
+		}
+		
 		}
 		catch(Exception e)
 		{
-			throw new ClientAlreadyExistException("Client Already Exists"); 
+			throw e;
 		}
 		
 	}
@@ -104,7 +126,18 @@ public class ClientServiceImpl implements ClientService {
 	@Override
 	public List<Client> getAllClients() {
 		
-		return clientRepository.findAll();
+		List<Client> foundClients=clientRepository.findAll();
+			if(foundClients.isEmpty())
+			{
+				throw new ClientNotFoundException("Clients Not Found");
+			
+			}
+			else
+			{
+				
+				return foundClients;
+			}
+		
 	}
 
 	@Override
@@ -122,7 +155,15 @@ public class ClientServiceImpl implements ClientService {
 	@Override
 	public Client findByLoginName(String loginName) {
 		// TODO Auto-generated method stub
+		if(loginName!=null)
+		{
 		return clientRepository.findByLoginName(loginName);
+		}
+		else
+		{
+			throw new ClientPassedNullException("Login Name Cannot Be Null");
+		}
+		
 	}
 
 	@Override
@@ -133,7 +174,7 @@ public class ClientServiceImpl implements ClientService {
 			throw new ClientNotFoundException("Client with loginName : " + loginName + " does not exists");
 		} 
 		clientRepository.delete(clientTodelete);
-		
+		clientTodelete.setLoginName(null);		
 	}
 	
 	@Override
@@ -142,6 +183,10 @@ public class ClientServiceImpl implements ClientService {
 		if ((client=clientRepository.findByLoginNameAndPwd(loginName, pwd)) == null) {
 			throw new ClientNotFoundException("Client with loginName : " + loginName + " does not exists");
 		} 
+		if(loginName==null || pwd==null)
+		{
+			throw new ClientPassedNullException("Null Values Are Passed For Authentation");
+		}
 		addClientInSession(client, session);
 		return client;
 	}
@@ -158,11 +203,6 @@ public class ClientServiceImpl implements ClientService {
 		session.setAttribute("Name", client.getClientName());
 		session.setAttribute("loginName", client.getLoginName());
 		
-	}
-  @Override
-	public Client getClientById(Long Id) {
-		// TODO Auto-generated method stub
-		return clientRepository.findByid(Id);
 	}
 	
 }

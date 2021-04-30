@@ -8,6 +8,7 @@ import javax.validation.Valid;
 import com.capgemini.piapi.domain.Client;
 import com.capgemini.piapi.domain.Remark;
 import com.capgemini.piapi.domain.Task;
+import com.capgemini.piapi.exception.ClientPassedNullException;
 
 /**
  * This Client Service will be used for all client related operations.
@@ -50,7 +51,7 @@ public interface ClientService {
 
 	/**
 	 * This method will fetch all the clients in the database
-	 * @return list of client objects
+	 * @return list of client objects or ClientPassedNullException
 	 */
 	public List<Client> getAllClients();
 	
@@ -58,7 +59,7 @@ public interface ClientService {
 	 * This Method Updates The Client
 	 * @param client
 	 * @param result
-	 * @return
+	 * @return List of Client Objects or ClientNotFoundException
 	 */
 	public Client updateClient(@Valid Client client);
 	
@@ -71,6 +72,7 @@ public interface ClientService {
 	/**
 	 * This Method Deletes The Client With LoginName
 	 * @param loginName
+	 * @return client object or throws ClientPassedNullException
 	 */
 	public void deleteClientByLoginName(String loginName);
 	/**
@@ -81,10 +83,5 @@ public interface ClientService {
 	 * @return
 	 */
 	public Client authenticateClient(String loginName, String pwd, HttpSession session);
-/**
-	 * This function will get client by client's id
-	 * @param client
-	 * @return client if available
-	 */
-	public Client getClientById(Long id);
+
 }
