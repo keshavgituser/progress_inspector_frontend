@@ -153,24 +153,33 @@ public class ProductOwnerServiceImpl implements ProductOwnerService {
 
 	@Override
 	public List<Task> getAllTasks(HttpSession session) {
-		try {
-			ProductOwner productOwner = findProductOwnerByLoginName((String) session.getAttribute("loginName"));
-			return productOwner.getTask();
-		} catch (Exception e) {
+		List<Task> tasks =new ArrayList<Task>();
+		ProductOwner productOwner = productOwnerRepository.findByLoginName((String) session.getAttribute("loginName"));
+		tasks= productOwner.getTask();
+		if (tasks==null) {
 			throw new TaskNotFoundException("Tasks not available");
 		}
-}
+		return tasks;
+	}
 
 	@Override
 	public Task getTaskByTaskIdentifier(String taskIdentifier, HttpSession session) {
-			ProductOwner productOwner = findProductOwnerByLoginName((String) session.getAttribute("loginName"));
+			Task savedTask=null;
+			
+			if(taskIdentifier==null) {
+				throw new NullPointerException("Please Provide Task Identifier");
+			}
+			ProductOwner productOwner = productOwnerRepository.findByLoginName((String) session.getAttribute("loginName"));
 			List<Task> tasks = productOwner.getTask();
 			for (Task task : tasks) {
 				if (task.getTaskIdentifier().equals(taskIdentifier)) {
-					return task;
+					savedTask= task;
 				}
 			}
+			if(savedTask==null) {
 			throw new TaskNotFoundException("Task with id : '" + taskIdentifier + "' does not exists");
+			}
+			return savedTask;
 	}
 
 	@Override
