@@ -33,6 +33,12 @@ public class ClientController{
 	@Autowired
 	private MapValidationErrorService mapValidationErrorService;
 	
+	/**
+	 * This controller will be used for calling the view task method from client service
+	 * @param task_id will the unique task identifier
+	 * @param loginName is the client login name 
+	 * @return the Task object as a response entity
+	 */
 	@GetMapping("/viewtask/{loginName}/{task_id}")
 	public ResponseEntity<?> getTaskByTaskIdentifier(@PathVariable String task_id,@PathVariable String loginName){
 		
@@ -42,6 +48,12 @@ public class ClientController{
 		return new ResponseEntity<Task>(task,HttpStatus.OK);
 		
 	}
+	
+	/**
+	 * Thios controller is used for calling the view all task method from clinet service
+	 * @param loginName is the client login name
+	 * @return all the task objects from the list as a response entity
+	 */
 	@GetMapping("/viewalltask/{loginName}")
 	public ResponseEntity<?> getAllTask(@PathVariable String loginName){
 		
@@ -51,6 +63,14 @@ public class ClientController{
 		return new ResponseEntity<List<Task>>(taskList,HttpStatus.OK);
 		
 	}
+	
+	/**
+	 * This controller is used for calling add remark method from client service.
+	 * Will also be used for retrieving all the errors from input remark object.
+	 * @param remark is the object of Remark to be saved
+	 * @param task_id is the unique task identifier.
+	 * @return saved remark if no errors found or map of the errors found in the input remark object.
+	 */
 	@PostMapping("/addremark/{task_id}")
 	public ResponseEntity<?> addRemark(@Valid @RequestBody Remark remark, BindingResult bindingResult,@PathVariable String task_id){
 		ResponseEntity<?> errorMap = mapValidationErrorService.mapValidationError(bindingResult);

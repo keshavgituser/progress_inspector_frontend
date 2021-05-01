@@ -47,6 +47,9 @@ public class ClientServiceImpl implements ClientService {
 		Task task = null;
 		//Integer progress = task.getProgress();
 		Client client = clientRepository.findByLoginName(loginName);
+		if(client==null) {
+			throw new ClientNotFoundException("No Client with login name " + loginName + " found");
+		}
 		List<Task> taskList = client.getTask();
 		//taskList.forEach(task->task.getTaskIdentifier().equals(taskIdentifier));
 		for(Task t : taskList) {
