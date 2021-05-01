@@ -130,12 +130,17 @@ public class ClientController{
 		return new ResponseEntity<Client>(client, HttpStatus.OK);
 	}
 
+	
+	/*
+	 *UnComment This Part If YOu Want TO Map A Request To Find all the Clients 
+	 *
 	@GetMapping("/allClients")
 	public ResponseEntity<?> findAllClients() {
 		
 		List<Client> clients = clientService.getAllClients();
 		return new ResponseEntity<List<Client>>(clients, HttpStatus.OK);
 	}
+	*/
 	
 	
 	/*

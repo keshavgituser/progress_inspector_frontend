@@ -41,7 +41,7 @@ class ProductOwnerServiceImplTest {
 		productOwner.setPwd("Test123");
 		ProductOwner savedProductOwner = productOwnerService.saveProductOwner(productOwner);
 		assertEquals(productOwner, savedProductOwner);		
-		productOwnerRepository.delete(savedProductOwner);
+		productOwnerRepository.delete(productOwner);
 	}
 	
 	@Test
@@ -54,7 +54,7 @@ class ProductOwnerServiceImplTest {
 		
 		assertThrows(ProductOwnerAlreadyExistException.class, () -> productOwnerService.saveProductOwner(productOwner));		
 		
-		productOwnerRepository.delete(savedProductOwner);
+		productOwnerRepository.delete(productOwner);
 	}
 
 	@Test
@@ -83,7 +83,7 @@ class ProductOwnerServiceImplTest {
 		ProductOwner savedProductOwner = productOwnerService.saveProductOwner(productOwner); 
 		productOwnerService.authenticateProductOwner(savedProductOwner.getLoginName(), savedProductOwner.getPwd(), session);
 		assertEquals(productOwner.getLoginName(),session.getAttribute("loginName"));
-		productOwnerRepository.delete(savedProductOwner);
+		productOwnerRepository.delete(productOwner);
 
 	}
 	@Test
