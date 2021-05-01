@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import com.capgemini.piapi.domain.Remark;
 import com.capgemini.piapi.domain.Task;
+import com.capgemini.piapi.exception.ClientNotFoundException;
 import com.capgemini.piapi.exception.TaskIdException;
 import com.capgemini.piapi.service.ClientService;
 
@@ -25,10 +26,8 @@ class ClientServiceImplTest {
 	private ClientService clientService;
 	
 	
-	//Test cases related to addRemark method in the client service.
-	/**
-	 *  
-	 */
+	//Test cases related to addRemark method in the client service
+	//Add remark Successfully
 	@Test
 	public void test_addRemark_GivenRemark_ShouldReturnSavedRemark() {
 		Remark remark = new Remark();
@@ -38,18 +37,7 @@ class ClientServiceImplTest {
 		assertEquals(remark, savedremark);	
 	}
 	
-	@Test
-	public void test_addRemark_GivenRemarkWithoutGivenBy_ShouldThrowTaskIdException() {
-		Remark remark = new Remark();
-		remark.setDescription("Test Owner");
-		assertThrows(TaskIdException.class, () -> clientService.addRemark(remark, "task"));
-	}
-	@Test
-	public void test_addRemark_GivenRemarkWithoutDescription_ShouldThrowTaskIdException() {
-		Remark remark = new Remark();
-		remark.setGivenBy("remark");
-		assertThrows(TaskIdException.class, () -> clientService.addRemark(remark, "task"));
-	}
+	//Add remark Unsuccessful because Invalid Task id
 	@Test
 	public void test_addRemark_GivenRemarkWithInvalidTaskIdentifier_ShouldThrowTaskIdException() {
 		Remark remark = new Remark();
@@ -57,20 +45,8 @@ class ClientServiceImplTest {
 		remark.setDescription("Test Owner");
 		assertThrows(TaskIdException.class, () -> clientService.addRemark(remark, "task1"));
 	}
-	@Test
-	public void test_addRemark_GivenRemarkWithEmptyDescriptionAndTaskIdentifier_ShouldThrowTaskIdException() {
-		Remark remark = new Remark();
-		remark.setGivenBy("remark");
-		remark.setDescription("");
-		assertThrows(TaskIdException.class, () -> clientService.addRemark(remark, "task"));
-	}
-	@Test
-	public void test_addRemark_GivenRemarkWithEmptyGivenByAndTaskIdentifier_ShouldThrowTaskIdException() {
-		Remark remark = new Remark();
-		remark.setGivenBy("");
-		remark.setDescription("Test Owner");
-		assertThrows(TaskIdException.class, () -> clientService.addRemark(remark, "task1"));
-	}
+	
+	//Add remark Unsuccessful because Empty Task identifier
 	@Test
 	public void test_addRemark_GivenRemarkWithEmptyTaskIdentifier_ShouldThrowTaskIdException() {
 		Remark remark = new Remark();
@@ -80,10 +56,8 @@ class ClientServiceImplTest {
 	}
 	
 	
-
-	/**
-	 * These are the test cases related to viewTask method in the client service.
-	 */
+	//These are the test cases related to viewTask method in the client service.
+	//View task Successful
 	@Test
 	public void test_viewTask_GivenClientLoginNameAndTaskIdentifier_ShouldReturnTask() {
 		Task task = new Task();
@@ -98,24 +72,28 @@ class ClientServiceImplTest {
 		assertEquals(task.getTitle(), task1.getTitle());
 	}
 	
+	//View task Unsuccessful because Invalid Task identifier
 	@Test
 	public void test_viewTask_GivenClientrLoginNameandInvalidTaskIdentifier_ShouldThrowTaskIdException() {
 		assertThrows(TaskIdException.class, () -> clientService.viewTask("client", "tk"));
 	}
 	
+	//View task Unsuccessful because Invalid Client login Name
 	@Test
 	public void test_viewTask_GivenInvalidClientLoginNameAndValidTaskIdentifier_ShouldThrowTaskIdException() {
-		assertThrows(NullPointerException.class, () -> clientService.viewTask("clint", "task"));
+		assertThrows(ClientNotFoundException.class, () -> clientService.viewTask("clint", "task"));
 	}
 
+	//View task Unsuccessful because Empty Task identifier
 	@Test
 	public void test_viewTask_GivenClientrLoginNameandEmptyTaskIdentifier_ShouldThrowTaskIdException() {
 		assertThrows(TaskIdException.class, () -> clientService.viewTask("client", ""));
 	}
 	
+	//View task Unsuccessful because Empty Client login Name
 	@Test
 	public void test_viewTask_GivenEmptyClientLoginNameAndValidTaskIdentifier_ShouldThrowTaskIdException() {
-		assertThrows(NullPointerException.class, () -> clientService.viewTask("", "task"));
+		assertThrows(ClientNotFoundException.class, () -> clientService.viewTask("", "task"));
 	}
 	
 /*
