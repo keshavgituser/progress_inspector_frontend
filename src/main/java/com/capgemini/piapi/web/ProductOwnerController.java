@@ -186,12 +186,12 @@ public class ProductOwnerController {
 	@GetMapping("/addClient/{clientLoginName}/{taskIdentifier}")
 	public ResponseEntity<?> addTaskToClient(@PathVariable String clientLoginName, @PathVariable String taskIdentifier,
 			HttpSession session) {
-//		if (session.getAttribute("userType") != null && session.getAttribute("userType").equals("ProductOwner")) {
+		if (session.getAttribute("userType") != null && session.getAttribute("userType").equals("ProductOwner")) {
 
 			Client client = productOwnerService.addTaskToClient(clientLoginName, taskIdentifier);
 			return new ResponseEntity<Client>(client, HttpStatus.OK);
-//		}
-//		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
+		}
+		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
 
 	}
 }
