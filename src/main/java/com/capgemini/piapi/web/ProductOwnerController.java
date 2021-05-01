@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.capgemini.piapi.domain.Client;
 import com.capgemini.piapi.domain.ProductOwner;
 import com.capgemini.piapi.domain.Task;
-import com.capgemini.piapi.exception.ProductOwnerAlreadyExistException;
 import com.capgemini.piapi.service.ProductOwnerService;
 import com.capgemini.piapi.serviceImpl.MapValidationErrorService;
 
@@ -144,7 +143,7 @@ public class ProductOwnerController {
 	public ResponseEntity<?> getTaskByTaskIdentifier(@PathVariable String taskIdentifier, HttpSession session) {
 		if (session.getAttribute("userType") != null && session.getAttribute("userType").equals("ProductOwner")) {
 
-			Task task = productOwnerService.getTaskByTaskIdentifier(taskIdentifier, session);
+			Task task = productOwnerService.getTaskByTaskIdentifier(taskIdentifier.toUpperCase(), session);
 			return new ResponseEntity<Task>(task, HttpStatus.OK);
 		}
 		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
@@ -181,7 +180,7 @@ public class ProductOwnerController {
 			HttpSession session) {
 		if (session.getAttribute("userType") != null && session.getAttribute("userType").equals("ProductOwner")) {
 
-			Client client = productOwnerService.addTaskToClient(clientLoginName, taskIdentifier);
+			Client client = productOwnerService.addTaskToClient(clientLoginName, taskIdentifier.toUpperCase());
 			return new ResponseEntity<Client>(client, HttpStatus.OK);
 		}
 		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
