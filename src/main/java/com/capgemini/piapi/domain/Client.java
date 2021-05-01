@@ -3,6 +3,7 @@ package com.capgemini.piapi.domain;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -38,7 +39,7 @@ public class Client {
 	private String pwd;
 	private String status;
 	@JsonIgnore
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "task_authorized",joinColumns =@JoinColumn(name= "id"),inverseJoinColumns = @JoinColumn(name="taskIdentifier") )
 	private List<Task> task;
 	

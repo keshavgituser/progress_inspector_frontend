@@ -65,7 +65,7 @@ public class Task {
 	 */
 	@JsonIgnore
 	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
-	@JoinColumn(name = "owner_id", updatable = false, nullable = false)
+	@JoinColumn(name = "task_id", updatable = false, nullable = false)
 	private ProductOwner productOwner;
 	/**
 	 * TeamLeader 
