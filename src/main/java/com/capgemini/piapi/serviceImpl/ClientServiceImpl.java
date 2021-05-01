@@ -18,6 +18,7 @@ import com.capgemini.piapi.exception.ProductOwnerAlreadyExistException;
 import com.capgemini.piapi.exception.ProductOwnerNotFoundException;
 import com.capgemini.piapi.exception.TaskIdException;
 import com.capgemini.piapi.repository.ClientRepository;
+import com.capgemini.piapi.repository.ProductOwnerRepository;
 import com.capgemini.piapi.repository.RemarkRepository;
 import com.capgemini.piapi.repository.TaskRepository;
 import com.capgemini.piapi.service.ClientService;

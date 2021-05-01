@@ -45,6 +45,7 @@ public class ProductOwnerServiceImpl implements ProductOwnerService {
 	private TaskRepository taskRepository;
 	@Autowired
 	private ClientRepository clientRepository;
+	
 
 	@Override
 	public ProductOwner saveProductOwner(ProductOwner productOwner) {

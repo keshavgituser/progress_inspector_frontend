@@ -9,12 +9,18 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockHttpSession;
+import org.springframework.stereotype.Service;
 
 import com.capgemini.piapi.domain.Client;
+import com.capgemini.piapi.domain.Remark;
+import com.capgemini.piapi.domain.Task;
 import com.capgemini.piapi.exception.ClientPassedNullException;
+import com.capgemini.piapi.exception.TaskIdException;
 import com.capgemini.piapi.exception.ClientNotFoundException;
 import com.capgemini.piapi.repository.ClientRepository;
+import com.capgemini.piapi.repository.ProductOwnerRepository;
 import com.capgemini.piapi.service.ClientService;
+import com.capgemini.piapi.service.ProductOwnerService;
 
 @SpringBootTest
 class ClientServiceImplTest {
@@ -29,6 +35,75 @@ class ClientServiceImplTest {
 	ClientRepository clientRepository;
 	
 	/**
+	 * ProductOwner service Is Used To Test Tasks assigned to Client
+	 */
+	@Autowired
+	private ProductOwnerService productOwnerService;
+	/**
+	 * 
+	 *These are the test cases related to viewTask method in the client service
+	 *	View task Successful
+	 */
+			/*
+			 * Uncomment this Test When The Product owner has added client to task
+			@Test
+			public void test_viewTask_GivenClientLoginNameAndTaskIdentifier_ShouldReturnTask() {
+				
+				Client client=new Client();
+				client.setClientName("NameTry");
+				client.setLoginName("LoginTry");
+				client.setPwd("PasswordTry");
+				
+				clientService.saveClient(client);
+				
+				Task task = new Task();
+				task.setDescription("task");
+				task.setProgress("tsk");
+				task.setTaskIdentifier("taskid");
+				task.setTitle("task");
+				
+				productOwnerService.addTaskToClient("LoginTry","taskid");
+				Task task1 = clientService.viewTask("LoginTry","taskid");
+				
+				assertEquals(task.getDescription(), task1.getDescription());	
+				assertEquals(task.getProgress(), task1.getProgress());
+				assertEquals(task.getTaskIdentifier(), task1.getTaskIdentifier());
+				assertEquals(task.getTitle(), task1.getTitle());
+				
+				clientRepository.delete(client);
+				
+				
+			}
+			*/
+
+			//View task Unsuccessful because Invalid Task identifier
+			@Test
+			public void test_viewTask_GivenClientrLoginNameandInvalidTaskIdentifier_ShouldThrowClientNotFoundException() {
+				assertThrows(ClientNotFoundException.class, () -> clientService.viewTask("client", null));
+			}
+			
+			//View task Unsuccessful because Invalid Client login Name
+			@Test
+			public void test_viewTask_GivenInvalidClientLoginNameAndValidTaskIdentifier_ShouldThrowTaskIdException() {
+				assertThrows(ClientNotFoundException.class, () -> clientService.viewTask("clint", "task"));
+			}
+
+			//View task Unsuccessful because Empty Task identifier
+			@Test
+			public void test_viewTask_GivenClientrLoginNameandEmptyTaskIdentifier_ShouldThrowClientNotFoundException() {
+				assertThrows(ClientNotFoundException.class, () -> clientService.viewTask("client",null));
+			}
+			
+			//View task Unsuccessful because Empty Client login Name
+			@Test
+			public void test_viewTask_GivenEmptyClientLoginNameAndValidTaskIdentifier_ShouldThrowTaskIdException() {
+				assertThrows(ClientNotFoundException.class, () -> clientService.viewTask(null, "task"));
+			}
+	
+	
+	
+	
+	/**Client Test Cases
 	 *
 	 * This Test Checks saveClient Method for ClientName as null Input
 	 *  @author Keshav
@@ -189,6 +264,7 @@ class ClientServiceImplTest {
 	@Test
 	void test_findAllClients_ThrowsClientNotFoundException_If_ClientsList_IsEmpty()
 	{
+		clientRepository.deleteAll();
 		assertThrows(ClientNotFoundException.class,()->clientService.getAllClients());
 	}
 	/**
@@ -222,6 +298,43 @@ class ClientServiceImplTest {
 		clientRepository.delete(client);
 		
 	}
+	
+	
+	/**
+	 * Task Test Cases
+	 */
+	//Test cases related to addRemark method in the client service
+		//Add remark Successfully
+		/*
+		@Test
+		public void test_addRemark_GivenRemark_ShouldReturnSavedRemark() {
+			Remark remark = new Remark();
+			remark.setDescription("Test Owner");
+			remark.setGivenBy("Test");
+			Remark savedremark = clientService.addRemark(remark, "task");
+			assertEquals(remark, savedremark);
+		}
+		*/
+		//Add remark Unsuccessful because Invalid Task id
+		@Test
+		public void test_addRemark_GivenRemarkWithInvalidTaskIdentifier_ShouldThrowTaskIdException() {
+			Remark remark = new Remark();
+			remark.setGivenBy("remark");
+			remark.setDescription("Test Owner");
+			assertThrows(TaskIdException.class, () -> clientService.addRemark(remark, "task1"));
+		}
+		
+		//Add remark Unsuccessful because Empty Task identifier
+		@Test
+		public void test_addRemark_GivenRemarkWithEmptyTaskIdentifier_ShouldThrowTaskIdException() {
+			Remark remark = new Remark();
+			remark.setGivenBy("remark");
+			remark.setDescription("Test owner");
+			assertThrows(TaskIdException.class, () -> clientService.addRemark(remark, ""));
+		}
+		
+		
+		
 	
 	
 		
