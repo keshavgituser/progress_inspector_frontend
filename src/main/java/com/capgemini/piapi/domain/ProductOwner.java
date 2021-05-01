@@ -12,8 +12,10 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
+
 /**
  * This ProductOwner Domain is used as data transfer object between layers
+ * 
  * @author Aadesh Juvekar
  *
  */
@@ -56,6 +58,16 @@ public class ProductOwner {
 		super();
 	}
 
+	public ProductOwner(String name, String loginName, String pwd, Client client, List<Task> tasks) {
+		super();
+		this.name = name;
+		this.loginName = loginName;
+		this.pwd = pwd;
+		this.client = client;
+		this.task = tasks;
+
+	}
+
 	public long getId() {
 		return id;
 	}
@@ -87,7 +99,6 @@ public class ProductOwner {
 	public void setPwd(String pwd) {
 		this.pwd = pwd;
 	}
-
 
 	public Client getClient() {
 		return client;

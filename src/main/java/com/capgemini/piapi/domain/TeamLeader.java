@@ -10,16 +10,20 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * This Team Leader Domain is used as data transfer object between layers
+ * 
  * @author Mantu
  *
  */
 @Entity
+@Table(name = "teamleaders")
 public class TeamLeader {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,6 +41,13 @@ public class TeamLeader {
 
 	public TeamLeader() {
 		super();
+	}
+
+	public TeamLeader(String name, String loginName, String pwd, List<Task> task) {
+		this.name = name;
+		this.loginName = loginName;
+		this.pwd = pwd;
+		this.task = task;
 	}
 
 	public Long getId() {

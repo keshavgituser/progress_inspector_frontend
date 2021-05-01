@@ -126,6 +126,7 @@ public class TeamLeaderController {
 
 	/**
 	 * This method is used to update team leader if teamleader is loged in
+	 * 
 	 * @param teamLeader
 	 * @param result
 	 * @param session
@@ -202,7 +203,8 @@ public class TeamLeaderController {
 			@PathVariable String teamleaderLoginName, HttpSession session) {
 		if (session.getAttribute("userType") != null && session.getAttribute("userType").equals("TeamLeader")
 				&& session.getAttribute("teamLeaderLoginName").equals(teamleaderLoginName)) {
-			Task developer = teamLeaderService.findTaskByTaskIdentifierAndTeamLeaderLoginName(taskID, teamleaderLoginName);
+			Task developer = teamLeaderService.findTaskByTaskIdentifierAndTeamLeaderLoginName(taskID,
+					teamleaderLoginName);
 			return new ResponseEntity<Task>(developer, HttpStatus.OK);
 		}
 		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);

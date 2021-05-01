@@ -21,6 +21,7 @@ import com.capgemini.piapi.exception.DeveloperIdException;
 import com.capgemini.piapi.exception.DeveloperNotFoundException;
 import com.capgemini.piapi.exception.InvalidLoginException;
 import com.capgemini.piapi.exception.TaskIdException;
+import com.capgemini.piapi.exception.TaskNotFoundException;
 import com.capgemini.piapi.exception.TeamLeaderAlreadyExistsException;
 import com.capgemini.piapi.exception.TeamLeaderNotFoundException;
 import com.capgemini.piapi.repository.DeveloperRepository;
@@ -58,44 +59,46 @@ public class TeamLeaderServiceImpl implements TeamLeaderService {
 
 	@Override
 	public Task createTask(Task task, String productOwnerLoginName, String teamleaderLoginName) {
-		try {
-			ProductOwner productOwner = productOwnerRepository.findByLoginName(productOwnerLoginName);
-			if (productOwner == null) {
-				// TODO Product Owner Not Found Exception
-				throw new Exception();
-			}
-			TeamLeader teamLeader = teamLeaderRepository.findByLoginName(teamleaderLoginName);
-			if (teamLeader == null) {
-				throw new TeamLeaderNotFoundException("Team Leader not found");
-			}
-			task.setTaskIdentifier(task.getTaskIdentifier().toUpperCase());
-			task.setProgress(taskConstants.TASK_STATUS_PENDING);
-			List<Task> productOwnerTaskList = productOwner.getTask();
-			productOwnerTaskList.add(task);
-			productOwner.setTask(productOwnerTaskList);
-			task.setProductOwner(productOwner);
-			Task newTask = taskRepository.save(task);
-			List<Task> teamLeaderTaskList = teamLeader.getTask();
-			teamLeaderTaskList.add(task);
-			teamLeader.setTask(teamLeaderTaskList);
-			task.setTeamLeader(teamLeader);
-			teamLeaderRepository.save(teamLeader);
-			productOwnerRepository.save(productOwner);
-			return newTask;
-		} catch (Exception ex) {
+
+		ProductOwner productOwner = productOwnerRepository.findByLoginName(productOwnerLoginName);
+		if (productOwner == null) {
+			// TODO Product Owner Not Found Exception
+			throw new TeamLeaderNotFoundException("Product Owner Not Found");
+		}
+		TeamLeader teamLeader = teamLeaderRepository.findByLoginName(teamleaderLoginName);
+		if (teamLeader == null) {
+			throw new TeamLeaderNotFoundException("Team Leader not found");
+		}
+		task.setTaskIdentifier(task.getTaskIdentifier().toUpperCase());
+		task.setProgress(taskConstants.TASK_STATUS_PENDING);
+		List<Task> productOwnerTaskList = productOwner.getTask();
+		productOwnerTaskList.add(task);
+		productOwner.setTask(productOwnerTaskList);
+		task.setProductOwner(productOwner);
+		if (taskRepository.findByTaskIdentifier(task.getTaskIdentifier()) != null) {
 			throw new TaskIdException("Task id " + task.getTaskIdentifier().toUpperCase() + " is already available");
 		}
+		Task newTask = taskRepository.save(task);
+		List<Task> teamLeaderTaskList = teamLeader.getTask();
+		teamLeaderTaskList.add(task);
+		teamLeader.setTask(teamLeaderTaskList);
+		task.setTeamLeader(teamLeader);
+		teamLeaderRepository.save(teamLeader);
+		productOwnerRepository.save(productOwner);
+		return newTask;
+
 	}
 
 	@Override
 	public TeamLeader registerTeamLeader(TeamLeader teamLeader) {
-		try {
 
-			return teamLeaderRepository.save(teamLeader);
-		} catch (Exception ex) {
+		if (teamLeaderRepository.findByLoginName(teamLeader.getLoginName()) != null) {
 			throw new TeamLeaderAlreadyExistsException(
 					"Team Leader " + teamLeader.getLoginName() + " Already Exists..");
 		}
+
+		return teamLeaderRepository.save(teamLeader);
+
 	}
 
 	@Override
@@ -103,7 +106,7 @@ public class TeamLeaderServiceImpl implements TeamLeaderService {
 
 		TeamLeader teamLeader = teamLeaderRepository.findTeamLeaderByLoginNameAndPwd(teamLeaderLoginName, pwd);
 		if (teamLeader == null) {
-			throw new TeamLeaderNotFoundException("Invalid Login Please Enter Details Correctly");
+			throw new InvalidLoginException("Invalid Login Please Enter Details Correctly");
 		}
 		addTeamLeaderInSession(teamLeader, session);
 		return teamLeader;
@@ -127,7 +130,8 @@ public class TeamLeaderServiceImpl implements TeamLeaderService {
 	public TeamLeader findTeamLeaderByLoginName(String teamLeaderLoginName) {
 		TeamLeader fetchedTeamLeader = teamLeaderRepository.findByLoginName(teamLeaderLoginName);
 		if (fetchedTeamLeader == null) {
-			throw new InvalidLoginException("Team Leader with  " + teamLeaderLoginName + "not found");
+			throw new TeamLeaderNotFoundException("Team Leader with  " + teamLeaderLoginName + "not found");
+
 		}
 		return fetchedTeamLeader;
 	}
@@ -136,12 +140,12 @@ public class TeamLeaderServiceImpl implements TeamLeaderService {
 	public TeamLeader updateTeamLeader(TeamLeader teamLeader) {
 		// TODO Auto-generated method stub
 		if (teamLeader.getLoginName() == null) {
-			throw new TeamLeaderNotFoundException("Please Fill the Required Fields");
+			throw new NullPointerException("Please Fill the Required Fields");
 		}
 		TeamLeader oldTeamLeader = teamLeaderRepository.findByLoginName(teamLeader.getLoginName());
 		if (oldTeamLeader == null) {
 			throw new TeamLeaderNotFoundException(
-					"Product Owner with loginName : " + teamLeader.getLoginName() + " does not exists");
+					"TeamLeader with loginName : " + teamLeader.getLoginName() + " does not exists");
 		}
 		oldTeamLeader = teamLeader;
 		return teamLeaderRepository.save(oldTeamLeader);
@@ -149,12 +153,19 @@ public class TeamLeaderServiceImpl implements TeamLeaderService {
 
 	@Override
 	public void deleteTeamLeaderByLoginName(String teamLeaderLoginName) {
+
+		if (teamLeaderRepository.findByLoginName(teamLeaderLoginName) == null) {
+			throw new TeamLeaderNotFoundException("Cannot delete TeamLeader");
+		}
 		teamLeaderRepository.deleteByLoginName(teamLeaderLoginName);
 	}
 
 	@Override
 	public List<Remark> viewAllRemark(String taskIdentifier) {
 		Task task = taskRepository.findByTaskIdentifier(taskIdentifier);
+		if (task == null) {
+			throw new TaskNotFoundException("Task is not found");
+		}
 		List<Remark> remarkList = task.getRemark();
 		return remarkList;
 	}

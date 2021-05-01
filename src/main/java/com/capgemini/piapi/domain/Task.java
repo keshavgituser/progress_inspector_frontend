@@ -104,6 +104,19 @@ public class Task {
 		super();
 	}
 
+	public Task(String title, String taskIdentifier, String description, String progress, ProductOwner productOwner,
+			TeamLeader teamLeader, Developer developer) {
+		super();
+		this.title = title;
+		this.taskIdentifier = taskIdentifier;
+		this.description = description;
+		this.progress = progress;
+		this.productOwner = productOwner;
+		this.teamLeader = teamLeader;
+		this.developer = developer;
+
+	}
+
 	public long getId() {
 		return id;
 	}

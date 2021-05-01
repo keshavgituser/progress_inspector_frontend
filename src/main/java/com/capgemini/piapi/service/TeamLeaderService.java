@@ -57,6 +57,7 @@ public interface TeamLeaderService {
 
 	/**
 	 * This method is used to list all remarks based on the task identifier
+	 * 
 	 * @param taskIdentifier
 	 * @return List of Remark if available
 	 */
@@ -64,6 +65,7 @@ public interface TeamLeaderService {
 
 	/**
 	 * This method is used to create task on basis of product owner and teamleader
+	 * 
 	 * @param task
 	 * @param productOwnerLoginName
 	 * @param teamleaderLoginName
@@ -90,11 +92,12 @@ public interface TeamLeaderService {
 
 	/**
 	 * This method is used to find task by task identifier and teamleader login name
+	 * 
 	 * @param taskIdentifier
 	 * @param LoginName
 	 * @return Task is executed properly
 	 */
-	public Task findTaskByTaskIdentifierAndTeamLeaderLoginName(String taskIdentifier , String LoginName);
+	public Task findTaskByTaskIdentifierAndTeamLeaderLoginName(String taskIdentifier, String LoginName);
 
 	/**
 	 * This method will delete task on basis of the task identifier
@@ -102,15 +105,18 @@ public interface TeamLeaderService {
 	 * @param taskIdentifier
 	 */
 	public void deleteTask(String taskIdentifier);
+
 	/**
 	 * This method is used to list all developers based on team leader login name
+	 * 
 	 * @param LoginName
 	 * @return
 	 */
 	List<Developer> findAllDevelopers();
-	
+
 	/**
 	 * This method is used to update team leader if team leader exist
+	 * 
 	 * @param teamLeader
 	 * @return updated TeamLeader
 	 */
