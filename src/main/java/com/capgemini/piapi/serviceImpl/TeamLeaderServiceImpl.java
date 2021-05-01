@@ -17,7 +17,6 @@ import com.capgemini.piapi.domain.ProductOwner;
 import com.capgemini.piapi.domain.Remark;
 import com.capgemini.piapi.domain.Task;
 import com.capgemini.piapi.domain.TeamLeader;
-import com.capgemini.piapi.exception.DeveloperIdException;
 import com.capgemini.piapi.exception.DeveloperNotFoundException;
 import com.capgemini.piapi.exception.InvalidLoginException;
 import com.capgemini.piapi.exception.TaskIdException;
@@ -166,7 +165,7 @@ public class TeamLeaderServiceImpl implements TeamLeaderService {
 		// check if available or not
 		// throw exception not found
 		if (developer == null) {
-			throw new DeveloperIdException("Developer with Identifer " + developerLoginName + " doesn't exist");
+			throw new DeveloperNotFoundException("Developer with Identifer " + developerLoginName + " doesn't exist");
 		}
 		Task task = taskRepository.findByTaskIdentifier(taskID);
 		if (task == null) {

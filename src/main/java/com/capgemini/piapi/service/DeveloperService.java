@@ -91,5 +91,5 @@ public interface DeveloperService {
 	 * @param developer
 	 * @return Updated Developer
 	 */
-	Developer updateProductOwner(Developer developer);
+	Developer updateDeveloper(Developer developer);
 }

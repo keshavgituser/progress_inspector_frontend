@@ -104,6 +104,25 @@ public class Task {
 		super();
 	}
 
+	public Task(String title, String taskIdentifier, String description, String progress, Developer developer) {
+		super();
+		this.title = title;
+		this.taskIdentifier = taskIdentifier;
+		this.description = description;
+		this.progress = progress;
+		this.developer = developer;
+	}
+	
+	public Task(String title, String taskIdentifier, String description, String progress, Developer developer , List<Remark> remark) {
+		super();
+		this.title = title;
+		this.taskIdentifier = taskIdentifier;
+		this.description = description;
+		this.progress = progress;
+		this.developer = developer;
+		this.remark = remark;
+	}
+
 	public long getId() {
 		return id;
 	}

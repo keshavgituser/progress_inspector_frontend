@@ -92,7 +92,7 @@ public class DeveloperController {
 			ResponseEntity<?> errorMap = mapValidationErrorService.mapValidationError(result);
 			if (errorMap != null)
 				return errorMap;
-			Developer savedDeveloper = developerService.updateProductOwner(developer);
+			Developer savedDeveloper = developerService.updateDeveloper(developer);
 			return new ResponseEntity<Developer>(savedDeveloper, HttpStatus.CREATED);
 		}
 		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);

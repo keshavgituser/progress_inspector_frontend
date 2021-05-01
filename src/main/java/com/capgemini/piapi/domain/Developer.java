@@ -19,6 +19,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * This Developer Domain is used as data transfer object between layers
+ * 
  * @author Harshit Verma
  *
  */
@@ -61,6 +62,15 @@ public class Developer {
 
 	public Developer() {
 		super();
+	}
+
+	public Developer(String name, String loginName, String pwd, String status, List<Task> tasks) {
+		super();
+		this.name = name;
+		this.loginName = loginName;
+		this.pwd = pwd;
+		this.status = status;
+		this.tasks = tasks;
 	}
 
 	// Getter and Setters

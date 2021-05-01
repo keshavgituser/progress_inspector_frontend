@@ -12,18 +12,12 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @RestController
 public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
-	@ExceptionHandler
-	public final ResponseEntity<Object> handleDeveloperIdException(DeveloperIdException ex, WebRequest request) {
-
-		DeveloperIdExceptionResponse exceptionResponse = new DeveloperIdExceptionResponse(ex.getMessage());
-		return new ResponseEntity<Object>(exceptionResponse, HttpStatus.BAD_REQUEST);
-	}
 
 	@ExceptionHandler
 	public final ResponseEntity<Object> handleDeveloperNotFoundException(DeveloperNotFoundException ex,
 			WebRequest request) {
 
-		DeveloperIdExceptionResponse exceptionResponse = new DeveloperIdExceptionResponse(ex.getMessage());
+		DeveloperNotFoundExcpetionResponse exceptionResponse = new DeveloperNotFoundExcpetionResponse(ex.getMessage());
 		return new ResponseEntity<Object>(exceptionResponse, HttpStatus.BAD_REQUEST);
 	}
 

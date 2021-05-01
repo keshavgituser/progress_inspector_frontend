@@ -44,22 +44,22 @@ public class DeveloperServiceImpl implements DeveloperService {
 
 	@Override
 	public Developer saveDeveloper(Developer developer) {
-		try {
-			developer.setStatus(DeveloperConstant.DEVELOPER_INACTIVE);
-			// new developer is created set task no task assigned
-			if (developer.getTasks() == null) {
-				List<Task> task = new ArrayList<>();
-				developer.setTasks(task);
-			}
-			return developerRepository.save(developer);
-		} catch (Exception ex) {
+		if (developer.getName() == null || developer.getLoginName() == null || developer.getPwd() == null) {
+			throw new NullPointerException("Please Enter All Values in the field");
+		}
+		if ((developerRepository.findByLoginName(developer.getLoginName())) != null) {
 			throw new DeveloperAlreadyExistException(
 					"developer with " + developer.getLoginName() + " login name is already available");
 		}
+		developer.setStatus(DeveloperConstant.DEVELOPER_INACTIVE);
+		return developerRepository.save(developer);
 	}
 
 	@Override
 	public Developer findDeveloperByDeveloperLoginName(String developerLoginName) {
+		if (developerLoginName == null) {
+			throw new NullPointerException("Please Fill the Required Fields");
+		}
 		Developer developer = developerRepository.findByLoginName(developerLoginName);
 		if (developer == null) {
 			throw new DeveloperNotFoundException("developer with " + developerLoginName + " login name not found");
@@ -69,6 +69,9 @@ public class DeveloperServiceImpl implements DeveloperService {
 
 	@Override
 	public void deleteDeveloperbyDeveloperLoginName(String developerLoginName) {
+		if (developerLoginName == null) {
+			throw new NullPointerException("Please Fill the Required Fields");
+		}
 		Developer developer = developerRepository.findByLoginName(developerLoginName);
 		if (developer == null) {
 			throw new DeveloperNotFoundException("developer with " + developerLoginName + " login name not found");
@@ -77,54 +80,95 @@ public class DeveloperServiceImpl implements DeveloperService {
 	}
 
 	@Override
-	public Developer updateProductOwner(Developer developer) {
+	public Developer updateDeveloper(Developer developer) {
 		// TODO Auto-generated method stub
 		if (developer.getLoginName() == null) {
-			throw new DeveloperNotFoundException("Please Fill the Required Fields");
+			throw new NullPointerException("Please Fill the Required Fields");
 		}
 		Developer oldProductOwner = developerRepository.findByLoginName(developer.getLoginName());
 		if (oldProductOwner == null) {
 			throw new DeveloperNotFoundException(
-					"Product Owner with loginName : " + developer.getLoginName() + " does not exists");
+					"Developer with loginName : " + developer.getLoginName() + " does not exists");
 		}
 		oldProductOwner = developer;
 		return developerRepository.save(oldProductOwner);
 	}
 
 	@Override
-	public Task updateTaskStatus(String taskId, String developerLoginName, Task task) {
-		// get developer
+	public List<Task> viewAllTaskByDeveloperLoginName(String developerLoginName) {
+		if (developerLoginName == null) {
+			throw new NullPointerException("Please Fill the Required Fields");
+		}
 		Developer developer = developerRepository.findByLoginName(developerLoginName);
-		// check if available or not
-		// throw exception not found
+		List<Task> taskList = developer.getTasks();
+		return taskList;
+	}
+
+	@Override
+	public Task findTaskByTaskIdentifierAndDevelpoerLoginName(String taskIdentifier, String developerLoginName) {
+		if (developerLoginName == null || taskIdentifier == null) {
+			throw new NullPointerException("Please Fill the Required Fields");
+		}
+		Developer developer = developerRepository.findByLoginName(developerLoginName);
 		if (developer == null) {
 			throw new DeveloperNotFoundException(
-					"developer with " + developerLoginName + " login name is already available");
+					"Developer with loginName : " + developerLoginName + " does not exists");
 		}
-		Task task1 = taskRepository.findByTaskIdentifier(taskId);
-		if (task1 == null) {
-			throw new TaskIdException("Task with Identifer" + taskId.toUpperCase() + " doesn't exist");
+		List<Task> taskList = developer.getTasks();
+		for (Task task : taskList) {
+			if (task.getTaskIdentifier().equals(taskIdentifier)) {
+				return task;
+			}
+		}
+		throw new TaskIdException("Task with id " + taskIdentifier.toUpperCase() + " is not available");
+	}
+
+	@Override
+	public Task updateTaskStatus(String taskIdentifier, String developerLoginName, Task task) {
+		if (developerLoginName == null || taskIdentifier == null || task == null) {
+			throw new NullPointerException("Please Fill the Required Fields");
+		}
+		Developer developer = developerRepository.findByLoginName(developerLoginName);
+		if (developer == null) {
+			throw new DeveloperNotFoundException("developer with " + developerLoginName + " does not exist");
+		}
+		// Task task1 = taskRepository.findByTaskIdentifier(taskIdentifier);
+		Task task1 = new Task();
+		for (Task t : developer.getTasks()) {
+			if (t.getTaskIdentifier().equals(taskIdentifier)) {
+				task1 = t;
+			}
+		}
+		if (task1.getTaskIdentifier() == null) {
+			throw new TaskIdException("Task with Identifer" + taskIdentifier.toUpperCase() + " doesn't exist");
 		}
 		task1.setProgress(task.getProgress());
 		return taskRepository.save(task1);
 	}
 
 	@Override
-	public Task addRemark(String taskId, String developerLoginName, Remark remark) {
-		// get developer
-		Developer developer = developerRepository.findByLoginName(developerLoginName);
-		// check if available or not
-		// throw exception not found
-		if (developer == null) {
-			throw new DeveloperNotFoundException(
-					"developer with " + developerLoginName + " login name is already available");
+	public Task addRemark(String taskIdentifier, String developerLoginName, Remark remark) {
+		if (developerLoginName == null || taskIdentifier == null || remark == null) {
+			throw new NullPointerException("Please Fill the Required Fields");
 		}
-		Task task = taskRepository.findByTaskIdentifier(taskId);
-		if (task == null) {
-			throw new TaskIdException("Task with Identifer" + taskId.toUpperCase() + " doesn't exist");
+		Developer developer = developerRepository.findByLoginName(developerLoginName);
+		if (developer == null) {
+			throw new DeveloperNotFoundException("developer with " + developerLoginName + " does not exist");
+		}
+		Task task = new Task();
+		for (Task t : developer.getTasks()) {
+			if (t.getTaskIdentifier().equals(taskIdentifier)) {
+				task = t;
+			}
+		}
+		if (task.getTaskIdentifier() == null) {
+			throw new TaskIdException("Task with Identifer" + taskIdentifier.toUpperCase() + " doesn't exist");
 		}
 		remark.setTask(task);
-		List<Remark> remarkList = task.getRemark();
+		List<Remark> remarkList = new ArrayList<>();
+		if (task.getRemark() != null) {
+			remarkList = task.getRemark();
+		}
 		remarkList.add(remark);
 		task.setRemark(remarkList);
 		remarkRepository.save(remark);
@@ -133,12 +177,23 @@ public class DeveloperServiceImpl implements DeveloperService {
 
 	@Override
 	public Developer authenticateDeveloper(String developerLoginName, String pwd, HttpSession session) {
-		Developer developer = developerRepository.findByLoginNameAndPwd(developerLoginName, pwd);
-		if (developer == null) {
-			throw new InvalidLoginException("Invalid Login Please Enter Details Correctly");
+		Developer developer = null;
+
+		if (developerLoginName == null || pwd == null) {
+			throw new InvalidLoginException("Please Enter Credentials");
 		}
-		addDeveloperInSession(developer, session);
-		return developer;
+
+		if ((developer = developerRepository.findByLoginName(developerLoginName)) == null) {
+			throw new DeveloperNotFoundException(
+					"Developer with loginName : " + developerLoginName + " does not exist");
+		}
+
+		if (developer.getPwd().equals(pwd)) {
+			addDeveloperInSession(developer, session);
+			return developer;
+		}
+		throw new InvalidLoginException("Login Failed ! Invalid Credentials");
+
 	}
 
 	/**
@@ -153,25 +208,6 @@ public class DeveloperServiceImpl implements DeveloperService {
 		session.setAttribute("devloperId", developer.getId());
 		session.setAttribute("developerLoginName", developer.getLoginName());
 
-	}
-
-	@Override
-	public List<Task> viewAllTaskByDeveloperLoginName(String developerLoginName) {
-		Developer developer = developerRepository.findByLoginName(developerLoginName);
-		List<Task> taskList = developer.getTasks();
-		return taskList;
-	}
-
-	@Override
-	public Task findTaskByTaskIdentifierAndDevelpoerLoginName(String taskIdentifier, String developerLoginName) {
-		Developer developer = developerRepository.findByLoginName(developerLoginName);
-		List<Task> taskList = developer.getTasks();
-		for (Task task : taskList) {
-			if (task.getTaskIdentifier().equals(taskIdentifier)) {
-				return task;
-			}
-		}
-		throw new TaskIdException("Task with id " + taskIdentifier.toUpperCase() + " is not available");
 	}
 
 }
