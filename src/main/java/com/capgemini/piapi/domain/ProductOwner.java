@@ -70,12 +70,11 @@ public class ProductOwner {
 		this.pwd = pwd;
 	}
 
-	public ProductOwner(String name, String loginName, String pwd, Client client, List<Task> tasks) {
+	public ProductOwner(String name, String loginName, String pwd, List<Task> tasks) {
 		super();
 		this.name = name;
 		this.loginName = loginName;
 		this.pwd = pwd;
-		this.client = client;
 		this.task = tasks;
 
 	}

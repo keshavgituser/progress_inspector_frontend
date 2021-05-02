@@ -1,4 +1,4 @@
-package com.capgemini.piapi.serviceimpl;
+package com.capgemini.piapi.serviceImpl;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.times;

@@ -70,7 +70,7 @@ public class Task {
 	 * TeamLeader
 	 */
   
-  @JsonIgnore
+	@JsonIgnore
 	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private TeamLeader teamLeader;
 	/**
@@ -82,8 +82,7 @@ public class Task {
 	 * List of authorized clients on the task Given By Product Owner
 	 */
 	@JsonIgnore
-	@ManyToMany
-	@JsonIgnore
+	@ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
 	private List<Client> client = new ArrayList<>();
 	/**
 	 * List of developers on the task Given By Team Leader
@@ -166,6 +165,15 @@ public class Task {
 
 	}
 
+	@PrePersist()
+	protected void onCreate() {
+		this.createdAt = new Date();
+	}
+
+	@PreUpdate
+	protected void onUpdate() {
+		this.updatedAt = new Date();
+	}
 
 	public long getId() {
 		return id;
@@ -207,6 +215,46 @@ public class Task {
 		this.progress = progress;
 	}
 
+	public ProductOwner getProductOwner() {
+		return productOwner;
+	}
+
+	public void setProductOwner(ProductOwner productOwner) {
+		this.productOwner = productOwner;
+	}
+
+	public TeamLeader getTeamLeader() {
+		return teamLeader;
+	}
+
+	public void setTeamLeader(TeamLeader teamLeader) {
+		this.teamLeader = teamLeader;
+	}
+
+	public List<Remark> getRemark() {
+		return remark;
+	}
+
+	public void setRemark(List<Remark> remark) {
+		this.remark = remark;
+	}
+
+	public List<Client> getClient() {
+		return client;
+	}
+
+	public void setClient(List<Client> client) {
+		this.client = client;
+	}
+
+	public Developer getDeveloper() {
+		return developer;
+	}
+
+	public void setDeveloper(Developer developer) {
+		this.developer = developer;
+	}
+
 	public Date getCreatedAt() {
 		return createdAt;
 	}
@@ -223,92 +271,12 @@ public class Task {
 		this.updatedAt = updatedAt;
 	}
 
-	public ProductOwner getProductOwner() {
-		return productOwner;
-	}
-
-	public void setProductOwner(ProductOwner productOwner) {
-		this.productOwner = productOwner;
-	}
-
-	public List<Remark> getRemark() {
-		return remark;
-	}
-
-	public void setRemark(List<Remark> remark) {
-		this.remark = remark;
-	}
-	
-
-	public TeamLeader getTeamLeader() {
-		return teamLeader;
-	}
-
-
-	public void setTeamLeader(TeamLeader teamLeader) {
-		this.teamLeader = teamLeader;
-	}
-
-
-	public List<Client> getClient() {
-		return client;
-	}
-
-
-	public void setClient(List<Client> client) {
-		this.client = client;
-	}
-
-
-	public Developer getDeveloper() {
-		return developer;
-	}
-
-
-	public void setDeveloper(Developer developer) {
-		this.developer = developer;
-	}
-
-
-	public Developer getDeveloper() {
-		return developer;
-	}
-
-	public void setDeveloper(Developer developer) {
-		this.developer = developer;
-	}
-
-	@PrePersist()
-	protected void onCreate() {
-		this.createdAt = new Date();
-	}
-
-	@PreUpdate
-	protected void onUpdate() {
-		this.updatedAt = new Date();
-	}
-
-	public TeamLeader getTeamLeader() {
-		return teamLeader;
-	}
-
-	public void setTeamLeader(TeamLeader teamLeader) {
-		this.teamLeader = teamLeader;
-	}
-
-	public List<Client> getClient() {
-		return client;
-	}
-
-	public void setClient(List<Client> client) {
-		this.client = client;
-	}
-
 	@Override
 	public String toString() {
 		return "Task [id=" + id + ", title=" + title + ", taskIdentifier=" + taskIdentifier + ", description="
 				+ description + ", progress=" + progress + ", productOwner=" + productOwner + ", teamLeader="
-				+ teamLeader + ", remark=" + remark + ", client=" + client + ", developer=" + developer + "]";
+				+ teamLeader + ", remark=" + remark + ", client=" + client + ", developer=" + developer + ", createdAt="
+				+ createdAt + ", updatedAt=" + updatedAt + "]";
 	}
-
+	
 }

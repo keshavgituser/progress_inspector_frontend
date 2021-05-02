@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * This Exception Class is used for Throwing Exception if Developer
  * is not registered
  * 
- * @author Harsh Joshi
+ * @author Vatsal Shah
  *
  */
 @ResponseStatus(HttpStatus.BAD_REQUEST)
