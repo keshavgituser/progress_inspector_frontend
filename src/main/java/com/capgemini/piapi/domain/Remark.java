@@ -33,9 +33,9 @@ public class Remark {
 	private Task task;
 
 	@JsonFormat(pattern = "yyyy-MM-dd")
-	private Date created_At;
+	private Date createdAt;
 	@JsonFormat(pattern = "yyyy-MM-dd")
-	private Date updated_At;
+	private Date updatedAt;
 	public Long getId() {
 		return id;
 	}
@@ -61,25 +61,25 @@ public class Remark {
 	public void setTask(Task task) {
 		this.task = task;
 	}
-	public Date getCreated_At() {
-		return created_At;
+	public Date getCreatedAt() {
+		return createdAt;
 	}
-	public void setCreated_At(Date created_At) {
-		this.created_At = created_At;
+	public void setCreatedAt(Date createdAt) {
+		this.createdAt = createdAt;
 	}
-	public Date getUpdated_At() {
-		return updated_At;
+	public Date getUpdatedAt() {
+		return updatedAt;
 	}
-	public void setUpdated_At(Date updated_At) {
-		this.updated_At = updated_At;
+	public void setUpdatedAt(Date updatedAt) {
+		this.updatedAt = updatedAt;
 	}
 	@PrePersist
 	protected void onCreate() {
-		this.created_At = new Date();
+		this.createdAt = new Date();
 	}
 	@PreUpdate
 	protected void onUpdate() {
-		this.updated_At = new Date();
+		this.updatedAt = new Date();
 	}
 
 }
