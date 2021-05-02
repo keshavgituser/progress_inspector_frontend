@@ -64,13 +64,14 @@ public class Task {
 	 */
 	@JsonIgnore
 	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	@JoinColumn(name = "task_id", updatable = false, nullable = false)
+	@JoinColumn(name = "owner_id", updatable = false, nullable = false)
 	private ProductOwner productOwner;
 	/**
 	 * TeamLeader
 	 */
+  
+  @JsonIgnore
 	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	@JsonIgnore
 	private TeamLeader teamLeader;
 	/**
 	 * List of remarks on the task Given By Developer as well as client
@@ -80,6 +81,7 @@ public class Task {
 	/**
 	 * List of authorized clients on the task Given By Product Owner
 	 */
+	@JsonIgnore
 	@ManyToMany
 	@JsonIgnore
 	private List<Client> client = new ArrayList<>();
@@ -100,17 +102,44 @@ public class Task {
 	@JsonFormat(pattern = "dd/MM/yyyy")
 	private Date updatedAt;
 
+	/*
+	 * Default Constructor and Getter Setters
+	 */
 	public Task() {
 		super();
 	}
 
+  /**
+	 * Task Constructor for Creating Task
+	 * @param title of the task
+	 * @param taskIdentifier of the task
+	 * @param description of the task
+	 * @param progress of the task
+	 * @param developer
+	 */
 	public Task(String title, String taskIdentifier, String description, String progress, Developer developer) {
 		super();
-		this.title = title;
+  		this.title = title;
 		this.taskIdentifier = taskIdentifier;
 		this.description = description;
 		this.progress = progress;
 		this.developer = developer;
+	}
+
+	/**
+	 * Task Constructor for Creating Task
+	 * @param title of the task
+	 * @param taskIdentifier of the task
+	 * @param description of the task
+	 * @param progress of the task
+	 * @param productOwner
+	 */
+	public Task(String title, String taskIdentifier, String description, String progress, ProductOwner productOwner) {
+		this.title = title;
+		this.taskIdentifier = taskIdentifier;
+		this.description = description;
+		this.progress = progress;
+		this.productOwner = productOwner;
 	}
 
 	public Task(String title, String taskIdentifier, String description, String progress, Developer developer,
@@ -136,6 +165,7 @@ public class Task {
 		this.developer = developer;
 
 	}
+
 
 	public long getId() {
 		return id;
@@ -208,6 +238,37 @@ public class Task {
 	public void setRemark(List<Remark> remark) {
 		this.remark = remark;
 	}
+	
+
+	public TeamLeader getTeamLeader() {
+		return teamLeader;
+	}
+
+
+	public void setTeamLeader(TeamLeader teamLeader) {
+		this.teamLeader = teamLeader;
+	}
+
+
+	public List<Client> getClient() {
+		return client;
+	}
+
+
+	public void setClient(List<Client> client) {
+		this.client = client;
+	}
+
+
+	public Developer getDeveloper() {
+		return developer;
+	}
+
+
+	public void setDeveloper(Developer developer) {
+		this.developer = developer;
+	}
+
 
 	public Developer getDeveloper() {
 		return developer;

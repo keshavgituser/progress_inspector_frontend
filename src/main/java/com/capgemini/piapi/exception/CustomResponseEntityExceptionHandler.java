@@ -12,7 +12,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @RestController
 public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
-
 	@ExceptionHandler
 	public final ResponseEntity<Object> handleDeveloperNotFoundException(DeveloperNotFoundException ex,
 			WebRequest request) {
@@ -78,5 +77,34 @@ public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptio
 		return new ResponseEntity<Object>(exceptionResponse, HttpStatus.BAD_REQUEST);
 	}
 
+	@ExceptionHandler
+	public final ResponseEntity<Object> handleClientAlreadyExistException(ClientAlreadyExistException ex, WebRequest request) {
+		
+		ClientAlreadyExistExceptionResponse exceptionResponse =  new ClientAlreadyExistExceptionResponse(ex.getMessage());
+		return new ResponseEntity<Object>(exceptionResponse, HttpStatus.BAD_REQUEST);
+	}
+	
+	@ExceptionHandler
+	public final ResponseEntity<Object> handleClientNotFoundException(ClientNotFoundException ex, WebRequest request){		
+		ClientNotFoundExceptionResponse exceptionResponse=new ClientNotFoundExceptionResponse(ex.getMessage());
+		return new ResponseEntity<Object>(exceptionResponse,HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler
+	public final ResponseEntity<Object> handleProductOwnerAlreadyExistException(ProductOwnerAlreadyExistException ex, WebRequest request){		
+		ProductOwnerAlreadyExistExceptionResponse exceptionResponse=new ProductOwnerAlreadyExistExceptionResponse(ex.getMessage());
+		return new ResponseEntity<Object>(exceptionResponse,HttpStatus.BAD_REQUEST);
+	}
+	@ExceptionHandler
+	public final ResponseEntity<Object> handleLoginException(LoginException ex, WebRequest request){		
+		LoginExceptionResponse exceptionResponse=new LoginExceptionResponse(ex.getMessage());
+		return new ResponseEntity<Object>(exceptionResponse,HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler
+	public final ResponseEntity<Object> handleClientPassedNullException(ClientPassedNullException ex, WebRequest request){		
+		ClientPassedNullExceptionResponse exceptionResponse=new ClientPassedNullExceptionResponse(ex.getMessage());
+		return new ResponseEntity<Object>(exceptionResponse,HttpStatus.BAD_REQUEST);
+	}
 
 }

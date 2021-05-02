@@ -1,9 +1,10 @@
 package com.capgemini.piapi.exception;
 
-public class ProductOwnerNotFoundExceptionResponse {
+public class ClientAlreadyExistExceptionResponse {
 	private String loginName;
+	
 
-	public ProductOwnerNotFoundExceptionResponse(String loginName) {
+	public ClientAlreadyExistExceptionResponse(String loginName) {
 		super();
 		this.loginName = loginName;
 	}
@@ -15,4 +16,5 @@ public class ProductOwnerNotFoundExceptionResponse {
 	public void setLoginName(String loginName) {
 		this.loginName = loginName;
 	}
+	
 }

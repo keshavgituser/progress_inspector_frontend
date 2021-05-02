@@ -9,12 +9,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * @author Harsh Joshi
  *
  */
+
 @ResponseStatus(HttpStatus.BAD_REQUEST)
 public class TaskIdException extends RuntimeException {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -29,6 +27,5 @@ public class TaskIdException extends RuntimeException {
 	 */
 	public TaskIdException(String errMsg) {
 		super(errMsg);
-	}
-
+  }
 }

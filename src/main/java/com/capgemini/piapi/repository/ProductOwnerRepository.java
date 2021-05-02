@@ -6,8 +6,7 @@ import org.springframework.stereotype.Repository;
 import com.capgemini.piapi.domain.ProductOwner;
 
 /**
- * This ProductOwnerRepository will be responsible for performing Product Owner related CRUD operations 
- * on  ProductOwner
+ * This ProductOwnerRepository will be responsible for performing Product Owner related Database operations 
  * @author Aadesh Juvekar
  *
  */
@@ -21,7 +20,6 @@ public interface ProductOwnerRepository extends JpaRepository<ProductOwner, Long
 	public void deleteByLoginName(String loginName);
 	/**
 	 * This findByLoginName method will return the ProductOwner by loginName from the database.
-	 * 
 	 * @param loginName of ProductOwner to be found.
 	 * @return ProductOwner if found otherwise null.
 	 */
@@ -29,11 +27,11 @@ public interface ProductOwnerRepository extends JpaRepository<ProductOwner, Long
 	
 	/**
 	 * This findByLoginName method will return the ProductOwner by loginName and password from the database.
-	 * 
 	 * @param loginName of ProductOwner to be found.
 	 * @param pwd of ProductOwner to be found.
 	 * @return ProductOwner if found otherwise null.
 	 */
 	public ProductOwner findByLoginNameAndPwd(String loginName, String pwd);
+	
 
 }

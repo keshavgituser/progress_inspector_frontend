@@ -19,7 +19,6 @@ public class TaskNotFoundException extends RuntimeException {
 	public TaskNotFoundException() {
 		super();
 	}
-
 	/**
 	 * This is used to catch exception if task is not found with error message
 	 * 

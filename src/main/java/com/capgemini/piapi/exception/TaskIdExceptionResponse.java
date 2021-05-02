@@ -1,7 +1,6 @@
 package com.capgemini.piapi.exception;
 
 public class TaskIdExceptionResponse {
-
 	private String taskIdentifier;
 
 	public TaskIdExceptionResponse(String taskIdentifier) {
@@ -9,7 +8,6 @@ public class TaskIdExceptionResponse {
 		this.taskIdentifier = taskIdentifier;
 	}
 
-	// Getter and Setter
 	public String getTaskIdentifier() {
 		return taskIdentifier;
 	}
@@ -17,5 +15,4 @@ public class TaskIdExceptionResponse {
 	public void setTaskIdentifier(String taskIdentifier) {
 		this.taskIdentifier = taskIdentifier;
 	}
-
 }

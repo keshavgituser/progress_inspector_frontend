@@ -3,12 +3,14 @@ package com.capgemini.piapi.domain;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -22,6 +24,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 
 @Entity
+@Table(name="clients")
 public class Client {
 
 	/**
@@ -53,12 +56,27 @@ public class Client {
 	 * Each client can have multiple task i.e One to Many Relationships
 	 */
 	@JsonIgnore
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "task_authorized",joinColumns =@JoinColumn(name= "id"),inverseJoinColumns = @JoinColumn(name="taskIdentifier") )
 	private List<Task> task;
 	
+	
+	public Client(String clientName, String loginName, String pwd) {
+		this.clientName = clientName;
+		this.loginName = loginName;
+		this.pwd = pwd;
+	}
+
 	public Client() {
 		super();
+	}
+
+	public List<Task> getTask() {
+		return task;
+	}
+
+	public void setTask(List<Task> task) {
+		this.task = task;
 	}
 
 	public Long getId() {
@@ -100,6 +118,7 @@ public class Client {
 	public void setStatus(String status) {
 		this.status = status;
 	}
+
 	
 	
 	

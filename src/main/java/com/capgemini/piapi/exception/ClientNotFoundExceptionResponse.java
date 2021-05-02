@@ -1,9 +1,10 @@
 package com.capgemini.piapi.exception;
 
-public class ProductOwnerNotFoundExceptionResponse {
+public class ClientNotFoundExceptionResponse {
 	private String loginName;
+	
 
-	public ProductOwnerNotFoundExceptionResponse(String loginName) {
+	public ClientNotFoundExceptionResponse(String loginName) {
 		super();
 		this.loginName = loginName;
 	}
@@ -12,7 +13,8 @@ public class ProductOwnerNotFoundExceptionResponse {
 		return loginName;
 	}
 
-	public void setLoginName(String loginName) {
+	public void setTaskIdentifier(String loginName) {
 		this.loginName = loginName;
 	}
+	
 }
