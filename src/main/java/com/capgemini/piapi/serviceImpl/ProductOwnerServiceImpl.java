@@ -79,6 +79,9 @@ public class ProductOwnerServiceImpl implements ProductOwnerService {
 		if ((oldProductOwner=productOwnerRepository.findByLoginName(productOwner.getLoginName())) == null) {
 			throw new ProductOwnerNotFoundException("Product Owner with loginName : " + productOwner.getLoginName() + " does not exists");
 		}
+		
+		productOwner.setId(oldProductOwner.getId());
+		
 		oldProductOwner = productOwner;
 		return productOwnerRepository.save(oldProductOwner);
 	}
