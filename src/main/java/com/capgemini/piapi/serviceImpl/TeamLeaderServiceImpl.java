@@ -20,6 +20,7 @@ import com.capgemini.piapi.domain.TeamLeader;
 import com.capgemini.piapi.exception.DeveloperIdException;
 import com.capgemini.piapi.exception.DeveloperNotFoundException;
 import com.capgemini.piapi.exception.InvalidLoginException;
+import com.capgemini.piapi.exception.ProductOwnerNotFoundException;
 import com.capgemini.piapi.exception.TaskIdException;
 import com.capgemini.piapi.exception.TaskNotFoundException;
 import com.capgemini.piapi.exception.TeamLeaderAlreadyExistsException;
@@ -63,7 +64,7 @@ public class TeamLeaderServiceImpl implements TeamLeaderService {
 		ProductOwner productOwner = productOwnerRepository.findByLoginName(productOwnerLoginName);
 		if (productOwner == null) {
 			// TODO Product Owner Not Found Exception
-			throw new TeamLeaderNotFoundException("Product Owner Not Found");
+			throw new ProductOwnerNotFoundException("Product Owner Not Found");
 		}
 		TeamLeader teamLeader = teamLeaderRepository.findByLoginName(teamleaderLoginName);
 		if (teamLeader == null) {

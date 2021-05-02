@@ -26,6 +26,7 @@ import com.capgemini.piapi.domain.TeamLeader;
 import com.capgemini.piapi.exception.DeveloperIdException;
 import com.capgemini.piapi.exception.DeveloperNotFoundException;
 import com.capgemini.piapi.exception.InvalidLoginException;
+import com.capgemini.piapi.exception.ProductOwnerNotFoundException;
 import com.capgemini.piapi.exception.TaskIdException;
 import com.capgemini.piapi.exception.TaskNotFoundException;
 import com.capgemini.piapi.exception.TeamLeaderAlreadyExistsException;
@@ -358,14 +359,14 @@ class TeamLeaderServiceImplTest {
 	// TASK TEST CASE: Empty Fields for Product Owner
 
 	@Test
-	void test_saveTask_GivenWrongProductOwner_ShouldThrowTeamLeaderNotFoundException() {
+	void test_saveTask_GivenWrongProductOwner_ShouldThrowProductOwnerNotFoundException() {
 		BDDMockito.given(productOwnerRepository.findByLoginName("Test123")).willReturn(null);
 		BDDMockito.given(teamLeaderRepository.findByLoginName(teamLeaderLoginName)).willReturn(teamLeader);
 		BDDMockito.given(taskRepository.save(task)).willReturn(task);
 		BDDMockito.given(teamLeaderRepository.save(teamLeader)).willReturn(teamLeader);
 		BDDMockito.given(productOwnerRepository.save(productOwner)).willReturn(productOwner);
 
-		Exception ex = assertThrows(TeamLeaderNotFoundException.class,
+		Exception ex = assertThrows(ProductOwnerNotFoundException.class,
 				() -> teamLeaderServiceImpl.createTask(task, "Test123", teamLeaderLoginName));
 		assertEquals("Product Owner Not Found", ex.getMessage());
 
