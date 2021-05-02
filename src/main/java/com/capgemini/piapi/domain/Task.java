@@ -102,12 +102,21 @@ public class Task {
 	@JsonFormat(pattern = "dd/mm/yyyy")
 	private Date updatedAt;
 
-
+	/*
+	 * Default Constructor and Getter Setters
+	 */
 	public Task() {
 		super();
 	}
 
-
+	/**
+	 * Task Constructor for Creating Task
+	 * @param title of the task
+	 * @param taskIdentifier of the task
+	 * @param description of the task
+	 * @param progress of the task
+	 * @param productOwner
+	 */
 	public Task(String title, String taskIdentifier, String description, String progress, ProductOwner productOwner) {
 		this.title = title;
 		this.taskIdentifier = taskIdentifier;

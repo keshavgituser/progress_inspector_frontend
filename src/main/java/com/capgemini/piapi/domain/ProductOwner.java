@@ -51,6 +51,9 @@ public class ProductOwner {
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "productOwner")
 	private List<Task> task;
 	
+	/**
+	 * Default Constructor and Getter Setters 
+	 */
 	public ProductOwner() {
 		super();
 	}
@@ -66,17 +69,6 @@ public class ProductOwner {
 		this.loginName = loginName;
 		this.pwd = pwd;
 	}
-
-	/**
-	 * Product Owner Constructor for Login
-	 * @param loginName of the product owner
-	 * @param pwd of the product owner
-	 */
-	public ProductOwner(String loginName,String pwd) {
-		this.loginName = loginName;
-		this.pwd = pwd;
-	}
-
 
 	public long getId() {
 		return id;

@@ -5,6 +5,8 @@ import java.util.List;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,10 +27,8 @@ import com.capgemini.piapi.service.ProductOwnerService;
 import com.capgemini.piapi.serviceImpl.MapValidationErrorService;
 
 @RestController
-@RequestMapping("/api/owner")
+@RequestMapping("/api/productOwner")
 public class ProductOwnerController {
-
-	// TO DO : Logger - INFO , ERROR in log file
 
 	@Autowired
 	private ProductOwnerService productOwnerService;
@@ -48,8 +48,9 @@ public class ProductOwnerController {
 	public ResponseEntity<?> handleProductOwnerLogin(@RequestBody ProductOwner productOwner, BindingResult result,
 			HttpSession session) {
 		ResponseEntity<?> errorMap = mapValidationErrorService.mapValidationError(result);
-		if (errorMap != null)
+		if (errorMap != null) {
 			return errorMap;
+		}
 		ProductOwner loggedInOwner = productOwnerService.authenticateProductOwner(productOwner.getLoginName(),
 				productOwner.getPwd(), session);
 		return new ResponseEntity<ProductOwner>(loggedInOwner, HttpStatus.OK);

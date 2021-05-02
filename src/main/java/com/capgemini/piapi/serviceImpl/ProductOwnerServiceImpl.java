@@ -25,22 +25,19 @@ import com.capgemini.piapi.repository.TaskRepository;
 import com.capgemini.piapi.service.ProductOwnerService;
 
 /**
- * This ProdcuctOwnerServiceImpl implements the business logic on the database.
+ * This ProdcuctOwnerServiceImpl implements the product owner services.
  * 
  * @author Aadesh Juvekar
  *
  */
 @Service
 public class ProductOwnerServiceImpl implements ProductOwnerService {
-	/**TO DO
-	 * product Owner null exception
-	 * Delete and Patch API Verify
-	 * Login Test Password wrong or loginName wrong or not found.
-	 * Comments and naming conventions
-	 * Task progress and all tasks test cases
-	 * add Client to task test cases
+	//TODO
+	 /* --------------------- Comments and naming conventions ------------------
 	 * 
-	 *---------------------- Optimize Service Logic----------------------------
+	 * ------------------------Logger Implementation---------------------------
+	 * 
+	 *---------------------- Optimize Service Logic ----------------------------
 	 */
 	
 	
@@ -52,17 +49,22 @@ public class ProductOwnerServiceImpl implements ProductOwnerService {
 
 	@Autowired
 	private TaskRepository taskRepository;
+	
 	@Autowired
 	private ClientRepository clientRepository;
-
+	
+	//------------------------------------------Product Owner CRUD Operations------------------------------------------------
 	@Override
 	public ProductOwner saveProductOwner(ProductOwner productOwner) {
+		//Check for Null Values
 		if (productOwner.getLoginName() == null || productOwner.getName()==null || productOwner.getPwd()==null) {
 			throw new NullPointerException("Please Fill the Required Fields");
 		} 
+		//Check if ProductOwner already exists
 		if ((productOwnerRepository.findByLoginName(productOwner.getLoginName())) != null) {
 			throw new ProductOwnerAlreadyExistException("Product owner already exists");
 		} 
+		//Register new  ProductOwner
 		return productOwnerRepository.save(productOwner);
 	}
 
@@ -117,7 +119,7 @@ public class ProductOwnerServiceImpl implements ProductOwnerService {
 		}
 
 	}
-
+	//--------------------------------------- Product Owner Login --------------------------------------
 	@Override
 	public ProductOwner authenticateProductOwner(String loginName, String pwd, HttpSession session) {
 		ProductOwner productOwner = null;
@@ -150,7 +152,7 @@ public class ProductOwnerServiceImpl implements ProductOwnerService {
 		session.setAttribute("productOwnerId", productOwner.getId());
 		session.setAttribute("loginName", productOwner.getLoginName());
 	}
-
+	//--------------------------------------------Task Operations --------------------------------------------
 	@Override
 	public List<Task> getAllTasks(HttpSession session) {
 		List<Task> tasks =new ArrayList<Task>();
@@ -181,7 +183,7 @@ public class ProductOwnerServiceImpl implements ProductOwnerService {
 			}
 			return savedTask;
 	}
-
+	//------------------------------------------Client Operations-------------------------------------------------
 	@Override
 	public Client addTaskToClient(String clientloginName, String taskIdentifier) {
 		Client client = null;

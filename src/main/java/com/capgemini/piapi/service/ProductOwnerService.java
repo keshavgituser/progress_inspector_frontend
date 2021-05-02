@@ -8,7 +8,7 @@ import com.capgemini.piapi.domain.Client;
 import com.capgemini.piapi.domain.ProductOwner;
 import com.capgemini.piapi.domain.Task;
 /**
- * This ProductOwnerService is responsible for performing product owner related task
+ * This ProductOwnerService is responsible for performing product owner related services
  * @author Aadesh Juvekar
  *
  */
@@ -26,12 +26,12 @@ public interface ProductOwnerService {
 	 */
 	public ProductOwner updateProductOwner(ProductOwner productOwner);
 	/**
-	 * This method is used for deleting productOwner details in database.
+	 * This method is used for deleting productOwner details in system.
 	 * @param loginName of the productOwner
 	 */
 	public void deleteProductOwnerByLoginName(String loginName);
 	/**
-	 * This method return list of all productOwners in database.
+	 * This method return list of all productOwners in system.
 	 * @return list of productOwners.
 	 */
 	public List<ProductOwner> findAll();
@@ -67,6 +67,10 @@ public interface ProductOwnerService {
 	 * @return Client with authorized task
 	 */
 	public Client addTaskToClient(String clientLoginName,String taskIdentifier);
+	/**
+	 * This method will return list of clients 
+	 * @return list of clients
+	 */
 	public List<Client> getAllClients();
 	
 	
