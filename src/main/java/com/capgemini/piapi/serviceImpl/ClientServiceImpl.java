@@ -9,11 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.capgemini.piapi.domain.Client;
+import com.capgemini.piapi.domain.ProductOwner;
 import com.capgemini.piapi.domain.Remark;
 import com.capgemini.piapi.domain.Task;
 import com.capgemini.piapi.exception.ClientAlreadyExistException;
 import com.capgemini.piapi.exception.ClientNotFoundException;
 import com.capgemini.piapi.exception.ClientPassedNullException;
+import com.capgemini.piapi.exception.LoginException;
 import com.capgemini.piapi.exception.ProductOwnerAlreadyExistException;
 import com.capgemini.piapi.exception.ProductOwnerNotFoundException;
 import com.capgemini.piapi.exception.TaskIdException;
@@ -68,6 +70,7 @@ public class ClientServiceImpl implements ClientService {
 	@Override
 	public Remark addRemark(Remark remark, String task_id) {
 		try {
+			
 			//We have to set the task for the remark
 			Task task = taskRepository.findByTaskIdentifier(task_id);
 			List<Remark> remarkList = task.getRemark();
@@ -100,13 +103,20 @@ public class ClientServiceImpl implements ClientService {
 	public Client saveClient(Client client) {
 		
 		try {
+			
+			if(clientRepository.findByLoginName(client.getLoginName())!=null)
+			{
+				throw new ClientAlreadyExistException("Client Already Exist Please Login");
+			}
+			
 		if(client.getClientName()==null)
 		{
 			throw new ClientPassedNullException("ClientName is Null");
 		}
 		else if(client.getLoginName()==null)
 		{
-			throw new ClientPassedNullException("Login is Null");
+			
+			throw new ClientPassedNullException("loginName is Null");
 		}
 		else if(client.getPwd()==null)
 		{
@@ -183,16 +193,21 @@ public class ClientServiceImpl implements ClientService {
 	
 	@Override
 	public Client authenticateClient(String loginName, String pwd, HttpSession session) {
-		Client client=null;
-		if ((client=clientRepository.findByLoginNameAndPwd(loginName, pwd)) == null) {
-			throw new ClientNotFoundException("Client with loginName : " + loginName + " does not exists");
-		} 
-		if(loginName==null || pwd==null)
-		{
-			throw new ClientPassedNullException("Null Values Are Passed For Authentation");
+		Client productOwner = null;
+
+		if (loginName == null || pwd == null) {
+			throw new LoginException("Please Enter Credentials");
 		}
-		addClientInSession(client, session);
-		return client;
+
+		if ((productOwner = clientRepository.findByLoginName(loginName)) == null) {
+			throw new ClientNotFoundException("Client with loginName : " + loginName + " does not exist");
+		}
+
+		if (productOwner.getPwd().equals(pwd)) {
+			addClientInSession(productOwner, session);
+			return productOwner;
+		}
+			throw new LoginException("Login Failed ! Invalid Credentials");
 	}
 	
 	/**
