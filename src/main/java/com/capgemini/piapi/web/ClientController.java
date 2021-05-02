@@ -149,7 +149,7 @@ public class ClientController{
 	
 	/**
 	 * This Method Is REsponsible for login purpose of client
-	 * @param Client
+	 * @param client
 	 * @param result
 	 * @param session
 	 * @return

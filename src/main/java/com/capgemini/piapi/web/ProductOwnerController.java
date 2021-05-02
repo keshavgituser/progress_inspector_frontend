@@ -151,11 +151,8 @@ public class ProductOwnerController {
 	}
 
 	/**
-	 * Method to authorize client to view task
-	 * 
-	 * @param clientLoginName
-	 * @param taskIdentifier
-	 * @return client if task is authorized
+	 * Method to get all tasks
+	 * @return list of clients
 	 */
 
 	@GetMapping("/clients")

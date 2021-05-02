@@ -21,7 +21,7 @@ public interface DeveloperRepository extends JpaRepository<Developer, Long> {
 	/**
 	 * This will find Developer on basis of the developer identifier
 	 * 
-	 * @param developerIdentifier
+	 * @param loginName
 	 * @return developer according to developerIdentifier if developerIdentifier
 	 *         found
 	 */

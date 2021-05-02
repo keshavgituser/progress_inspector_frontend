@@ -61,7 +61,7 @@ public class DeveloperController {
 	/**
 	 * This method is used to delete developer on the basis of
 	 * 
-	 * @param loginname
+	 * @param developerLoginName
 	 * @param session
 	 * @return Response Entity with Deleted Developer if Developer exist
 	 */

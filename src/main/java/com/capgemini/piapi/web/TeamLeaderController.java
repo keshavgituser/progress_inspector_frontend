@@ -97,7 +97,7 @@ public class TeamLeaderController {
 	/**
 	 * Method is used for getting Team Leader on basis of loginName
 	 * 
-	 * @param teamLeaderloginname
+	 * @param teamLeaderLoginName
 	 * @return Response Entity with logged in Team Leader
 	 */
 	@GetMapping("/{teamLeaderLoginName}")
@@ -110,7 +110,7 @@ public class TeamLeaderController {
 	/**
 	 * This method is used to delete Team Leader by Login Name
 	 * 
-	 * @param teamleaderloginname
+	 * @param teamLeaderLoginName
 	 * @return Response Entity of deleted Team Leader
 	 */
 	@DeleteMapping("/{teamLeaderLoginName}")
@@ -265,7 +265,7 @@ public class TeamLeaderController {
 	 * This method is method is used to assign task to developer
 	 * 
 	 * @param taskIdentifier
-	 * @param devId
+	 * @param devLoginName
 	 * @param session
 	 * @return Resposne Entity with Task assigned to developer if Team Leader is
 	 *         logged in else You do not have Access message is appeared with

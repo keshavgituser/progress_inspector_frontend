@@ -27,7 +27,7 @@ public class ClientPassedNullException extends RuntimeException {
 	}
 
 	/**
-	 * @param message
+	 * @param errMsg
 	 */
 	public ClientPassedNullException(String errMsg) {
 		super(errMsg);

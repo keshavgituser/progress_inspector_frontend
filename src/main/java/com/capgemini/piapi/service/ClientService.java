@@ -40,10 +40,6 @@ public interface ClientService {
 	/**
 	 * This method adds Client to database and Registers it
 	 * if client already exist it asks user to login
-	 * @param client -the client object as request body
-	 * @param result -the result 
-	 * @return response entity to 
-	 *
 	 * @param client
 	 * @return savedclient object for addCLient method in controller
 	 */
@@ -58,8 +54,7 @@ public interface ClientService {
 	/**
 	 * This Method Updates The Client
 	 * @param client
-	 * @param result
-	 * @return List of Client Objects or ClientNotFoundException
+	 * @return list of Client Objects or ClientNotFoundException
 	 */
 	public Client updateClient(@Valid Client client);
 	
