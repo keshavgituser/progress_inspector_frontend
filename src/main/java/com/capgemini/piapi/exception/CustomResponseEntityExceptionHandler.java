@@ -46,6 +46,11 @@ public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptio
 		ProductOwnerAlreadyExistExceptionResponse exceptionResponse=new ProductOwnerAlreadyExistExceptionResponse(ex.getMessage());
 		return new ResponseEntity<Object>(exceptionResponse,HttpStatus.BAD_REQUEST);
 	}
+	@ExceptionHandler
+	public final ResponseEntity<Object> handleLoginException(LoginException ex, WebRequest request){		
+		LoginExceptionResponse exceptionResponse=new LoginExceptionResponse(ex.getMessage());
+		return new ResponseEntity<Object>(exceptionResponse,HttpStatus.BAD_REQUEST);
+	}
 
 	
 	@ExceptionHandler

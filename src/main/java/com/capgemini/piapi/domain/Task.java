@@ -102,9 +102,29 @@ public class Task {
 	@JsonFormat(pattern = "dd/mm/yyyy")
 	private Date updatedAt;
 
+	/*
+	 * Default Constructor and Getter Setters
+	 */
 	public Task() {
 		super();
 	}
+
+	/**
+	 * Task Constructor for Creating Task
+	 * @param title of the task
+	 * @param taskIdentifier of the task
+	 * @param description of the task
+	 * @param progress of the task
+	 * @param productOwner
+	 */
+	public Task(String title, String taskIdentifier, String description, String progress, ProductOwner productOwner) {
+		this.title = title;
+		this.taskIdentifier = taskIdentifier;
+		this.description = description;
+		this.progress = progress;
+		this.productOwner=productOwner;
+	}
+
 
 	public long getId() {
 		return id;
@@ -177,6 +197,37 @@ public class Task {
 	public void setRemark(List<Remark> remark) {
 		this.remark = remark;
 	}
+	
+
+	public TeamLeader getTeamLeader() {
+		return teamLeader;
+	}
+
+
+	public void setTeamLeader(TeamLeader teamLeader) {
+		this.teamLeader = teamLeader;
+	}
+
+
+	public List<Client> getClient() {
+		return client;
+	}
+
+
+	public void setClient(List<Client> client) {
+		this.client = client;
+	}
+
+
+	public Developer getDeveloper() {
+		return developer;
+	}
+
+
+	public void setDeveloper(Developer developer) {
+		this.developer = developer;
+	}
+
 
 	@PrePersist()
 	protected void onCreate() {

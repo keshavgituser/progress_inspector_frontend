@@ -43,6 +43,13 @@ public class Client {
 	@JoinTable(name = "task_authorized",joinColumns =@JoinColumn(name= "id"),inverseJoinColumns = @JoinColumn(name="taskIdentifier") )
 	private List<Task> task;
 	
+	
+	public Client(String clientName, String loginName, String pwd) {
+		this.clientName = clientName;
+		this.loginName = loginName;
+		this.pwd = pwd;
+	}
+
 	public Client() {
 		super();
 	}
