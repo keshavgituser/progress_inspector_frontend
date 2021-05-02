@@ -112,8 +112,9 @@ public class Task {
 		this.progress = progress;
 		this.developer = developer;
 	}
-	
-	public Task(String title, String taskIdentifier, String description, String progress, Developer developer , List<Remark> remark) {
+
+	public Task(String title, String taskIdentifier, String description, String progress, Developer developer,
+			List<Remark> remark) {
 		super();
 		this.title = title;
 		this.taskIdentifier = taskIdentifier;
@@ -121,6 +122,19 @@ public class Task {
 		this.progress = progress;
 		this.developer = developer;
 		this.remark = remark;
+	}
+
+	public Task(String title, String taskIdentifier, String description, String progress, ProductOwner productOwner,
+			TeamLeader teamLeader, Developer developer) {
+		super();
+		this.title = title;
+		this.taskIdentifier = taskIdentifier;
+		this.description = description;
+		this.progress = progress;
+		this.productOwner = productOwner;
+		this.teamLeader = teamLeader;
+		this.developer = developer;
+
 	}
 
 	public long getId() {

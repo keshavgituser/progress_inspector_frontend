@@ -38,6 +38,13 @@ public class TeamLeader {
 	public TeamLeader() {
 		super();
 	}
+	
+	public TeamLeader(String name, String loginName, String pwd, List<Task> task) {
+		this.name = name;
+		this.loginName = loginName;
+		this.pwd = pwd;
+		this.task = task;
+	}
 
 	public Long getId() {
 		return id;
