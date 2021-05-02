@@ -21,7 +21,6 @@ import com.capgemini.piapi.domain.Remark;
 import com.capgemini.piapi.domain.Task;
 import com.capgemini.piapi.exception.DeveloperAlreadyExistException;
 import com.capgemini.piapi.exception.DeveloperNotFoundException;
-import com.capgemini.piapi.exception.InvalidLoginException;
 import com.capgemini.piapi.exception.TaskIdException;
 import com.capgemini.piapi.repository.DeveloperRepository;
 import com.capgemini.piapi.repository.RemarkRepository;
@@ -85,66 +84,7 @@ class DevelperServiceImplTest {
 		task2.setRemark(remarkList);
 	}
 
-	// ---------------------------Developer---------------------------------
-	// Test to save developer
-	@Test
-	void test_saveDeveloper_GivenDeveloper_ShouldReturnSavedDeveloper() {
-		BDDMockito.given(developerRepository.save(developer))
-				.willReturn(new Developer("Dummy", "dummy123", "d123", "Inactive", taskList));
-		Developer savedDeveloper = developerServiceImpl.saveDeveloper(developer);
-		assertEquals(savedDeveloper.getName(), developer.getName());
-		assertEquals(savedDeveloper.getLoginName(), developer.getLoginName());
-		assertEquals(savedDeveloper.getPwd(), developer.getPwd());
-		assertEquals(savedDeveloper.getStatus(), developer.getStatus());
-		assertEquals(savedDeveloper.getTasks(), developer.getTasks());
-	}
-
-	// Test for developer already exist exception
-	@Test
-	void test_saveDeveloper_GivenAlreadyExistingDeveloper_ShouldThrowDeveloperAlreadyExistException() {
-		BDDMockito.given(developerRepository.findByLoginName(developer.getLoginName()))
-				.willReturn(new Developer("Dummy", "dummy123", "d123", "Inactive", taskList));
-		Exception ex = assertThrows(DeveloperAlreadyExistException.class,
-				() -> developerServiceImpl.saveDeveloper(developer));
-		assertEquals("developer with " + developer.getLoginName() + " login name is already available",
-				ex.getMessage());
-	}
-
-	// Test if any required field is null should throw null pointer exception
-	@Test
-	void test_saveDeveloper_GivenNullValues_ShouldThrowNullPointerException() {
-		BDDMockito.given(developerRepository.save(nullDeveloper)).willThrow(new NullPointerException());
-		assertThrows(NullPointerException.class, () -> developerServiceImpl.saveDeveloper(nullDeveloper));
-	}
-
-	// ---------------------------------------Find Developer By LoginName--------------------------------
-	// Test to find developer by login name
-	@Test
-	void test_findDeveloperByLoginName_GivenDeveloperLoginName_ShouldReturnDeveloper() {
-		BDDMockito.given(developerRepository.findByLoginName(developerLoginName))
-				.willReturn(new Developer("Dummy", "dummy123", "d123", "Inactive", taskList));
-		Developer foundedDeveloper = developerServiceImpl.findDeveloperByDeveloperLoginName(developerLoginName);
-		assertEquals(foundedDeveloper.getLoginName(), developerLoginName);
-	}
-
-	// Test to find developer by login name if not found then
-	// DeveloperNotFoundException to be thrown
-	@Test
-	void test_findDeveloperByLoginName_GivenWrongDeveloperLoginName_ShouldThrowDeveloperNotFoundException() {
-		BDDMockito.given(developerRepository.findByLoginName(dummyLoginName))
-				.willThrow(new DeveloperNotFoundException());
-		assertThrows(DeveloperNotFoundException.class,
-				() -> developerServiceImpl.findDeveloperByDeveloperLoginName(developerLoginName));
-	}
-
-	// Test to find developer by login name if login name is null then throw
-	// nullPointerException
-	@Test
-	void test_findDeveloperByLoginName_GivenNullDeveloperLoginName_ShouldThrowNullPointerException() {
-		Exception ex = assertThrows(NullPointerException.class,
-				() -> developerServiceImpl.updateDeveloper(new Developer()));
-		assertEquals("Please Fill the Required Fields", ex.getMessage());
-	}
+	
 
 	// --------------------------------Delete Developer By LoginName-----------------------------------------
 	// Test to delete developer by DeveloperLoginName
@@ -174,147 +114,7 @@ class DevelperServiceImplTest {
 		assertEquals("Please Fill the Required Fields", ex.getMessage());
 	}
 
-	// -------------------------------Update Developer By LoginName----------------------------------
-	// Test Case to update developer should return updated developer
-	@Test
-	void test_updateDeveloper_GivenDeveloper_ShouldReturnUpdatedDeveloper() {
-		when(developerRepository.save(developer))
-				.thenReturn(new Developer("Dummy", "dummy123", "d123", "Inactive", taskList));
-		when(developerRepository.findByLoginName(developer.getLoginName()))
-				.thenReturn(new Developer("Old Test Owner", "Test1", "Test1234", "Inactive", taskList));
-		assertEquals(developer.getName(), developerServiceImpl.updateDeveloper(developer).getName());
-	}
-
-	// Test Case to update developer should if developer object not found then throw
-	// DeveloperNotFoundException
-	@Test
-	void test_updateDeveloper_GivenWrongDeveloperObject_ShouldThrowDeveloperNotFoundException() {
-		when(developerRepository.findByLoginName(developer.getLoginName())).thenReturn(null);
-		Exception ex = assertThrows(DeveloperNotFoundException.class,
-				() -> developerServiceImpl.updateDeveloper(developer));
-		assertEquals("Developer with loginName : " + developer.getLoginName() + " does not exists",
-				ex.getMessage());
-	}
-
-	// Test Case to update developer should if developer is null then throw
-	// NullPointerException
-	@Test
-	void test_updateDeveloper_GivenNullDeveloperObject_ShouldThrowNullPointerException() {
-		Exception ex = assertThrows(NullPointerException.class,
-				() -> developerServiceImpl.updateDeveloper(new Developer()));
-		assertEquals("Please Fill the Required Fields", ex.getMessage());
-	}
-
-	// ------------------------------View All Task By Developer LoginName------------------------
-	// Test to get list of task by given developer login name
-	@Test
-	void test_viewAllTaskByDeveloperLoginName_GivenDeveloperLoginName_ShouldReturnListOfTasks() {
-		BDDMockito.given(developerRepository.findByLoginName(developerLoginName)).willReturn(developer);
-		List<Task> taskList = developerServiceImpl.viewAllTaskByDeveloperLoginName(developerLoginName);
-		assertEquals(taskList, developer.getTasks());
-	}
 	
-	// Test to get list of task by given developer login if null should throw NullPointerException
-	@Test
-	void test_viewAllTaskByDeveloperLoginName_GivenNullDeveloperLoginName_ShouldThrowNullPointerException() {
-		BDDMockito.given(developerRepository.findByLoginName(nullString)).willReturn(null);
-		Exception ex = assertThrows(NullPointerException.class,
-				() -> developerServiceImpl.viewAllTaskByDeveloperLoginName(nullString));
-		assertEquals("Please Fill the Required Fields",
-				ex.getMessage());
-	}
-	
-	//----------------------------View Task by Identifier and Developer Login Name----------------------
-	// Test to find task on the basis of Task identifier and developer login name
-	@Test
-	void test_findTaskByTaskIdentifierAndDevelpoerLoginName_GivenTaskIdentifierAndDeveloperLoginName_ShouldReturnTask() {
-		BDDMockito.given(developerRepository.findByLoginName(developerLoginName)).willReturn(developer);
-		Task task = developerServiceImpl.findTaskByTaskIdentifierAndDevelpoerLoginName(taskIdentifier,
-				developerLoginName);
-		assertEquals(task1.getTaskIdentifier(), task.getTaskIdentifier());
-	}
-	
-	// Test to find task on the basis of Task identifier and developer login name if
-	// any field is null then throw null pointer exception
-	@Test
-	void test_findTaskByTaskIdentifierAndDevelpoerLoginName_GivenNullValues_ShouldThrowNullPointerException() {
-		BDDMockito.given(developerRepository.findByLoginName(nullString)).willReturn(developer);
-		Exception ex = assertThrows(NullPointerException.class,
-				() -> developerServiceImpl.findTaskByTaskIdentifierAndDevelpoerLoginName(taskIdentifier, nullString));
-		assertEquals("Please Fill the Required Fields", ex.getMessage());
-	}
-	
-	//	Test to find task on the basis of Task identifier and developer login name if
-	// taskIdentifier is not available then TaskIdFoundException is thrown
-	@Test
-	void test_test_findTaskByTaskIdentifierAndDevelpoerLoginName_GivenWrongTaskIdentifier_ShouldThrowTaskIdException() {
-		BDDMockito.given(developerRepository.findByLoginName(developerLoginName)).willReturn(developer);
-		Exception ex = assertThrows(TaskIdException.class,
-				() -> developerServiceImpl.findTaskByTaskIdentifierAndDevelpoerLoginName(dummyTaskIdentifier, developerLoginName));
-		assertEquals("Task with id " + dummyTaskIdentifier.toUpperCase() + " is not available", ex.getMessage());
-	}
-	
-	// Test to find task on the basis of Task identifier and developer login name if
-	// developerloginName is not available then TaskIdFoundException is thrown
-	@Test
-	void test_findTaskByTaskIdentifierAndDevelpoerLoginName_GivenWrongDeveloperLoginName_ShouldThrowDeveloperNotFoundException() {
-		BDDMockito.given(developerRepository.findByLoginName(dummyLoginName)).willReturn(null);
-		Exception ex = assertThrows(DeveloperNotFoundException.class, () -> developerServiceImpl
-				.findTaskByTaskIdentifierAndDevelpoerLoginName(taskIdentifier, dummyLoginName));
-		assertEquals("Developer with loginName : " + dummyLoginName + " does not exists", ex.getMessage());
-	}
-	
-	//------------------------------------Update Task Status---------------------------------------------
-	// Test to update task status on the basis taskIdentifier , developerloginName ,
-	// task
-	@Test
-	void test_updateTaskStatus_GivenTaskIdentifierDeveloperLoginNameandTask_ShouldReturnUpdatedTask() {
-		BDDMockito.given(developerRepository.findByLoginName(developer2.getLoginName()))
-				.willReturn(developer2);
-		BDDMockito.given(taskRepository.save(task2))
-				.willReturn(new Task("Test Task1", "T02", "test desc2", "testing", developer2));
-		Task task = developerServiceImpl.updateTaskStatus("T02", developer2.getLoginName(),
-				new Task("Test Task1", "T02", "test desc2", "testing", developer2));
-		assertEquals("testing", task.getProgress());
-	}
-	
-	//Test to update update task status on the basis of taskIdentifier , developerloginName ,Task 
-	//If null values occured then it should 
-	@Test
-	void test_updateTaskStatus_GivenNullValues_ShouldThorwNullPointerException() {
-		BDDMockito.given(developerRepository.findByLoginName(developer2.getLoginName())).willReturn(developer2);
-		BDDMockito.given(taskRepository.save(task2))
-				.willReturn(new Task("Test Task1", "T02", "test desc2", "testing", developer2));
-		Exception ex = assertThrows(NullPointerException.class, () -> developerServiceImpl.updateTaskStatus("T02",
-				nullString, new Task("Test Task1", "T02", "test desc2", "testing", developer2)));
-		assertEquals("Please Fill the Required Fields", ex.getMessage());
-	}
-	
-	//Test to update update task status on the basis of taskIdentifier , developerloginName ,Task
-	//If task not found should throw TaskIdException
-	@Test
-	void test_updateTaskStatus_GivenWrongTaskIdentifier_ShouldThrowTaskIdException() {
-		BDDMockito.given(developerRepository.findByLoginName(developer2.getLoginName())).willReturn(developer2);
-		BDDMockito.given(taskRepository.save(task2))
-				.willReturn(new Task("Test Task1", "T02", "test desc2", "testing", developer2));
-		Exception ex = assertThrows(TaskIdException.class, () -> developerServiceImpl.updateTaskStatus(dummyTaskIdentifier,
-				developer2.getLoginName(), new Task("Test Task1", "T02", "test desc2", "testing", developer2)));
-		assertEquals("Task with Identifer" + dummyTaskIdentifier.toUpperCase() + " doesn't exist", ex.getMessage());
-	}
-	
-	// Test to update update task status on the basis of taskIdentifier ,
-	// developerloginName ,Task
-	// If developer not found should throw DeveloperNotFound Exception
-	@Test
-	void test_updateTaskStatus_GivenWrongDeveloperLoginName_ShouldThrowDeveloperNotFound() {
-		BDDMockito.given(developerRepository.findByLoginName(developer2.getLoginName())).willReturn(developer2);
-		BDDMockito.given(taskRepository.save(task2))
-				.willReturn(new Task("Test Task1", "T02", "test desc2", "testing", developer2));
-		Exception ex = assertThrows(DeveloperNotFoundException.class,
-				() -> developerServiceImpl.updateTaskStatus("T02", dummyLoginName,
-						new Task("Test Task1", "T02", "test desc2", "testing", developer2)));
-		assertEquals("developer with " + dummyLoginName + " does not exist", ex.getMessage());
-	}
 	
 	//----------------------------------------Add Remark------------------------------------------------
 	//Test to add remark to the specific task
@@ -373,54 +173,7 @@ class DevelperServiceImplTest {
 		assertEquals("developer with " + dummyLoginName + " does not exist", ex.getMessage());
 	}
 	
-	//--------------------------------------------Login Authentication Developer----------------------------------------------
-	// Test case to successfully login Developer
-	@Test
-	void test_authenticateDeveloper_GivenProductOwner_ShouldReturnLoggedInDeveloper() {
-		when(developerRepository.findByLoginName(developer.getLoginName()))
-				.thenReturn(new Developer("Dummy", "dummy123", "d123", "Inactive", taskList));
-		when(session.getAttribute("developerLoginName")).thenReturn(developer.getLoginName());
-		Developer dev = developerServiceImpl.authenticateDeveloper(developer.getLoginName(), developer.getPwd(),
-				session);
-		assertNotNull(dev);
-		assertNotNull(dev.getLoginName());
-		assertEquals(dev.getLoginName(), session.getAttribute("developerLoginName"));
-	}
 	
-	// Test case to successfully login Developer if wrong login name is entered
-	// DeveloperNotFoundException is thrown
-	@Test
-	void test_authenticateDevloper_GivenWrongDeveloperLoginName_ShouldReturnDeveloperNotFoundException() {
-		when(developerRepository.findByLoginNameAndPwd(developer.getLoginName(), developer.getPwd()))
-				.thenReturn(new Developer("Dummy", "dummy123", "d123", "Inactive", taskList));
-		when(session.getAttribute("developerLoginName")).thenReturn(developer.getLoginName());
-		Exception ex = assertThrows(DeveloperNotFoundException.class,
-				() -> developerServiceImpl.authenticateDeveloper(developer.getLoginName(), developer.getPwd(), session),
-				"Developer with loginName " + developer.getLoginName() + " does not exist");
-		assertEquals("Developer with loginName : " + developer.getLoginName() + " does not exist", ex.getMessage());
-	}
-	
-	// Test case to successfully login Developer if wrong password is
-	// entered invalid login exception is thrown
-	@Test
-	void test_authenticateDevloper_GivenWrongPassword_ShouldReturnInvalidLoginException() {
-		when(developerRepository.findByLoginName(developer.getLoginName()))
-				.thenReturn(new Developer("Dummy", "dummy123", "xxx", "Inactive", taskList));
-		when(session.getAttribute("developerLoginName")).thenReturn(developer.getLoginName());
-		Exception ex = assertThrows(InvalidLoginException.class, () -> developerServiceImpl
-				.authenticateDeveloper(developer.getLoginName(), developer.getPwd(), session));
-		assertEquals("Login Failed ! Invalid Credentials", ex.getMessage());
-	}
-	
-	// Test case to authenticate login if given null values enter
-	// InvalidLoginException
-	@Test
-	void test_authenticateDeveloper_GivenNull_ShouldThrowInvalidLoginException() {
-		when(session.getAttribute("developerLoginName")).thenReturn(developer1);
-		Exception ex = assertThrows(InvalidLoginException.class, () -> developerServiceImpl
-				.authenticateDeveloper(developer1.getLoginName(), developer1.getPwd(), session));
-		assertEquals("Please Enter Credentials", ex.getMessage());
-	}
 }
 	
 	
