@@ -31,7 +31,7 @@ import com.capgemini.piapi.serviceImpl.MapValidationErrorService;
  *
  */
 @RestController
-@RequestMapping("/api/developers")
+@RequestMapping("/api/developer")
 public class DeveloperController {
 
 	private static final Logger log = LoggerFactory.getLogger(DeveloperController.class);
@@ -68,7 +68,7 @@ public class DeveloperController {
 	@DeleteMapping("/{developerLoginName}")
 	public ResponseEntity<?> deleteDeveloper(@PathVariable String developerLoginName, HttpSession session) {
 		if (session.getAttribute("userType") != null && session.getAttribute("userType").equals("Developer")
-				&& session.getAttribute("developerLeaderLoginName").equals(developerLoginName)) {
+				&& session.getAttribute("developerLoginName").equals(developerLoginName)) {
 			developerService.deleteDeveloperbyDeveloperLoginName(developerLoginName);
 			return new ResponseEntity<String>("Developer with " + developerLoginName + " deleted successfully",
 					HttpStatus.OK);

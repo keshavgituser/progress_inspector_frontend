@@ -60,8 +60,8 @@ public class DeveloperServiceImpl implements DeveloperService {
 		if (developerLoginName == null) {
 			throw new NullPointerException("Please Fill the Required Fields");
 		}
-		Developer developer = developerRepository.findByLoginName(developerLoginName);
-		if (developer == null) {
+		Developer developer = null;
+		if ((developer=developerRepository.findByLoginName(developerLoginName) )== null) {
 			throw new DeveloperNotFoundException("developer with " + developerLoginName + " login name not found");
 		}
 		return developer;
@@ -72,8 +72,8 @@ public class DeveloperServiceImpl implements DeveloperService {
 		if (developerLoginName == null) {
 			throw new NullPointerException("Please Fill the Required Fields");
 		}
-		Developer developer = developerRepository.findByLoginName(developerLoginName);
-		if (developer == null) {
+		Developer developer = null;
+		if ((developer=developerRepository.findByLoginName(developerLoginName) )== null) {
 			throw new DeveloperNotFoundException("developer with " + developerLoginName + " login name not found");
 		}
 		developerRepository.delete(developer);
@@ -85,13 +85,14 @@ public class DeveloperServiceImpl implements DeveloperService {
 		if (developer.getLoginName() == null) {
 			throw new NullPointerException("Please Fill the Required Fields");
 		}
-		Developer oldProductOwner = developerRepository.findByLoginName(developer.getLoginName());
-		if (oldProductOwner == null) {
-			throw new DeveloperNotFoundException(
-					"Developer with loginName : " + developer.getLoginName() + " does not exists");
+		Developer oldDeveloper = null;
+		if ((oldDeveloper=developerRepository.findByLoginName(developer.getLoginName()) )== null) {
+			throw new DeveloperNotFoundException("Developer with loginName : " + developer.getLoginName() + " does not exists");
 		}
-		oldProductOwner = developer;
-		return developerRepository.save(oldProductOwner);
+		
+		developer.setId(oldDeveloper.getId());
+		oldDeveloper = developer;
+		return developerRepository.save(oldDeveloper);
 	}
 
 	@Override
@@ -109,10 +110,9 @@ public class DeveloperServiceImpl implements DeveloperService {
 		if (developerLoginName == null || taskIdentifier == null) {
 			throw new NullPointerException("Please Fill the Required Fields");
 		}
-		Developer developer = developerRepository.findByLoginName(developerLoginName);
-		if (developer == null) {
-			throw new DeveloperNotFoundException(
-					"Developer with loginName : " + developerLoginName + " does not exists");
+		Developer developer = null;
+		if ((developer=developerRepository.findByLoginName(developerLoginName) )== null) {
+			throw new DeveloperNotFoundException("Developer with loginName : " + developerLoginName + " does not exists");
 		}
 		List<Task> taskList = developer.getTasks();
 		for (Task task : taskList) {
@@ -128,8 +128,8 @@ public class DeveloperServiceImpl implements DeveloperService {
 		if (developerLoginName == null || taskIdentifier == null || task == null) {
 			throw new NullPointerException("Please Fill the Required Fields");
 		}
-		Developer developer = developerRepository.findByLoginName(developerLoginName);
-		if (developer == null) {
+		Developer developer = null;
+		if ((developer=developerRepository.findByLoginName(developerLoginName) )== null) {
 			throw new DeveloperNotFoundException("developer with " + developerLoginName + " does not exist");
 		}
 		// Task task1 = taskRepository.findByTaskIdentifier(taskIdentifier);
@@ -151,8 +151,8 @@ public class DeveloperServiceImpl implements DeveloperService {
 		if (developerLoginName == null || taskIdentifier == null || remark == null) {
 			throw new NullPointerException("Please Fill the Required Fields");
 		}
-		Developer developer = developerRepository.findByLoginName(developerLoginName);
-		if (developer == null) {
+		Developer developer = null;
+		if ((developer=developerRepository.findByLoginName(developerLoginName) )== null) {
 			throw new DeveloperNotFoundException("developer with " + developerLoginName + " does not exist");
 		}
 		Task task = new Task();

@@ -152,6 +152,7 @@ public class ClientServiceImpl implements ClientService {
 			throw new ClientNotFoundException(
 					"Client with loginName : " + client.getLoginName() + " does not exists");
 		}
+		client.setId(oldClient.getId());
 		oldClient = client;
 		return clientRepository.save(oldClient);
 	}

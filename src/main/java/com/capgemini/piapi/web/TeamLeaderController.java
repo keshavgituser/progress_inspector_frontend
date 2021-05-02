@@ -29,7 +29,7 @@ import com.capgemini.piapi.service.TeamLeaderService;
 import com.capgemini.piapi.serviceImpl.MapValidationErrorService;
 
 @RestController
-@RequestMapping("/api/teamleader")
+@RequestMapping("/api/teamLeader")
 public class TeamLeaderController {
 
 	private static final Logger logger = LoggerFactory.getLogger(TeamLeaderController.class);
@@ -100,9 +100,9 @@ public class TeamLeaderController {
 	 * @param teamLeaderloginname
 	 * @return Response Entity with logged in Team Leader
 	 */
-	@GetMapping("/{teamleaderloginname}")
-	public ResponseEntity<?> getTeamLeader(@PathVariable String teamleaderloginname) {
-		TeamLeader teamLeader = teamLeaderService.findTeamLeaderByLoginName(teamleaderloginname);
+	@GetMapping("/{teamLeaderLoginName}")
+	public ResponseEntity<?> getTeamLeader(@PathVariable String teamLeaderLoginName) {
+		TeamLeader teamLeader = teamLeaderService.findTeamLeaderByLoginName(teamLeaderLoginName);
 		logger.info("--TEAMLEADER--" + teamLeader);
 		return new ResponseEntity<TeamLeader>(teamLeader, HttpStatus.OK);
 	}
@@ -113,12 +113,12 @@ public class TeamLeaderController {
 	 * @param teamleaderloginname
 	 * @return Response Entity of deleted Team Leader
 	 */
-	@DeleteMapping("/{teamleaderLoginName}")
-	public ResponseEntity<?> deleteTeamLeader(@PathVariable String teamleaderLoginName, HttpSession session) {
+	@DeleteMapping("/{teamLeaderLoginName}")
+	public ResponseEntity<?> deleteTeamLeader(@PathVariable String teamLeaderLoginName, HttpSession session) {
 		if (session.getAttribute("userType") != null && session.getAttribute("userType").equals("TeamLeader")
-				&& session.getAttribute("teamLeaderLoginName").equals(teamleaderLoginName)) {
-			teamLeaderService.deleteTeamLeaderByLoginName(teamleaderLoginName);
-			return new ResponseEntity<String>("TeamLeader Deleted with login Name " + teamleaderLoginName,
+				&& session.getAttribute("teamLeaderLoginName").equals(teamLeaderLoginName)) {
+			teamLeaderService.deleteTeamLeaderByLoginName(teamLeaderLoginName);
+			return new ResponseEntity<String>("TeamLeader Deleted with login Name " + teamLeaderLoginName,
 					HttpStatus.OK);
 		}
 		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
@@ -157,7 +157,7 @@ public class TeamLeaderController {
 	 * @return Response Entity of new created task on basis of ProductOwner
 	 *         LoginName and TeamLeader LoginName with HttpStatus
 	 */
-	@PostMapping("/createtask/{productOwnerLoginName}/{teamleaderLoginName}")
+	@PostMapping("/createTask/{productOwnerLoginName}/{teamleaderLoginName}")
 	public ResponseEntity<?> createNewTask(@Valid @RequestBody Task task, BindingResult result,
 			@PathVariable String productOwnerLoginName, @PathVariable String teamleaderLoginName, HttpSession session) {
 		if (session.getAttribute("userType") != null && session.getAttribute("userType").equals("TeamLeader")
@@ -246,22 +246,21 @@ public class TeamLeaderController {
 	/**
 	 * This method is used to view developer on basis of developer login name
 	 * 
-	 * @param loginname
+	 * @param developerLoginName
 	 * @param session
 	 * @return Response Entity with developer if Team Leader is logged in else You
 	 *         do not have Access message is appeared with HttpStatus
 	 */
-	@GetMapping("/viewbydeveloperloginname/{teamleaderLoginName}")
-	public ResponseEntity<?> getDeveloperByDeveloperLoginName(@PathVariable String teamleaderLoginName,
+	@GetMapping("/viewbydeveloperloginname/{developerLoginName}")
+	public ResponseEntity<?> getDeveloperByDeveloperLoginName(@PathVariable String developerLoginName,
 			HttpSession session) {
 		if (session.getAttribute("userType") != null && session.getAttribute("userType").equals("TeamLeader")
-				&& session.getAttribute("teamLeaderLoginName").equals(teamleaderLoginName)) {
-			Developer developer = developerService.findDeveloperByDeveloperLoginName(teamleaderLoginName);
+				&& session.getAttribute("teamLeaderLoginName").equals(developerLoginName)) {
+			Developer developer = developerService.findDeveloperByDeveloperLoginName(developerLoginName);
 			return new ResponseEntity<Developer>(developer, HttpStatus.OK);
 		}
 		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
 	}
-
 	/**
 	 * This method is method is used to assign task to developer
 	 * 
@@ -272,11 +271,11 @@ public class TeamLeaderController {
 	 *         logged in else You do not have Access message is appeared with
 	 *         HttpStatus
 	 */
-	@PatchMapping("/assigndev/{taskIdentifier}/{devloginname}")
+	@PatchMapping("/assignDev/{taskIdentifier}/{devLoginName}")
 	public ResponseEntity<?> assignDeveloperToTask(@PathVariable String taskIdentifier,
-			@PathVariable String devloginname, HttpSession session) {
+			@PathVariable String devLoginName, HttpSession session) {
 		if (session.getAttribute("userType") != null && session.getAttribute("userType").equals("TeamLeader")) {
-			Task savedTask = teamLeaderService.assignDeveloper(taskIdentifier, devloginname);
+			Task savedTask = teamLeaderService.assignDeveloper(taskIdentifier, devLoginName);
 			return new ResponseEntity<Task>(savedTask, HttpStatus.CREATED);
 		}
 		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
