@@ -1,20 +1,18 @@
 package com.capgemini.piapi.exception;
 
 public class TaskNotFoundExceptionResponse {
-	private String taskIdentifier;
-	
+	private String taskNotFound;
 
-	public TaskNotFoundExceptionResponse(String taskIdentifier) {
+	public TaskNotFoundExceptionResponse(String taskNotFound) {
 		super();
-		this.taskIdentifier = taskIdentifier;
+		this.taskNotFound = taskNotFound;
 	}
 
-	public String getTaskIdentifier() {
-		return taskIdentifier;
+	public String getTaskNotFound() {
+		return taskNotFound;
 	}
 
-	public void setTaskIdentifier(String taskIdentifier) {
-		this.taskIdentifier = taskIdentifier;
+	public void setTaskNotFound(String taskNotFound) {
+		this.taskNotFound = taskNotFound;
 	}
-	
 }

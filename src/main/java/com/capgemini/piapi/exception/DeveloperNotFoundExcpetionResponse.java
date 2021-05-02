@@ -1,9 +1,9 @@
 package com.capgemini.piapi.exception;
 
-public class ProductOwnerNotFoundExceptionResponse {
+public class DeveloperNotFoundExcpetionResponse {
 	private String loginName;
 
-	public ProductOwnerNotFoundExceptionResponse(String loginName) {
+	public DeveloperNotFoundExcpetionResponse(String loginName) {
 		super();
 		this.loginName = loginName;
 	}

@@ -70,6 +70,16 @@ public class ProductOwner {
 		this.pwd = pwd;
 	}
 
+	public ProductOwner(String name, String loginName, String pwd, Client client, List<Task> tasks) {
+		super();
+		this.name = name;
+		this.loginName = loginName;
+		this.pwd = pwd;
+		this.client = client;
+		this.task = tasks;
+
+	}
+	
 	public long getId() {
 		return id;
 	}

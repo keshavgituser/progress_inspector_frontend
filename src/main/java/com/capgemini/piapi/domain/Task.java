@@ -35,8 +35,8 @@ public class Task {
 	/**
 	 * id of the Task
 	 */
-	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Id
 	private long id;
 	/**
 	 * Title of the task
@@ -58,25 +58,24 @@ public class Task {
 	/**
 	 * Progress of the task
 	 */
-	@NotNull(message = "Task Progress is required")
 	private String progress;
 	/**
 	 * Owner of the product
 	 */
 	@JsonIgnore
-	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
+	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinColumn(name = "owner_id", updatable = false, nullable = false)
 	private ProductOwner productOwner;
 	/**
-	 * TeamLeader 
+	 * TeamLeader
 	 */
-	@JsonIgnore
-	@ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+  
+  @JsonIgnore
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private TeamLeader teamLeader;
 	/**
 	 * List of remarks on the task Given By Developer as well as client
 	 */
-	@JsonIgnore
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "task")
 	private List<Remark> remark = new ArrayList<>();
 	/**
@@ -84,7 +83,8 @@ public class Task {
 	 */
 	@JsonIgnore
 	@ManyToMany
-	private List<Client> client=new ArrayList<>();
+	@JsonIgnore
+	private List<Client> client = new ArrayList<>();
 	/**
 	 * List of developers on the task Given By Team Leader
 	 */
@@ -94,12 +94,12 @@ public class Task {
 	/**
 	 * Creation Date of the task
 	 */
-	@JsonFormat(pattern = "dd/mm/yyyy")
+	@JsonFormat(pattern = "dd/MM/yyyy")
 	private Date createdAt;
 	/**
 	 * Last Update done on the task
 	 */
-	@JsonFormat(pattern = "dd/mm/yyyy")
+	@JsonFormat(pattern = "dd/MM/yyyy")
 	private Date updatedAt;
 
 	/*
@@ -107,6 +107,23 @@ public class Task {
 	 */
 	public Task() {
 		super();
+	}
+
+  /**
+	 * Task Constructor for Creating Task
+	 * @param title of the task
+	 * @param taskIdentifier of the task
+	 * @param description of the task
+	 * @param progress of the task
+	 * @param developer
+	 */
+	public Task(String title, String taskIdentifier, String description, String progress, Developer developer) {
+		super();
+  		this.title = title;
+		this.taskIdentifier = taskIdentifier;
+		this.description = description;
+		this.progress = progress;
+		this.developer = developer;
 	}
 
 	/**
@@ -122,7 +139,31 @@ public class Task {
 		this.taskIdentifier = taskIdentifier;
 		this.description = description;
 		this.progress = progress;
-		this.productOwner=productOwner;
+		this.productOwner = productOwner;
+	}
+
+	public Task(String title, String taskIdentifier, String description, String progress, Developer developer,
+			List<Remark> remark) {
+		super();
+		this.title = title;
+		this.taskIdentifier = taskIdentifier;
+		this.description = description;
+		this.progress = progress;
+		this.developer = developer;
+		this.remark = remark;
+	}
+
+	public Task(String title, String taskIdentifier, String description, String progress, ProductOwner productOwner,
+			TeamLeader teamLeader, Developer developer) {
+		super();
+		this.title = title;
+		this.taskIdentifier = taskIdentifier;
+		this.description = description;
+		this.progress = progress;
+		this.productOwner = productOwner;
+		this.teamLeader = teamLeader;
+		this.developer = developer;
+
 	}
 
 
@@ -229,6 +270,14 @@ public class Task {
 	}
 
 
+	public Developer getDeveloper() {
+		return developer;
+	}
+
+	public void setDeveloper(Developer developer) {
+		this.developer = developer;
+	}
+
 	@PrePersist()
 	protected void onCreate() {
 		this.createdAt = new Date();
@@ -238,4 +287,28 @@ public class Task {
 	protected void onUpdate() {
 		this.updatedAt = new Date();
 	}
+
+	public TeamLeader getTeamLeader() {
+		return teamLeader;
+	}
+
+	public void setTeamLeader(TeamLeader teamLeader) {
+		this.teamLeader = teamLeader;
+	}
+
+	public List<Client> getClient() {
+		return client;
+	}
+
+	public void setClient(List<Client> client) {
+		this.client = client;
+	}
+
+	@Override
+	public String toString() {
+		return "Task [id=" + id + ", title=" + title + ", taskIdentifier=" + taskIdentifier + ", description="
+				+ description + ", progress=" + progress + ", productOwner=" + productOwner + ", teamLeader="
+				+ teamLeader + ", remark=" + remark + ", client=" + client + ", developer=" + developer + "]";
+	}
+
 }

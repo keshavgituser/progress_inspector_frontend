@@ -27,17 +27,34 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Table(name="clients")
 public class Client {
 
-	//Id is the Id number for the client. Will be used to identify the Client. Should be unique. 
+	/**
+	 * Id is the primary key for client entity
+	 */
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+	/**
+	 * client name and it cannot be blank
+	 */
 	@NotBlank(message = "Please enter Name.")
 	private String clientName;
+	/**
+	 * login name of client
+	 */
 	@NotBlank(message = "Please enter Login Name.")
 	private String loginName;
+	/**
+	 * password of client
+	 */
 	@NotBlank(message = "Please enter Password.")
 	private String pwd;
+	/**
+	 * Status of client
+	 */
 	private String status;
+	/**
+	 * Each client can have multiple task i.e One to Many Relationships
+	 */
 	@JsonIgnore
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "task_authorized",joinColumns =@JoinColumn(name= "id"),inverseJoinColumns = @JoinColumn(name="taskIdentifier") )

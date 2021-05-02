@@ -18,42 +18,59 @@ import javax.validation.constraints.Size;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
- * This is the main domain model for developer defining attributes
+ * This Developer Domain is used as data transfer object between layers
  * 
- * @author Harsh Joshi
- * @author Vatsal Shah
  * @author Harshit Verma
- *
- */
-/**
- * @author Harsh Joshi
  *
  */
 @Entity
 @Table(name = "developers")
 public class Developer {
 
+	/**
+	 * Primary key of Developer
+	 */
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Id
 	private Long id;
-	@NotNull(message = "Name is required")
+	/**
+	 * Name of developer
+	 */
+	@NotNull(message = "Developer Name is required")
 	private String name;
-	@NotNull(message = " Developer Id is Required")
-	@Size(min = 2, max = 8, message = "Developer Id should be in between 4 to 8 Characters")
-	@Column(updatable = false, unique = true)
-	private String devId;
+	/**
+	 * Login name of developer
+	 */
 	@NotNull(message = "Login name can not be null")
-	private String loginname;
+	@Column(unique = true, updatable = false)
+	private String loginName;
+	/**
+	 * Password of developer
+	 */
 	@NotNull(message = "Password is required")
 	@Size(min = 8, max = 20, message = "Please Enter password of Minimum 8 and Maximum 20")
 	private String pwd;
+	/**
+	 * Status of developer Active or Inactive
+	 */
 	private String status;
-	@JsonIgnore
+	/**
+	 * Relationship of one developer to many task
+	 */
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "developer")
 	private List<Task> tasks = new ArrayList<>();
 
 	public Developer() {
 		super();
+	}
+
+	public Developer(String name, String loginName, String pwd, String status, List<Task> tasks) {
+		super();
+		this.name = name;
+		this.loginName = loginName;
+		this.pwd = pwd;
+		this.status = status;
+		this.tasks = tasks;
 	}
 
 	// Getter and Setters
@@ -73,14 +90,6 @@ public class Developer {
 		this.name = name;
 	}
 
-	public String getLoginname() {
-		return loginname;
-	}
-
-	public void setLoginname(String loginname) {
-		this.loginname = loginname;
-	}
-
 	public String getPwd() {
 		return pwd;
 	}
@@ -97,14 +106,6 @@ public class Developer {
 		this.status = status;
 	}
 
-	public String getDevId() {
-		return devId;
-	}
-
-	public void setDevIdentifier(String devId) {
-		this.devId = devId;
-	}
-
 	public List<Task> getTasks() {
 		return tasks;
 	}
@@ -113,10 +114,18 @@ public class Developer {
 		this.tasks = tasks;
 	}
 
+	public String getLoginName() {
+		return loginName;
+	}
+
+	public void setLoginName(String loginName) {
+		this.loginName = loginName;
+	}
+
 	@Override
 	public String toString() {
-		return "Developer [id=" + id + ", name=" + name + ", devId=" + devId + ", loginname=" + loginname + ", pwd="
-				+ pwd + ", status=" + status + ", task=" + tasks + "]";
+		return "Developer [id=" + id + ", name=" + name + ",  loginname=" + loginName + ", pwd=" + pwd + ", status="
+				+ status + ", task=" + tasks + "]";
 	}
 
 }
