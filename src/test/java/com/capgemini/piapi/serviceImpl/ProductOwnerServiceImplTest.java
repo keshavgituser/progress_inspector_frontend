@@ -97,7 +97,7 @@ class ProductOwnerServiceImplTest {
 	//-----------------------------------------------Register Test---------------------------------------------------------------------
 	// REGISTER TEST CASE  :  Successful Registration
 	@Test
-	void test_saveProductOwner_GivenProductOwner_ShouldReturnSavedProductOwner() {
+	void test_saveProductOwner_GivenProductOwner_ShouldReturnSavedProductOwner() {  
 		when(productOwnerRepository.save(productOwner1)).thenReturn(new ProductOwner("Test Owner1", "Test", "Test123"));
 		ProductOwner savedProductOwner = productOwnerServiceImpl.saveProductOwner(productOwner1);
 		assertEquals(productOwner1.getName(), savedProductOwner.getName());		
@@ -149,6 +149,7 @@ class ProductOwnerServiceImplTest {
 		when(session.getAttribute("loginName")).thenReturn(productOwner1.getLoginName());
 		Exception ex=assertThrows(LoginException.class,() -> productOwnerServiceImpl.authenticateProductOwner(productOwner1.getLoginName(), productOwner2.getPwd(), session));
 		assertEquals("Login Failed ! Invalid Credentials", ex.getMessage());
+
 	}
 	
 	// LOGIN TEST CASE : Null 
@@ -284,12 +285,12 @@ class ProductOwnerServiceImplTest {
 		assertEquals("Please Provide Required Fields", ex.getMessage());
 	}
 	//-----------------------------------------------Get All Clients Test----------------------------------------------------------
-		
 	// GET ALL CLIENTS TEST CASE : get all clients
 	@Test
 	void test_getAllClients_ShouldReturnClientList() {
 		when(clientRepository.findAll()).thenReturn(clientList);
 		assertEquals(3, productOwnerServiceImpl.getAllClients().size());
+
 	}
 
 	// GET ALL CLIENTS TEST CASE : Clients not found
