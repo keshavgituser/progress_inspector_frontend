@@ -29,7 +29,7 @@ import com.capgemini.piapi.service.TeamLeaderService;
 import com.capgemini.piapi.serviceImpl.MapValidationErrorService;
 
 @RestController
-@RequestMapping("/piapi/teamleader")
+@RequestMapping("/api/teamleader")
 public class TeamLeaderController {
 
 	private static final Logger logger = LoggerFactory.getLogger(TeamLeaderController.class);

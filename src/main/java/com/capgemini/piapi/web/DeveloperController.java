@@ -31,7 +31,7 @@ import com.capgemini.piapi.serviceImpl.MapValidationErrorService;
  *
  */
 @RestController
-@RequestMapping("/piapi/developers")
+@RequestMapping("/api/developers")
 public class DeveloperController {
 
 	private static final Logger log = LoggerFactory.getLogger(DeveloperController.class);
