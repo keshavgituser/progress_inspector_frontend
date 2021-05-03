@@ -109,7 +109,7 @@ public class ClientController{
 		
 		return new ResponseEntity<Client>(savedClient, HttpStatus.CREATED);
 		}
-		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.UNAUTHORIZED);
 	}
 
 	@DeleteMapping("/deleteClient/{loginName}")
@@ -120,7 +120,7 @@ public class ClientController{
 		clientService.deleteClientByLoginName(loginName);
 		return new ResponseEntity<String>("Client with loginName :" + loginName + " is deleted", HttpStatus.OK);
 		}
-		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.UNAUTHORIZED);
 	}
 	
 	@GetMapping("/{loginName}")

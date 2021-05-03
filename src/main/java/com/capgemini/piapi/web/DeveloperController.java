@@ -73,7 +73,7 @@ public class DeveloperController {
 			return new ResponseEntity<String>("Developer with " + developerLoginName + " deleted successfully",
 					HttpStatus.OK);
 		}
-		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.UNAUTHORIZED);
 	}
 
 	/**
@@ -95,7 +95,7 @@ public class DeveloperController {
 			Developer savedDeveloper = developerService.updateDeveloper(developer);
 			return new ResponseEntity<Developer>(savedDeveloper, HttpStatus.CREATED);
 		}
-		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.UNAUTHORIZED);
 	}
 
 	/**
@@ -117,7 +117,7 @@ public class DeveloperController {
 			Task updateStatus = developerService.updateTaskStatus(taskId, developerLoginName, task);
 			return new ResponseEntity<Task>(updateStatus, HttpStatus.OK);
 		}
-		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.UNAUTHORIZED);
 	}
 
 	/**
@@ -139,7 +139,7 @@ public class DeveloperController {
 			Task addRemark = developerService.addRemark(taskId, developerLoginName, remark);
 			return new ResponseEntity<Task>(addRemark, HttpStatus.OK);
 		}
-		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.UNAUTHORIZED);
 	}
 
 	/**
@@ -189,6 +189,6 @@ public class DeveloperController {
 			Task developer = developerService.findTaskByTaskIdentifierAndDevelpoerLoginName(taskID, developerLoginName);
 			return new ResponseEntity<Task>(developer, HttpStatus.OK);
 		}
-		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.UNAUTHORIZED);
 	}
 }

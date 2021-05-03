@@ -121,7 +121,7 @@ public class TeamLeaderController {
 			return new ResponseEntity<String>("TeamLeader Deleted with login Name " + teamLeaderLoginName,
 					HttpStatus.OK);
 		}
-		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.UNAUTHORIZED);
 	}
 
 	/**
@@ -142,7 +142,7 @@ public class TeamLeaderController {
 			TeamLeader savedTeamLeader = teamLeaderService.updateTeamLeader(teamLeader);
 			return new ResponseEntity<TeamLeader>(savedTeamLeader, HttpStatus.CREATED);
 		}
-		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.UNAUTHORIZED);
 	}
 
 	/**
@@ -168,7 +168,7 @@ public class TeamLeaderController {
 			Task savedTask = teamLeaderService.createTask(task, productOwnerLoginName, teamleaderLoginName);
 			return new ResponseEntity<Task>(savedTask, HttpStatus.CREATED);
 		}
-		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.UNAUTHORIZED);
 	}
 
 	/**
@@ -185,7 +185,7 @@ public class TeamLeaderController {
 			List<Task> tasks = teamLeaderService.viewAllTaskByTeamLeaderLoginName(teamleaderLoginName);
 			return new ResponseEntity<List<Task>>(tasks, HttpStatus.OK);
 		}
-		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.UNAUTHORIZED);
 	}
 
 	/**
@@ -205,7 +205,7 @@ public class TeamLeaderController {
 			Task developer = teamLeaderService.findTaskByTaskIdentifierAndTeamLeaderLoginName(taskID, teamleaderLoginName);
 			return new ResponseEntity<Task>(developer, HttpStatus.OK);
 		}
-		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.UNAUTHORIZED);
 	}
 
 	/**
@@ -224,7 +224,7 @@ public class TeamLeaderController {
 			return new ResponseEntity<String>("Task with Identifier " + taskID.toUpperCase() + " deleted successfully",
 					HttpStatus.OK);
 		}
-		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.UNAUTHORIZED);
 	}
 
 	/**
@@ -240,7 +240,7 @@ public class TeamLeaderController {
 			List<Developer> developers = teamLeaderService.findAllDevelopers();
 			return new ResponseEntity<List<Developer>>(developers, HttpStatus.OK);
 		}
-		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.UNAUTHORIZED);
 	}
 
 	/**
@@ -259,7 +259,7 @@ public class TeamLeaderController {
 			Developer developer = developerService.findDeveloperByDeveloperLoginName(developerLoginName);
 			return new ResponseEntity<Developer>(developer, HttpStatus.OK);
 		}
-		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.UNAUTHORIZED);
 	}
 	/**
 	 * This method is method is used to assign task to developer
@@ -278,7 +278,7 @@ public class TeamLeaderController {
 			Task savedTask = teamLeaderService.assignDeveloper(taskIdentifier, devLoginName);
 			return new ResponseEntity<Task>(savedTask, HttpStatus.CREATED);
 		}
-		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.UNAUTHORIZED);
 	}
 
 	/**
@@ -294,7 +294,7 @@ public class TeamLeaderController {
 			List<Remark> remarks = teamLeaderService.viewAllRemark(taskIdentifer);
 			return new ResponseEntity<List<Remark>>(remarks, HttpStatus.OK);
 		}
-		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.UNAUTHORIZED);
 	}
 
 }
