@@ -251,7 +251,7 @@ public class TeamLeaderController {
 	 * @return Response Entity with developer if Team Leader is logged in else You
 	 *         do not have Access message is appeared with HttpStatus
 	 */
-	@GetMapping("/viewbydeveloperloginname/{developerLoginName}")
+	@GetMapping("/viewByDeveloperLoginName/{developerLoginName}")
 	public ResponseEntity<?> getDeveloperByDeveloperLoginName(@PathVariable String developerLoginName,
 			HttpSession session) {
 		if (session.getAttribute("userType") != null && session.getAttribute("userType").equals("TeamLeader")
