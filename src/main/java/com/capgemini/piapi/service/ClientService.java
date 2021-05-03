@@ -17,6 +17,7 @@ import com.capgemini.piapi.domain.Task;
 public interface ClientService {
 	/**
 	 * This method will be used to return Task which is associated with the Client.
+	 * @param loginName is the client login name
 	 * @param taskIdentifier is the unique identifier for the task
 	 * @return the saved Task Object.
 	 */
@@ -29,11 +30,11 @@ public interface ClientService {
 	 */
 	public Remark addRemark(Remark remark, String task_id);
 	/**
-	 * 
-	 * @param loginName
-	 * @return
+	 * This method will be used to return all the tasks which are associated with the client
+	 * @param loginName is the client login name
+	 * @return list of the tasks
 	 */
-	public List<Task> viewAllTask(String loginName);
+	public List<Task> viewAllTask(HttpSession session);
 	
 	
 	/**

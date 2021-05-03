@@ -20,6 +20,11 @@ import com.capgemini.piapi.exception.ClientAlreadyExistException;
 import com.capgemini.piapi.service.ClientService;
 import com.capgemini.piapi.serviceImpl.MapValidationErrorService;
 
+/**
+ * 
+ * @author Keshav
+ *
+ */
 
 @RestController
 @RequestMapping("/api/client")
@@ -39,13 +44,17 @@ public class ClientController{
 	 * @param loginName is the client login name 
 	 * @return the Task object as a response entity
 	 */
-	@GetMapping("/viewtask/{loginName}/{task_id}")
-	public ResponseEntity<?> getTaskByTaskIdentifier(@PathVariable String task_id,@PathVariable String loginName){
+	@GetMapping("/viewtask/{task_id}")
+	public ResponseEntity<?> getTaskByTaskIdentifier(@PathVariable String task_id,HttpSession session){
 		
-		Task task = clientService.viewTask(loginName, task_id);
-		
+		if (session.getAttribute("userType") != null && session.getAttribute("userType").equals("Client"))
+		{
+		Task task = clientService.viewTask(session.getAttribute("loginName").toString(), task_id);
+
 		logger.info("--TASK--"+task);
 		return new ResponseEntity<Task>(task,HttpStatus.OK);
+		}
+		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
 		
 	}
 	
@@ -54,13 +63,17 @@ public class ClientController{
 	 * @param loginName is the client login name
 	 * @return all the task objects from the list as a response entity
 	 */
-	@GetMapping("/viewalltask/{loginName}")
-	public ResponseEntity<?> getAllTask(@PathVariable String loginName){
+	@GetMapping("/viewalltask")
+	public ResponseEntity<?> getAllTask(HttpSession session){
 		
-		List<Task> taskList = clientService.viewAllTask(loginName);
+		if (session.getAttribute("userType") != null && session.getAttribute("userType").equals("Client"))
+		{
+		List<Task> taskList = clientService.viewAllTask(session);
 		
 		logger.info("--TASK--"+taskList);
 		return new ResponseEntity<List<Task>>(taskList,HttpStatus.OK);
+		}
+		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
 		
 	}
 	
@@ -72,12 +85,17 @@ public class ClientController{
 	 * @return saved remark if no errors found or map of the errors found in the input remark object.
 	 */
 	@PostMapping("/addremark/{task_id}")
-	public ResponseEntity<?> addRemark(@Valid @RequestBody Remark remark, BindingResult bindingResult,@PathVariable String task_id){
+	public ResponseEntity<?> addRemark(@Valid @RequestBody Remark remark, BindingResult bindingResult,@PathVariable String task_id,HttpSession session){
+		if (session.getAttribute("userType") != null && session.getAttribute("userType").equals("Client"))
+		{
 		ResponseEntity<?> errorMap = mapValidationErrorService.mapValidationError(bindingResult);
 		if(errorMap!=null) return errorMap;
 		
 		Remark addedRemark = clientService.addRemark(remark,task_id);
 		return new ResponseEntity<>(addedRemark,HttpStatus.OK);
+		}
+		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
+
 		
 	}
 	
@@ -124,24 +142,15 @@ public class ClientController{
 	}
 	
 	@GetMapping("/{loginName}")
-	public ResponseEntity<?> findClientByLoginName(@PathVariable String loginName) 
+	public ResponseEntity<?> findClientByLoginName(@PathVariable String loginName,HttpSession session) 
 	{
+		if (session.getAttribute("userType") != null && session.getAttribute("userType").equals("Client"))
+		{
 		Client client = clientService.findByLoginName(loginName);
 		return new ResponseEntity<Client>(client, HttpStatus.OK);
+		}
+		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
 	}
-
-	
-	/*
-	 *UnComment This Part If YOu Want TO Map A Request To Find all the Clients 
-	 *
-	@GetMapping("/allClients")
-	public ResponseEntity<?> findAllClients() {
-		
-		List<Client> clients = clientService.getAllClients();
-		return new ResponseEntity<List<Client>>(clients, HttpStatus.OK);
-	}
-	*/
-	
 	
 	/*
 	 * Login Mappings
