@@ -88,7 +88,7 @@ public class DeveloperController {
 	public ResponseEntity<?> updateDeveloper(@Valid @RequestBody Developer developer, BindingResult result,
 			HttpSession session) {
 		if (session.getAttribute("userType") != null && session.getAttribute("userType").equals("Developer")
-				&& session.getAttribute("developerLeaderLoginName").equals(developer.getLoginName())) {
+				&& session.getAttribute("developerLoginName").equals(developer.getLoginName())) {
 			ResponseEntity<?> errorMap = mapValidationErrorService.mapValidationError(result);
 			if (errorMap != null)
 				return errorMap;

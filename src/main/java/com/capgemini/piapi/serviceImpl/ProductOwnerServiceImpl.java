@@ -58,13 +58,16 @@ public class ProductOwnerServiceImpl implements ProductOwnerService {
 	public ProductOwner saveProductOwner(ProductOwner productOwner) {
 		//Check for Null Values
 		if (productOwner.getLoginName() == null || productOwner.getName()==null || productOwner.getPwd()==null) {
+			log.error("-----------saveProductOwner--------- : Please Fill the Required Fields");
 			throw new NullPointerException("Please Fill the Required Fields");
 		} 
 		//Check if ProductOwner already exists
 		if ((productOwnerRepository.findByLoginName(productOwner.getLoginName())) != null) {
+			log.error("-----------saveProductOwner--------- : Product owner already exists");
 			throw new ProductOwnerAlreadyExistException("Product owner already exists");
 		} 
 		//Register new  ProductOwner
+		log.info("-----------saveProductOwner--------- : Product Owner Registration Successful");
 		return productOwnerRepository.save(productOwner);
 	}
 
@@ -73,15 +76,17 @@ public class ProductOwnerServiceImpl implements ProductOwnerService {
 		ProductOwner oldProductOwner =null;
 		
 		if (productOwner.getLoginName() == null) {
+			log.error("-----------updateProductOwner--------- : Please Fill the Required Fields");
 			throw new NullPointerException("Please Fill the Required Fields");
 		}
 		
 		if ((oldProductOwner=productOwnerRepository.findByLoginName(productOwner.getLoginName())) == null) {
+			log.error("-----------updateProductOwner--------- : Product Owner with loginName : " + productOwner.getLoginName() + " does not exists");
 			throw new ProductOwnerNotFoundException("Product Owner with loginName : " + productOwner.getLoginName() + " does not exists");
 		}
 		
 		productOwner.setId(oldProductOwner.getId());
-		
+		log.info("-----------updateProductOwner--------- : Product Owner Update Successful");
 		oldProductOwner = productOwner;
 		return productOwnerRepository.save(oldProductOwner);
 	}
@@ -92,13 +97,15 @@ public class ProductOwnerServiceImpl implements ProductOwnerService {
 		ProductOwner productOwner = null;
 		
 		if (loginName == null) {
+			log.error("-----------deleteProductOwnerByLoginName--------- : Product Owner with loginName : " + loginName + " does not exists");
 			throw new NullPointerException("Please Provide Login Name");
 		}
 		
 		if ((productOwner = productOwnerRepository.findByLoginName(loginName)) == null) {
+			log.error("-----------deleteProductOwnerByLoginName--------- : Please Provide Login Name");
 			throw new ProductOwnerNotFoundException("Product Owner with loginName : " + loginName + " does not exists");
 		}
-		
+		log.info("-----------deleteProductOwnerByLoginName--------- : Product Owner Deleted Successfully");
 		productOwnerRepository.delete(productOwner);
 
 	}
@@ -107,8 +114,10 @@ public class ProductOwnerServiceImpl implements ProductOwnerService {
 	public List<ProductOwner> findAll() {
 
 		try {
+			log.info("--------------------findAll--------------- : List of Product Owners Displayed");
 			return productOwnerRepository.findAll();
 		} catch (Exception e) {
+			log.error("----------------findAll------------------ : No Product Owner Found");
 			throw new ProductOwnerNotFoundException("No Product Owner Found");
 		}
 	}
@@ -116,8 +125,10 @@ public class ProductOwnerServiceImpl implements ProductOwnerService {
 	@Override
 	public ProductOwner findProductOwnerByLoginName(String loginName) {
 		try {
+			log.info("--------------------findProductOwnerByLoginName--------------- : Product Owner with Id : "+loginName+" Displayed");
 			return productOwnerRepository.findByLoginName(loginName);
 		} catch (Exception e) {
+			log.error("----------------findProductOwnerByLoginName------------------ : Product Owner with loginName : " + loginName + " does not exist");
 			throw new ProductOwnerNotFoundException("Product Owner with loginName : " + loginName + " does not exist");
 		}
 
@@ -128,19 +139,23 @@ public class ProductOwnerServiceImpl implements ProductOwnerService {
 		ProductOwner productOwner = null;
 
 		if (loginName == null || pwd == null) {
+			log.error("-----------authenticateProductOwner--------------- : Please Enter Credentials");
 			throw new LoginException("Please Enter Credentials");
 		}
 
 		if ((productOwner = productOwnerRepository.findByLoginName(loginName)) == null) {
+			log.error("-----------authenticateProductOwner--------------- : Product Owner with loginName : " + loginName + " does not exist");
 			throw new ProductOwnerNotFoundException("Product Owner with loginName : " + loginName + " does not exist");
 		}
 
 		if (productOwner.getPwd().equals(pwd)) {
+			log.info("-----------authenticateProductOwner--------------- : Login Successfully");
 			addProductOwnerInSession(productOwner, session);
 			return productOwner;
-		}
+		}else {
+			log.error("-----------authenticateProductOwner--------------- : Invalid Credentials");
 			throw new LoginException("Invalid Credentials");
-
+		}
 	}
 
 	/**
