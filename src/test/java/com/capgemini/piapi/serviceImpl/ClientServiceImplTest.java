@@ -9,6 +9,7 @@ import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -21,10 +22,13 @@ import com.capgemini.piapi.domain.Task;
 import com.capgemini.piapi.exception.ClientAlreadyExistException;
 import com.capgemini.piapi.exception.ClientNotFoundException;
 import com.capgemini.piapi.exception.ClientPassedNullException;
+import com.capgemini.piapi.exception.DeveloperNotFoundException;
 import com.capgemini.piapi.exception.LoginException;
 import com.capgemini.piapi.exception.TaskIdException;
+import com.capgemini.piapi.exception.TaskNotFoundException;
 import com.capgemini.piapi.repository.ClientRepository;
 import com.capgemini.piapi.repository.ProductOwnerRepository;
+import com.capgemini.piapi.repository.RemarkRepository;
 import com.capgemini.piapi.repository.TaskRepository;
 
 /**
@@ -48,6 +52,10 @@ class ClientServiceImplTest {
 
 	@Mock
 	ClientRepository clientRepository;
+
+	@Mock
+	RemarkRepository remarkRepository;
+	
 	@Mock
 	TaskRepository taskRepository;
 	
@@ -56,8 +64,11 @@ class ClientServiceImplTest {
 	private Client client;
 	private Client client1;
 	private Client client2;
+	private Client client3;
+	
 	private List<Task> taskList;
 	private List<Client> clientList;
+	private Remark remark;
 
 	@BeforeEach
 	public void setup() {	
@@ -74,6 +85,7 @@ class ClientServiceImplTest {
 		client1 = new Client("Test Client", "testclient", "testclient123");
 		client2 = new Client("Test Client", "testclient", "testclient123");
 
+		
 		productOwnerList=new ArrayList<>();
 				
 		productOwner1=new ProductOwner("Test Owner1", "Test", "Test123");
@@ -91,7 +103,12 @@ class ClientServiceImplTest {
 		clientList.add(client1);
 		clientList.add(client2);
 		
-
+		client3 = new Client("Test Client", "testclient", "testclient123");
+		client3.setTask(taskList);
+		
+		remark = new Remark("Test Remark","Client", task1);
+		
+		
 	}
 	//-----------------------------------------------Register Test---------------------------------------------------------------------
 		// REGISTER TEST CASE  :  Successful Registration
@@ -250,40 +267,104 @@ class ClientServiceImplTest {
 	}
 	
 	//-----------------------------------------------Remarks Client Test----------------------------------------------------------
-	//AddREMARK :GIVEN INVALID TASK_id
+	//Test to add remark to the specific task
+		@Test
+		void test_addReamrk_GivenTaskIdentifierRemarkAndTaskIdentifier_ShouldReturnAddedRemark() {
+			BDDMockito.given(taskRepository.findByTaskIdentifier(task1.getTaskIdentifier()))
+					.willReturn(task1);
+			BDDMockito.given(taskRepository.save(task1))
+					.willReturn(task1);
+			BDDMockito.given(remarkRepository.save(remark))
+					.willReturn(remark);
+			Remark savedRemark = clientServiceImpl.addRemark(remark, task1.getTaskIdentifier());
+			assertEquals(remark.getDescription(), savedRemark.getDescription());
+		}
+		
+		// Test to add remark to the specific task with Invalid task identifier
+		// TaskIdException is thrown
+		@Test
+		void test_addReamrk_GivenNullValues_ShouldThrowNullPointerException() {
+			BDDMockito.given(taskRepository.findByTaskIdentifier(task1.getTaskIdentifier()))
+					.willReturn(null);
+			assertThrows(TaskIdException.class, () -> clientServiceImpl.addRemark(remark, "T01"));
+		}
+		
+		// Test to add remark to the specific task with Empty task identifier 
+		// TaskIdException is thrown
+		@Test
+		void test_addReamrk_GivenWrongTaskIdentifier_ShouldThrowTaskIdException() {
+			BDDMockito.given(taskRepository.findByTaskIdentifier(""))
+					.willReturn(null);
+			assertThrows(TaskIdException.class, () -> clientServiceImpl.addRemark(remark, ""));
+		}
+
+	//View: Return valid Task 
 	@Test
-	public void test_addRemark_GivenRemarkWithInvalidTaskIdentifier_ShouldThrowTaskIdException() {
-		Remark remark = new Remark();
-		remark.setGivenBy("remark");
-		remark.setDescription("Test Owner");
-		Exception ex=assertThrows(TaskIdException.class, () -> clientServiceImpl.addRemark(remark, "task1"));
-		assertEquals("Task id task1 is not available", ex.getMessage());
-	}
-	//AddREMARK :GIVEN INVALID null
-	@Test
-	public void test_addRemark_GivenRemarkWith_null_TaskIdentifier_ShouldThrowTaskIdException() {
-		Remark remark = new Remark();
-		remark.setGivenBy("remark");
-		remark.setDescription("Test Owner");
-		Exception ex=assertThrows(TaskIdException.class, () -> clientServiceImpl.addRemark(remark, null));
-		assertEquals("Task id null is not available", ex.getMessage());
+	public void test_viewTask_GivenClientLoginNameAndTaskIdentifier_ShouldReturnTask() {
+		when(clientRepository.findByLoginName(client3.getLoginName()))
+		.thenReturn(client3);
+		Task returnedTask = clientServiceImpl.viewTask(client3.getLoginName(), "T01");
+		assertEquals("T01", returnedTask.getTaskIdentifier());
+
 	}
 	
-	//ViewTask : Invalid Task identifier
 	@Test
-	public void test_viewTask_GivenClientrLoginNameandInvalidTaskIdentifier_ShouldThrowClientNotFoundException() {
-		assertThrows(ClientNotFoundException.class, () -> clientServiceImpl.viewTask("client", null));
+	public void test_viewTask_GivenInvalidClientLoginNameAndTaskIdentifier_ShouldThrowClientNotFoundException() {
+		when(clientRepository.findByLoginName(client3.getLoginName()))
+		.thenReturn(null);
+//		Task returnedTask = clientServiceImpl.viewTask(client3.getLoginName(), "T01");
+//		assertEquals("T01", returnedTask.getTaskIdentifier());
+		assertThrows(ClientNotFoundException.class, () -> clientServiceImpl.viewTask(client3.getLoginName(), "T01"));
 	}
-	//View: Invalid Client login Name
 	@Test
-	public void test_viewTask_GivenInvalidClientLoginNameAndValidTaskIdentifier_ShouldThrowClientNotFound() {
-		assertThrows(ClientNotFoundException.class, () -> clientServiceImpl.viewTask("clint", "task"));
+	public void test_viewTask_GivenClientLoginNameAndInvalidTaskIdentifier_ShouldThrowTaskIdException() {
+		when(clientRepository.findByLoginName(client3.getLoginName()))
+		.thenReturn(client3);
+//		Task returnedTask = clientServiceImpl.viewTask(client3.getLoginName(), "T01");
+//		assertEquals("T01", returnedTask.getTaskIdentifier());
+		assertThrows(TaskIdException.class, () -> clientServiceImpl.viewTask(client3.getLoginName(), "T03"));
+	}
+	@Test
+	public void test_viewTask_GivenClientLoginNameAndEmptyTaskIdentifier_ShouldThrowClientNotFoundException() {
+		when(clientRepository.findByLoginName(client3.getLoginName()))
+		.thenReturn(client3);
+//		Task returnedTask = clientServiceImpl.viewTask(client3.getLoginName(), "T01");
+//		assertEquals("T01", returnedTask.getTaskIdentifier());
+		assertThrows(TaskIdException.class, () -> clientServiceImpl.viewTask(client3.getLoginName(), ""));
 	}
 	//View task:null Task identifier
 	@Test
-	public void test_viewTask_GivenClientrLoginNameandEmptyTaskIdentifier_ShouldThrowClientNotFoundException() {
-		assertThrows(ClientNotFoundException.class, () -> clientServiceImpl.viewTask("client",null));
+	public void test_viewTask_GivenEmptyClientLoginNameAndTaskIdentifier_ShouldThrowClientNotFoundException() {
+		when(clientRepository.findByLoginName(""))
+		.thenReturn(null);
+		assertThrows(ClientNotFoundException.class, () -> clientServiceImpl.viewTask("","T01"));
 	}
+	
+	//-----------------------------------------------View All Tasks Test----------------------------------------------------------
+		// VIEW TASK PROGRESS : Successful
+		@Test
+		void test_viewAllTasks_ShouldReturnListOfTasks() {
+			when(session.getAttribute("loginName")).thenReturn(client3.getLoginName());
+			when(clientRepository.findByLoginName(session.getAttribute("loginName").toString()))
+			.thenReturn(client3);
+			List<Task> tasks = clientServiceImpl.viewAllTask(session);
+			assertNotNull(tasks);
+			assertEquals(2, tasks.size());
+			assertEquals(task1.getTaskIdentifier(), tasks.get(0).getTaskIdentifier());
+			assertEquals(task2.getTaskIdentifier(), tasks.get(1).getTaskIdentifier());
+
+		}
+
+		// VIEW TASK PROGRESS : Task Not found Exception
+		@Test
+		void test_getAllTasks_ShouldThrowTaskNotFoundException() {
+			when(session.getAttribute("loginName")).thenReturn(client2.getLoginName());
+			when(clientRepository.findByLoginName(client2.getLoginName()))
+					.thenReturn(client2);
+			when(session.getAttribute("loginName")).thenReturn(client2.getLoginName());
+			Exception ex = assertThrows(TaskIdException.class, () -> clientServiceImpl.viewAllTask(session));
+			assertEquals("No task with task id found", ex.getMessage());
+		}
 	
 	
 	

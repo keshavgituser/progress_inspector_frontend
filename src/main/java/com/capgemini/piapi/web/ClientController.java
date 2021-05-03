@@ -20,6 +20,11 @@ import com.capgemini.piapi.exception.ClientAlreadyExistException;
 import com.capgemini.piapi.service.ClientService;
 import com.capgemini.piapi.serviceImpl.MapValidationErrorService;
 
+/**
+ * 
+ * @author Keshav
+ *
+ */
 
 @RestController
 @RequestMapping("/api/client")
@@ -39,12 +44,12 @@ public class ClientController{
 	 * @param loginName is the client login name 
 	 * @return the Task object as a response entity
 	 */
-	@GetMapping("/viewtask/{loginName}/{task_id}")
-	public ResponseEntity<?> getTaskByTaskIdentifier(@PathVariable String task_id,@PathVariable String loginName,HttpSession session){
+	@GetMapping("/viewtask/{task_id}")
+	public ResponseEntity<?> getTaskByTaskIdentifier(@PathVariable String task_id,HttpSession session){
 		
 		if (session.getAttribute("userType") != null && session.getAttribute("userType").equals("Client"))
 		{
-		Task task = clientService.viewTask(loginName, task_id);
+		Task task = clientService.viewTask(session.getAttribute("loginName").toString(), task_id);
 
 		logger.info("--TASK--"+task);
 		return new ResponseEntity<Task>(task,HttpStatus.OK);
@@ -58,12 +63,12 @@ public class ClientController{
 	 * @param loginName is the client login name
 	 * @return all the task objects from the list as a response entity
 	 */
-	@GetMapping("/viewalltask/{loginName}")
-	public ResponseEntity<?> getAllTask(@PathVariable String loginName,HttpSession session){
+	@GetMapping("/viewalltask")
+	public ResponseEntity<?> getAllTask(HttpSession session){
 		
 		if (session.getAttribute("userType") != null && session.getAttribute("userType").equals("Client"))
 		{
-		List<Task> taskList = clientService.viewAllTask(loginName);
+		List<Task> taskList = clientService.viewAllTask(session);
 		
 		logger.info("--TASK--"+taskList);
 		return new ResponseEntity<List<Task>>(taskList,HttpStatus.OK);

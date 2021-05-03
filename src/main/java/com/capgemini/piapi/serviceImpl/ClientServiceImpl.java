@@ -45,6 +45,11 @@ public class ClientServiceImpl implements ClientService {
 	@Autowired
 	private RemarkRepository remarkRepository;
 	
+	
+	/**
+	 * View Task progress and add remark
+	 * @author Hrushikesh
+	 */
 	@Override
 	public Task viewTask(String loginName, String taskIdentifier) {
 		Task task = null;
@@ -76,6 +81,7 @@ public class ClientServiceImpl implements ClientService {
 			List<Remark> remarkList = task.getRemark();
 			remarkList.add(remark);
 			remark.setTask(task);
+			task.setRemark(remarkList);
 			taskRepository.save(task);
 			return remarkRepository.save(remark);
 		}catch(Exception ex) {
@@ -84,11 +90,11 @@ public class ClientServiceImpl implements ClientService {
 	}
 
 	@Override
-	public List<Task> viewAllTask(String loginName) {
-		Client client = clientRepository.findByLoginName(loginName);
+	public List<Task> viewAllTask(HttpSession session) {
+		Client client = clientRepository.findByLoginName((String) session.getAttribute("loginName"));
 		List<Task> taskList = client.getTask();
 		//taskList.forEach(task->task.getTaskIdentifier().equals(taskIdentifier));
-		if(taskList.isEmpty()) {
+		if(taskList==null) {
 			throw new TaskIdException("No task with task id found");
 		}
 		return taskList;
