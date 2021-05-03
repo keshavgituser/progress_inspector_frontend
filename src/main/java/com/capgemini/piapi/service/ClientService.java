@@ -8,7 +8,6 @@ import javax.validation.Valid;
 import com.capgemini.piapi.domain.Client;
 import com.capgemini.piapi.domain.Remark;
 import com.capgemini.piapi.domain.Task;
-import com.capgemini.piapi.exception.ClientPassedNullException;
 
 /**
  * This Client Service will be used for all client related operations.

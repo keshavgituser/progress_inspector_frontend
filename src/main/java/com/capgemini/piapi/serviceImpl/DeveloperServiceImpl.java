@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.capgemini.piapi.constant.DeveloperConstant;
-import com.capgemini.piapi.constant.TaskConstants;
 import com.capgemini.piapi.domain.Developer;
 import com.capgemini.piapi.domain.Remark;
 import com.capgemini.piapi.domain.Task;
@@ -22,8 +21,6 @@ import com.capgemini.piapi.repository.RemarkRepository;
 import com.capgemini.piapi.repository.TaskRepository;
 import com.capgemini.piapi.service.DeveloperService;
 
-import jdk.internal.org.jline.utils.Log;
-
 @Service
 public class DeveloperServiceImpl implements DeveloperService {
 
@@ -35,13 +32,6 @@ public class DeveloperServiceImpl implements DeveloperService {
 
 	@Autowired
 	private RemarkRepository remarkRepository;
-
-	@Autowired
-	private DeveloperConstant developerConstant;
-
-	@Autowired
-	private TaskConstants taskConstants;
-
 	@Override
 	public Developer saveDeveloper(Developer developer) {
 		if (developer.getName() == null || developer.getLoginName() == null || developer.getPwd() == null) {

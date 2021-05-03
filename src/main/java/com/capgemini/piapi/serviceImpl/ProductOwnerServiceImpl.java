@@ -17,7 +17,6 @@ import com.capgemini.piapi.exception.ClientNotFoundException;
 import com.capgemini.piapi.exception.LoginException;
 import com.capgemini.piapi.exception.ProductOwnerAlreadyExistException;
 import com.capgemini.piapi.exception.ProductOwnerNotFoundException;
-import com.capgemini.piapi.exception.TaskIdException;
 import com.capgemini.piapi.exception.TaskNotFoundException;
 import com.capgemini.piapi.repository.ClientRepository;
 import com.capgemini.piapi.repository.ProductOwnerRepository;
@@ -32,14 +31,6 @@ import com.capgemini.piapi.service.ProductOwnerService;
  */
 @Service
 public class ProductOwnerServiceImpl implements ProductOwnerService {
-	//TODO
-	 /* --------------------- Comments and naming conventions ------------------
-	 * 
-	 * ------------------------Logger Implementation---------------------------
-	 * 
-	 *---------------------- Optimize Service Logic ----------------------------
-	 */
-	
 	
 	private static final Logger log = LoggerFactory.getLogger(ProductOwnerServiceImpl.class);
 
@@ -169,6 +160,8 @@ public class ProductOwnerServiceImpl implements ProductOwnerService {
 		session.setAttribute("userType", "ProductOwner");
 		session.setAttribute("productOwnerId", productOwner.getId());
 		session.setAttribute("loginName", productOwner.getLoginName());
+		
+		log.info("-----------addProductOwnerInSession--------------- : Product Owner added to session");
 	}
 	//--------------------------------------------Task Operations --------------------------------------------
 	@Override
@@ -177,8 +170,10 @@ public class ProductOwnerServiceImpl implements ProductOwnerService {
 		ProductOwner productOwner = productOwnerRepository.findByLoginName((String) session.getAttribute("loginName"));
 		tasks= productOwner.getTask();
 		if (tasks==null) {
+			log.error("-----------getAllTasks--------------- : Tasks not available");
 			throw new TaskNotFoundException("Tasks not available");
 		}
+		log.info("-----------getAllTasks--------------- : List of task displayed");
 		return tasks;
 	}
 
@@ -187,6 +182,7 @@ public class ProductOwnerServiceImpl implements ProductOwnerService {
 			Task savedTask=null;
 			
 			if(taskIdentifier==null) {
+				log.error("-----------getTaskByTaskIdentifier--------------- : Please Provide Task Identifier");
 				throw new NullPointerException("Please Provide Task Identifier");
 			}
 			ProductOwner productOwner = productOwnerRepository.findByLoginName((String) session.getAttribute("loginName"));
@@ -197,8 +193,10 @@ public class ProductOwnerServiceImpl implements ProductOwnerService {
 				}
 			}
 			if(savedTask==null) {
-			throw new TaskNotFoundException("Task with id : '" + taskIdentifier + "' does not exists");
+				log.error("-----------getTaskByTaskIdentifier--------------- : Task with id : " + taskIdentifier + " does not exists");
+				throw new TaskNotFoundException("Task with id : '" + taskIdentifier + "' does not exists");
 			}
+			log.info("-----------getTaskByTaskIdentifier--------------- : Task with Id : "+taskIdentifier+" displayed");
 			return savedTask;
 	}
 	//------------------------------------------Client Operations-------------------------------------------------
@@ -207,14 +205,17 @@ public class ProductOwnerServiceImpl implements ProductOwnerService {
 		Client client = null;
 		Task task = null;
 		if(clientloginName==null || taskIdentifier==null) {
+			log.error("-----------addTaskToClient--------------- : Please Provide Required Fields");
 			throw new NullPointerException("Please Provide Required Fields");
 
 		}
 		if ((client = clientRepository.findByLoginName(clientloginName)) == null) {
+			log.error("-----------addTaskToClient--------------- : Client with loginName : " + clientloginName + " does not exists");
 			throw new ClientNotFoundException("Client with loginName : " + clientloginName + " does not exists");
 		}		
 		
 		if ((task = taskRepository.findByTaskIdentifier(taskIdentifier)) == null) {
+			log.error("-----------addTaskToClient--------------- : Task with id : " + taskIdentifier + " does not exists");
 			throw new TaskNotFoundException("Task with id : " + taskIdentifier + " does not exists");
 		}
 		List<Task> listOfTask = new ArrayList<>();
@@ -224,14 +225,17 @@ public class ProductOwnerServiceImpl implements ProductOwnerService {
 		listOfTask.add(task);
 		client.setTask(listOfTask);
 		clientRepository.save(client);
+		log.info("-----------addTaskToClient--------------- : Task added to client");
 		return client;
 	}
 
 	@Override
 	public List<Client> getAllClients() {
 		try {
+			log.info("-----------getAllClients--------------- : List of clients displayed");
 			return clientRepository.findAll();
 		} catch (Exception e) {
+			log.error("-----------getAllClients--------------- : Clients not available");
 			throw new ClientNotFoundException("Clients not available");
 		}
 
