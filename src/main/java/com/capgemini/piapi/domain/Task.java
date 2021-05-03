@@ -101,7 +101,7 @@ public class Task {
 	@JsonFormat(pattern = "dd/MM/yyyy")
 	private Date updatedAt;
 
-	/*
+	/**
 	 * Default Constructor and Getter Setters
 	 */
 	public Task() {
@@ -114,7 +114,7 @@ public class Task {
 	 * @param taskIdentifier of the task
 	 * @param description of the task
 	 * @param progress of the task
-	 * @param developer
+	 * @param developer for the task
 	 */
 	public Task(String title, String taskIdentifier, String description, String progress, Developer developer) {
 		super();
@@ -131,7 +131,7 @@ public class Task {
 	 * @param taskIdentifier of the task
 	 * @param description of the task
 	 * @param progress of the task
-	 * @param productOwner
+	 * @param productOwner of the product
 	 */
 	public Task(String title, String taskIdentifier, String description, String progress, ProductOwner productOwner) {
 		this.title = title;
@@ -140,7 +140,15 @@ public class Task {
 		this.progress = progress;
 		this.productOwner = productOwner;
 	}
-
+	/**
+	 * Task Constructor for Developer side testing
+	 * @param title of the task
+	 * @param taskIdentifier of the task
+	 * @param description of the task
+	 * @param progress of the task
+	 * @param developer of the task
+	 * @param remark of the tasl
+	 */
 	public Task(String title, String taskIdentifier, String description, String progress, Developer developer,
 			List<Remark> remark) {
 		super();
@@ -151,7 +159,16 @@ public class Task {
 		this.developer = developer;
 		this.remark = remark;
 	}
-
+	/**
+	 * Task constructor for testing
+	 * @param title of the task
+	 * @param taskIdentifier of the task
+	 * @param description of the task
+	 * @param progress of the task
+	 * @param productOwner for the task
+	 * @param teamLeader for the task
+	 * @param developer of the task
+	 */
 	public Task(String title, String taskIdentifier, String description, String progress, ProductOwner productOwner,
 			TeamLeader teamLeader, Developer developer) {
 		super();

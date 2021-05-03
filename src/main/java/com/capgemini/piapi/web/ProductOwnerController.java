@@ -25,7 +25,11 @@ import com.capgemini.piapi.domain.ProductOwner;
 import com.capgemini.piapi.domain.Task;
 import com.capgemini.piapi.service.ProductOwnerService;
 import com.capgemini.piapi.serviceImpl.MapValidationErrorService;
-
+/**
+ * Product Owner controller is used to handle requests and responses.
+ * @author Aadesh Juvekar
+ *
+ */
 @RestController
 @RequestMapping("/api/productOwner")
 public class ProductOwnerController {
@@ -53,7 +57,8 @@ public class ProductOwnerController {
 		}
 		ProductOwner loggedInOwner = productOwnerService.authenticateProductOwner(productOwner.getLoginName(),
 				productOwner.getPwd(), session);
-		return new ResponseEntity<ProductOwner>(loggedInOwner, HttpStatus.OK);
+		//return new ResponseEntity<ProductOwner>(loggedInOwner, HttpStatus.OK);
+		return new ResponseEntity<String>("Login Successful", HttpStatus.OK);
 	}
 
 	/**
@@ -65,7 +70,7 @@ public class ProductOwnerController {
 	@GetMapping("/logout")
 	public ResponseEntity<?> handleProductOwnerLogout(HttpSession session) {
 		session.invalidate();
-		return new ResponseEntity<String>("Logout Successfully | Have a nice day", HttpStatus.OK);
+		return new ResponseEntity<String>("Logout Successful", HttpStatus.OK);
 	}
 
 	/**
@@ -81,7 +86,8 @@ public class ProductOwnerController {
 		if (errorMap != null)
 			return errorMap;
 		ProductOwner savedProductOwner = productOwnerService.saveProductOwner(productOwner);
-		return new ResponseEntity<ProductOwner>(savedProductOwner, HttpStatus.CREATED);
+		//return new ResponseEntity<ProductOwner>(savedProductOwner, HttpStatus.CREATED);
+		return new ResponseEntity<String>("Registration Successful", HttpStatus.CREATED);
 	}
 
 	/**
@@ -101,7 +107,7 @@ public class ProductOwnerController {
 			ProductOwner savedProductOwner = productOwnerService.updateProductOwner(productOwner);
 			return new ResponseEntity<ProductOwner>(savedProductOwner, HttpStatus.CREATED);
 		}
-		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.UNAUTHORIZED);
 	}
 	
 	/**
@@ -117,7 +123,7 @@ public class ProductOwnerController {
 		productOwnerService.deleteProductOwnerByLoginName(loginName);
 		return new ResponseEntity<String>("Product Owner with loginName :" + loginName + " is deleted", HttpStatus.OK);
 		}
-		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.UNAUTHORIZED);
 	}
 
 	/**
@@ -131,7 +137,7 @@ public class ProductOwnerController {
 			List<Task> tasks = productOwnerService.getAllTasks(session);
 			return new ResponseEntity<List<Task>>(tasks, HttpStatus.OK);
 		}
-		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.UNAUTHORIZED);
 	}
 
 	/**
@@ -147,7 +153,7 @@ public class ProductOwnerController {
 			Task task = productOwnerService.getTaskByTaskIdentifier(taskIdentifier.toUpperCase(), session);
 			return new ResponseEntity<Task>(task, HttpStatus.OK);
 		}
-		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.UNAUTHORIZED);
 	}
 
 	/**
@@ -162,7 +168,7 @@ public class ProductOwnerController {
 			List<Client> clients = productOwnerService.getAllClients();
 			return new ResponseEntity<List<Client>>(clients, HttpStatus.OK);
 		}
-		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.UNAUTHORIZED);
 
 	}
 	/**
@@ -181,7 +187,7 @@ public class ProductOwnerController {
 			Client client = productOwnerService.addTaskToClient(clientLoginName, taskIdentifier.toUpperCase());
 			return new ResponseEntity<Client>(client, HttpStatus.OK);
 		}
-		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.UNAUTHORIZED);
 
 	}
 }

@@ -67,7 +67,6 @@ public interface ClientService {
 	/**
 	 * This Method Deletes The Client With LoginName
 	 * @param loginName
-	 * @return client object or throws ClientPassedNullException
 	 */
 	public void deleteClientByLoginName(String loginName);
 	/**

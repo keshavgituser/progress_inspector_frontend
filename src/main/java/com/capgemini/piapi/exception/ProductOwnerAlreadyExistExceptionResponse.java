@@ -1,5 +1,9 @@
 package com.capgemini.piapi.exception;
-
+/**
+ * The ProductOwnerAlreadyExistResponseException is used to handle exceptions on Product Owner
+ * @author Aadesh Juvekar
+ *
+ */
 public class ProductOwnerAlreadyExistExceptionResponse {
 	private String loginName;
 	

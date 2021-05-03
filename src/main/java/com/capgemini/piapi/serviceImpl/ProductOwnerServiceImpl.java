@@ -139,7 +139,7 @@ public class ProductOwnerServiceImpl implements ProductOwnerService {
 			addProductOwnerInSession(productOwner, session);
 			return productOwner;
 		}
-			throw new LoginException("Login Failed ! Invalid Credentials");
+			throw new LoginException("Invalid Credentials");
 
 	}
 
