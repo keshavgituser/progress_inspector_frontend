@@ -40,7 +40,7 @@ public interface TeamLeaderService {
 	/**
 	 * This findTeamLeader method will find the team Leader on basis of loginName
 	 * 
-	 * @param loginName of the TeamLeader to find
+	 * @param teamLeaderLoginName of the TeamLeader to find
 	 * @return team Leader of corresponding loginName or return team leader not
 	 *         found
 	 */
@@ -49,7 +49,7 @@ public interface TeamLeaderService {
 	/**
 	 * This deleteTeamLeader method will Delete the provided TeamLeader login Name
 	 * 
-	 * @param teamLeader to be deleted on basis of login Name
+	 * @param teamLeaderLoginName 
 	 * 
 	 */
 
@@ -103,8 +103,7 @@ public interface TeamLeaderService {
 	 */
 	public void deleteTask(String taskIdentifier);
 	/**
-	 * This method is used to list all developers based on team leader login name
-	 * @param LoginName
+	 * This method is used to list all developers 
 	 * @return
 	 */
 	List<Developer> findAllDevelopers();

@@ -148,7 +148,7 @@ class ProductOwnerServiceImplTest {
 		when(productOwnerRepository.findByLoginName(productOwner1.getLoginName())).thenReturn(new ProductOwner("Test Owner1", "Test", "Test123"));
 		when(session.getAttribute("loginName")).thenReturn(productOwner1.getLoginName());
 		Exception ex=assertThrows(LoginException.class,() -> productOwnerServiceImpl.authenticateProductOwner(productOwner1.getLoginName(), productOwner2.getPwd(), session));
-		assertEquals("Login Failed ! Invalid Credentials", ex.getMessage());
+		assertEquals("Invalid Credentials", ex.getMessage());
 
 	}
 	

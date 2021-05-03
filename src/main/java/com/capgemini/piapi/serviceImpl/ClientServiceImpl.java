@@ -12,20 +12,18 @@ import com.capgemini.piapi.domain.Client;
 import com.capgemini.piapi.domain.ProductOwner;
 import com.capgemini.piapi.domain.Remark;
 import com.capgemini.piapi.domain.Task;
-import com.capgemini.piapi.exception.ClientAlreadyExistException;
 import com.capgemini.piapi.exception.ClientNotFoundException;
 import com.capgemini.piapi.exception.ClientPassedNullException;
 import com.capgemini.piapi.exception.LoginException;
 import com.capgemini.piapi.exception.ProductOwnerAlreadyExistException;
 import com.capgemini.piapi.exception.ProductOwnerNotFoundException;
+
 import com.capgemini.piapi.exception.TaskIdException;
 import com.capgemini.piapi.repository.ClientRepository;
-import com.capgemini.piapi.repository.ProductOwnerRepository;
 import com.capgemini.piapi.repository.RemarkRepository;
 import com.capgemini.piapi.repository.TaskRepository;
 import com.capgemini.piapi.service.ClientService;
 
-import ch.qos.logback.classic.pattern.RootCauseFirstThrowableProxyConverter;
 
 
 /**
@@ -168,6 +166,7 @@ public class ClientServiceImpl implements ClientService {
 			throw new ClientNotFoundException(
 					"Client with loginName : " + client.getLoginName() + " does not exists");
 		}
+		client.setId(oldClient.getId());
 		oldClient = client;
 		return clientRepository.save(oldClient);
 	}

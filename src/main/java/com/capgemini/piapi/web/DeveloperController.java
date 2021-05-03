@@ -3,8 +3,6 @@ package com.capgemini.piapi.web;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,10 +29,8 @@ import com.capgemini.piapi.serviceImpl.MapValidationErrorService;
  *
  */
 @RestController
-@RequestMapping("/api/developers")
+@RequestMapping("/api/developer")
 public class DeveloperController {
-
-	private static final Logger log = LoggerFactory.getLogger(DeveloperController.class);
 
 	@Autowired
 	private MapValidationErrorService mapValidationErrorService;
@@ -61,19 +57,19 @@ public class DeveloperController {
 	/**
 	 * This method is used to delete developer on the basis of
 	 * 
-	 * @param loginname
+	 * @param developerLoginName
 	 * @param session
 	 * @return Response Entity with Deleted Developer if Developer exist
 	 */
 	@DeleteMapping("/{developerLoginName}")
 	public ResponseEntity<?> deleteDeveloper(@PathVariable String developerLoginName, HttpSession session) {
 		if (session.getAttribute("userType") != null && session.getAttribute("userType").equals("Developer")
-				&& session.getAttribute("developerLeaderLoginName").equals(developerLoginName)) {
+				&& session.getAttribute("developerLoginName").equals(developerLoginName)) {
 			developerService.deleteDeveloperbyDeveloperLoginName(developerLoginName);
 			return new ResponseEntity<String>("Developer with " + developerLoginName + " deleted successfully",
 					HttpStatus.OK);
 		}
-		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.UNAUTHORIZED);
 	}
 
 	/**
@@ -88,14 +84,14 @@ public class DeveloperController {
 	public ResponseEntity<?> updateDeveloper(@Valid @RequestBody Developer developer, BindingResult result,
 			HttpSession session) {
 		if (session.getAttribute("userType") != null && session.getAttribute("userType").equals("Developer")
-				&& session.getAttribute("developerLeaderLoginName").equals(developer.getLoginName())) {
+				&& session.getAttribute("developerLoginName").equals(developer.getLoginName())) {
 			ResponseEntity<?> errorMap = mapValidationErrorService.mapValidationError(result);
 			if (errorMap != null)
 				return errorMap;
 			Developer savedDeveloper = developerService.updateDeveloper(developer);
 			return new ResponseEntity<Developer>(savedDeveloper, HttpStatus.CREATED);
 		}
-		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.UNAUTHORIZED);
 	}
 
 	/**
@@ -117,7 +113,7 @@ public class DeveloperController {
 			Task updateStatus = developerService.updateTaskStatus(taskId, developerLoginName, task);
 			return new ResponseEntity<Task>(updateStatus, HttpStatus.OK);
 		}
-		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.UNAUTHORIZED);
 	}
 
 	/**
@@ -139,7 +135,7 @@ public class DeveloperController {
 			Task addRemark = developerService.addRemark(taskId, developerLoginName, remark);
 			return new ResponseEntity<Task>(addRemark, HttpStatus.OK);
 		}
-		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.UNAUTHORIZED);
 	}
 
 	/**
@@ -189,6 +185,6 @@ public class DeveloperController {
 			Task developer = developerService.findTaskByTaskIdentifierAndDevelpoerLoginName(taskID, developerLoginName);
 			return new ResponseEntity<Task>(developer, HttpStatus.OK);
 		}
-		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.UNAUTHORIZED);
 	}
 }

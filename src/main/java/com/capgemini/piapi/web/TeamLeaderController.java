@@ -29,7 +29,7 @@ import com.capgemini.piapi.service.TeamLeaderService;
 import com.capgemini.piapi.serviceImpl.MapValidationErrorService;
 
 @RestController
-@RequestMapping("/api/teamleader")
+@RequestMapping("/api/teamLeader")
 public class TeamLeaderController {
 
 	private static final Logger logger = LoggerFactory.getLogger(TeamLeaderController.class);
@@ -97,12 +97,12 @@ public class TeamLeaderController {
 	/**
 	 * Method is used for getting Team Leader on basis of loginName
 	 * 
-	 * @param teamLeaderloginname
+	 * @param teamLeaderLoginName
 	 * @return Response Entity with logged in Team Leader
 	 */
-	@GetMapping("/{teamleaderloginname}")
-	public ResponseEntity<?> getTeamLeader(@PathVariable String teamleaderloginname) {
-		TeamLeader teamLeader = teamLeaderService.findTeamLeaderByLoginName(teamleaderloginname);
+	@GetMapping("/{teamLeaderLoginName}")
+	public ResponseEntity<?> getTeamLeader(@PathVariable String teamLeaderLoginName) {
+		TeamLeader teamLeader = teamLeaderService.findTeamLeaderByLoginName(teamLeaderLoginName);
 		logger.info("--TEAMLEADER--" + teamLeader);
 		return new ResponseEntity<TeamLeader>(teamLeader, HttpStatus.OK);
 	}
@@ -110,18 +110,18 @@ public class TeamLeaderController {
 	/**
 	 * This method is used to delete Team Leader by Login Name
 	 * 
-	 * @param teamleaderloginname
+	 * @param teamLeaderLoginName
 	 * @return Response Entity of deleted Team Leader
 	 */
-	@DeleteMapping("/{teamleaderLoginName}")
-	public ResponseEntity<?> deleteTeamLeader(@PathVariable String teamleaderLoginName, HttpSession session) {
+	@DeleteMapping("/{teamLeaderLoginName}")
+	public ResponseEntity<?> deleteTeamLeader(@PathVariable String teamLeaderLoginName, HttpSession session) {
 		if (session.getAttribute("userType") != null && session.getAttribute("userType").equals("TeamLeader")
-				&& session.getAttribute("teamLeaderLoginName").equals(teamleaderLoginName)) {
-			teamLeaderService.deleteTeamLeaderByLoginName(teamleaderLoginName);
-			return new ResponseEntity<String>("TeamLeader Deleted with login Name " + teamleaderLoginName,
+				&& session.getAttribute("teamLeaderLoginName").equals(teamLeaderLoginName)) {
+			teamLeaderService.deleteTeamLeaderByLoginName(teamLeaderLoginName);
+			return new ResponseEntity<String>("TeamLeader Deleted with login Name " + teamLeaderLoginName,
 					HttpStatus.OK);
 		}
-		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.UNAUTHORIZED);
 	}
 
 	/**
@@ -142,7 +142,7 @@ public class TeamLeaderController {
 			TeamLeader savedTeamLeader = teamLeaderService.updateTeamLeader(teamLeader);
 			return new ResponseEntity<TeamLeader>(savedTeamLeader, HttpStatus.CREATED);
 		}
-		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.UNAUTHORIZED);
 	}
 
 	/**
@@ -157,7 +157,7 @@ public class TeamLeaderController {
 	 * @return Response Entity of new created task on basis of ProductOwner
 	 *         LoginName and TeamLeader LoginName with HttpStatus
 	 */
-	@PostMapping("/createtask/{productOwnerLoginName}/{teamleaderLoginName}")
+	@PostMapping("/createTask/{productOwnerLoginName}/{teamleaderLoginName}")
 	public ResponseEntity<?> createNewTask(@Valid @RequestBody Task task, BindingResult result,
 			@PathVariable String productOwnerLoginName, @PathVariable String teamleaderLoginName, HttpSession session) {
 		if (session.getAttribute("userType") != null && session.getAttribute("userType").equals("TeamLeader")
@@ -168,7 +168,7 @@ public class TeamLeaderController {
 			Task savedTask = teamLeaderService.createTask(task, productOwnerLoginName, teamleaderLoginName);
 			return new ResponseEntity<Task>(savedTask, HttpStatus.CREATED);
 		}
-		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.UNAUTHORIZED);
 	}
 
 	/**
@@ -185,7 +185,7 @@ public class TeamLeaderController {
 			List<Task> tasks = teamLeaderService.viewAllTaskByTeamLeaderLoginName(teamleaderLoginName);
 			return new ResponseEntity<List<Task>>(tasks, HttpStatus.OK);
 		}
-		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.UNAUTHORIZED);
 	}
 
 	/**
@@ -205,7 +205,7 @@ public class TeamLeaderController {
 			Task developer = teamLeaderService.findTaskByTaskIdentifierAndTeamLeaderLoginName(taskID, teamleaderLoginName);
 			return new ResponseEntity<Task>(developer, HttpStatus.OK);
 		}
-		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.UNAUTHORIZED);
 	}
 
 	/**
@@ -224,7 +224,7 @@ public class TeamLeaderController {
 			return new ResponseEntity<String>("Task with Identifier " + taskID.toUpperCase() + " deleted successfully",
 					HttpStatus.OK);
 		}
-		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.UNAUTHORIZED);
 	}
 
 	/**
@@ -240,46 +240,45 @@ public class TeamLeaderController {
 			List<Developer> developers = teamLeaderService.findAllDevelopers();
 			return new ResponseEntity<List<Developer>>(developers, HttpStatus.OK);
 		}
-		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.UNAUTHORIZED);
 	}
 
 	/**
 	 * This method is used to view developer on basis of developer login name
 	 * 
-	 * @param loginname
+	 * @param developerLoginName
 	 * @param session
 	 * @return Response Entity with developer if Team Leader is logged in else You
 	 *         do not have Access message is appeared with HttpStatus
 	 */
-	@GetMapping("/viewbydeveloperloginname/{teamleaderLoginName}")
-	public ResponseEntity<?> getDeveloperByDeveloperLoginName(@PathVariable String teamleaderLoginName,
+	@GetMapping("/viewByDeveloperLoginName/{developerLoginName}")
+	public ResponseEntity<?> getDeveloperByDeveloperLoginName(@PathVariable String developerLoginName,
 			HttpSession session) {
 		if (session.getAttribute("userType") != null && session.getAttribute("userType").equals("TeamLeader")
-				&& session.getAttribute("teamLeaderLoginName").equals(teamleaderLoginName)) {
-			Developer developer = developerService.findDeveloperByDeveloperLoginName(teamleaderLoginName);
+				&& session.getAttribute("teamLeaderLoginName").equals(developerLoginName)) {
+			Developer developer = developerService.findDeveloperByDeveloperLoginName(developerLoginName);
 			return new ResponseEntity<Developer>(developer, HttpStatus.OK);
 		}
-		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.UNAUTHORIZED);
 	}
-
 	/**
 	 * This method is method is used to assign task to developer
 	 * 
 	 * @param taskIdentifier
-	 * @param devId
+	 * @param devLoginName
 	 * @param session
 	 * @return Resposne Entity with Task assigned to developer if Team Leader is
 	 *         logged in else You do not have Access message is appeared with
 	 *         HttpStatus
 	 */
-	@PatchMapping("/assigndev/{taskIdentifier}/{devloginname}")
+	@PatchMapping("/assignDev/{taskIdentifier}/{devLoginName}")
 	public ResponseEntity<?> assignDeveloperToTask(@PathVariable String taskIdentifier,
-			@PathVariable String devloginname, HttpSession session) {
+			@PathVariable String devLoginName, HttpSession session) {
 		if (session.getAttribute("userType") != null && session.getAttribute("userType").equals("TeamLeader")) {
-			Task savedTask = teamLeaderService.assignDeveloper(taskIdentifier, devloginname);
+			Task savedTask = teamLeaderService.assignDeveloper(taskIdentifier, devLoginName);
 			return new ResponseEntity<Task>(savedTask, HttpStatus.CREATED);
 		}
-		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.UNAUTHORIZED);
 	}
 
 	/**
@@ -295,7 +294,7 @@ public class TeamLeaderController {
 			List<Remark> remarks = teamLeaderService.viewAllRemark(taskIdentifer);
 			return new ResponseEntity<List<Remark>>(remarks, HttpStatus.OK);
 		}
-		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.UNAUTHORIZED);
 	}
 
 }

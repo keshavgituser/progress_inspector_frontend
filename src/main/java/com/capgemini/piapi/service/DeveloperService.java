@@ -55,7 +55,7 @@ public interface DeveloperService {
 	 * 
 	 * @param taskId
 	 * @param developerLoginName
-	 * @param task
+	 * @param remark
 	 * @return Task with added remark if all Identifier exist
 	 */
 	Task addRemark(String taskId, String developerLoginName, Remark remark);

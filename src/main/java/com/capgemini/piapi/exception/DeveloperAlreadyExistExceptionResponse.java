@@ -2,20 +2,21 @@ package com.capgemini.piapi.exception;
 
 public class DeveloperAlreadyExistExceptionResponse {
 
-	private String devIdentifier;
+	private String loginName;
 
-	public DeveloperAlreadyExistExceptionResponse(String devIdentifier) {
+	public DeveloperAlreadyExistExceptionResponse(String loginName) {
 		super();
-		this.devIdentifier = devIdentifier;
+		this.loginName = loginName;
+	}
+	//Getters and Setters
+	public String getLoginName() {
+		return loginName;
 	}
 
-	// Getter and Setter
-	public String getDevIdentifier() {
-		return devIdentifier;
+	public void setLoginName(String loginName) {
+		this.loginName = loginName;
 	}
 
-	public void setDevIdentifier(String devIdentifier) {
-		this.devIdentifier = devIdentifier;
-	}
+	
 
 }

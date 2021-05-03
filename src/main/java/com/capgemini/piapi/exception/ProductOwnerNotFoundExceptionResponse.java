@@ -1,5 +1,9 @@
 package com.capgemini.piapi.exception;
-
+/**
+ * The ProductOwnerNotFoundResponseException is used to handle exceptions on Product Owner
+ * @author Aadesh Juvekar
+ *
+ */
 public class ProductOwnerNotFoundExceptionResponse {
 	private String loginName;
 

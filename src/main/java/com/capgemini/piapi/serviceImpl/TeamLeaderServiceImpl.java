@@ -5,8 +5,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,15 +24,12 @@ import com.capgemini.piapi.exception.TeamLeaderAlreadyExistsException;
 import com.capgemini.piapi.exception.TeamLeaderNotFoundException;
 import com.capgemini.piapi.repository.DeveloperRepository;
 import com.capgemini.piapi.repository.ProductOwnerRepository;
-import com.capgemini.piapi.repository.RemarkRepository;
 import com.capgemini.piapi.repository.TaskRepository;
 import com.capgemini.piapi.repository.TeamLeaderRepository;
 import com.capgemini.piapi.service.TeamLeaderService;
 
 @Service
 public class TeamLeaderServiceImpl implements TeamLeaderService {
-
-	private static final Logger log = LoggerFactory.getLogger(TeamLeaderServiceImpl.class);
 
 	@Autowired
 	private TeamLeaderRepository teamLeaderRepository;
@@ -46,31 +41,22 @@ public class TeamLeaderServiceImpl implements TeamLeaderService {
 	private DeveloperRepository developerRepository;
 
 	@Autowired
-	private RemarkRepository remarkRepository;
-
-	@Autowired
-	private TaskConstants taskConstants;
-
-	@Autowired
-	private DeveloperConstant developerConstants;
-
-	@Autowired
 	private TaskRepository taskRepository;
 
 	@Override
-	public Task createTask(Task task, String productOwnerLoginName, String teamleaderLoginName) {
+	public Task createTask(Task task, String productOwnerLoginName, String teamLeaderLoginName) {
 
 		ProductOwner productOwner = productOwnerRepository.findByLoginName(productOwnerLoginName);
 		if (productOwner == null) {
 			// TODO Product Owner Not Found Exception
 			throw new ProductOwnerNotFoundException("Product Owner Not Found");
 		}
-		TeamLeader teamLeader = teamLeaderRepository.findByLoginName(teamleaderLoginName);
+		TeamLeader teamLeader = teamLeaderRepository.findByLoginName(teamLeaderLoginName);
 		if (teamLeader == null) {
 			throw new TeamLeaderNotFoundException("Team Leader not found");
 		}
 		task.setTaskIdentifier(task.getTaskIdentifier().toUpperCase());
-		task.setProgress(taskConstants.TASK_STATUS_PENDING);
+		task.setProgress(TaskConstants.TASK_STATUS_PENDING);
 		List<Task> productOwnerTaskList = productOwner.getTask();
 		productOwnerTaskList.add(task);
 		productOwner.setTask(productOwnerTaskList);
@@ -130,7 +116,7 @@ public class TeamLeaderServiceImpl implements TeamLeaderService {
 	public TeamLeader findTeamLeaderByLoginName(String teamLeaderLoginName) {
 		TeamLeader fetchedTeamLeader = teamLeaderRepository.findByLoginName(teamLeaderLoginName);
 		if (fetchedTeamLeader == null) {
-			throw new TeamLeaderNotFoundException("Team Leader with  " + teamLeaderLoginName + "not found");
+			throw new TeamLeaderNotFoundException("Team Leader with  " + teamLeaderLoginName + " not found");
 
 		}
 		return fetchedTeamLeader;
@@ -147,6 +133,7 @@ public class TeamLeaderServiceImpl implements TeamLeaderService {
 			throw new TeamLeaderNotFoundException(
 					"TeamLeader with loginName : " + teamLeader.getLoginName() + " does not exists");
 		}
+		teamLeader.setId(oldTeamLeader.getId());
 		oldTeamLeader = teamLeader;
 		return teamLeaderRepository.save(oldTeamLeader);
 	}
@@ -190,8 +177,8 @@ public class TeamLeaderServiceImpl implements TeamLeaderService {
 		taskList.add(task);
 		developer.setTasks(taskList);
 		developerRepository.save(developer);
-		task.setProgress(taskConstants.TASK_STATUS_INPROGRESS);
-		developer.setStatus(developerConstants.DEVELOPER_ACTIVE);
+		task.setProgress(TaskConstants.TASK_STATUS_INPROGRESS);
+		developer.setStatus(DeveloperConstant.DEVELOPER_ACTIVE);
 		return taskRepository.save(task);
 	}
 
