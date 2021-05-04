@@ -12,6 +12,7 @@ import com.capgemini.piapi.domain.Client;
 import com.capgemini.piapi.domain.ProductOwner;
 import com.capgemini.piapi.domain.Remark;
 import com.capgemini.piapi.domain.Task;
+import com.capgemini.piapi.exception.ClientAlreadyExistException;
 import com.capgemini.piapi.exception.ClientNotFoundException;
 import com.capgemini.piapi.exception.ClientPassedNullException;
 import com.capgemini.piapi.exception.LoginException;

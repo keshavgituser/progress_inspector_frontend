@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 /**
@@ -43,6 +44,7 @@ public class ProductOwner {
 	 * password of the ProductOwner
 	 */
 	@NotNull(message = "Password is required")
+	@Size(min=8, max=20,message = "Please enter valid password")
 	private String pwd;
 	/**
 	 * List of the tasks in the sprint

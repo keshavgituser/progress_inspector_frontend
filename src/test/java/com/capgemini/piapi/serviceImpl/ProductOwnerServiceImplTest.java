@@ -60,6 +60,9 @@ class ProductOwnerServiceImplTest {
 	private List<Task> taskList;
 	private List<Client> clientList;
 
+	/**
+	 * Dummy objects for testing
+	 */
 	@BeforeEach
 	public void setup() {	
 		MockitoAnnotations.openMocks(this); // invoke mocks
