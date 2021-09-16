@@ -1,5 +1,6 @@
 package com.capgemini.piapi.serviceImpl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -13,6 +14,7 @@ import com.capgemini.piapi.domain.Remark;
 import com.capgemini.piapi.domain.Task;
 import com.capgemini.piapi.exception.ClientNotFoundException;
 import com.capgemini.piapi.exception.ClientPassedNullException;
+import com.capgemini.piapi.exception.ProductOwnerNotFoundException;
 import com.capgemini.piapi.exception.TaskIdException;
 import com.capgemini.piapi.repository.ClientRepository;
 import com.capgemini.piapi.repository.RemarkRepository;
@@ -62,17 +64,24 @@ public class ClientServiceImpl implements ClientService {
 
 	@Override
 	public Remark addRemark(Remark remark, String task_id) {
-		try {
-			//We have to set the task for the remark
-			Task task = taskRepository.findByTaskIdentifier(task_id);
-			List<Remark> remarkList = task.getRemark();
-			remarkList.add(remark);
-			remark.setTask(task);
-			taskRepository.save(task);
-			return remarkRepository.save(remark);
-		}catch(Exception ex) {
-			throw new TaskIdException("Task id "+ task_id +" is not available");
+		if (task_id == null || remark == null) {
+			throw new NullPointerException("Please Fill the Required Fields");
 		}
+		Task task = taskRepository.findByTaskIdentifier(task_id);
+		
+		if (task.getTaskIdentifier() == null) {
+			throw new TaskIdException("Task with Identifer" + task_id.toUpperCase() + " doesn't exist");
+		}
+		remark.setTask(task);
+		List<Remark> remarkList = new ArrayList<>();
+		if (task.getRemark() != null) {
+			remarkList = task.getRemark();
+		}
+		remarkList.add(remark);
+		task.setRemark(remarkList);
+		remarkRepository.save(remark);
+		taskRepository.save(task);
+		return remark;
 	}
 
 	@Override
@@ -95,9 +104,9 @@ public class ClientServiceImpl implements ClientService {
 	public Client saveClient(Client client) {
 		
 		try {
-		if(client.getClientName()==null)
+		if(client.getName()==null)
 		{
-			throw new ClientPassedNullException("ClientName is Null");
+			throw new ClientPassedNullException("name is Null");
 		}
 		else if(client.getLoginName()==null)
 		{
@@ -180,27 +189,29 @@ public class ClientServiceImpl implements ClientService {
 	@Override
 	public Client authenticateClient(String loginName, String pwd, HttpSession session) {
 		Client client=null;
-		if ((client=clientRepository.findByLoginNameAndPwd(loginName, pwd)) == null) {
-			throw new ClientNotFoundException("Client with loginName : " + loginName + " does not exists");
-		} 
 		if(loginName==null || pwd==null)
 		{
 			throw new ClientPassedNullException("Null Values Are Passed For Authentation");
 		}
+		if ((client=clientRepository.findByLoginNameAndPwd(loginName, pwd)) == null) {
+//			throw new ClientNotFoundException("Client with loginName : " + loginName + " does not exists");
+			throw new ProductOwnerNotFoundException("client with loginName : " + loginName + " does not exist");
+		} 
+		
 		addClientInSession(client, session);
 		return client;
 	}
 	
 	/**
 	 * This Methods Adds Client in session
-	 * @param client Client Objeect
+	 * @param client Client Object
 	 * @param session Session Object
 	 */
 	private void addClientInSession(Client client, HttpSession session) {
 
 		session.setAttribute("userType", "Client");
 		session.setAttribute("clientId", client.getId());
-		session.setAttribute("Name", client.getClientName());
+		session.setAttribute("Name", client.getName());
 		session.setAttribute("loginName", client.getLoginName());
 		
 	}

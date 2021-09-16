@@ -50,7 +50,7 @@ class ClientServiceImplTest {
 			public void test_viewTask_GivenClientLoginNameAndTaskIdentifier_ShouldReturnTask() {
 				
 				Client client=new Client();
-				client.setClientName("NameTry");
+				client.setName("NameTry");
 				client.setLoginName("LoginTry");
 				client.setPwd("PasswordTry");
 				
@@ -112,7 +112,7 @@ class ClientServiceImplTest {
 	void test_saveClient_Given_Only_Client_Name_Should_ThrowClientPassedNullException() 
 	{
 		Client client=new Client();
-		client.setClientName("New Userfirst");
+		client.setName("New Userfirst");
 //		client.setLoginName("New Loginfirst");
 //		client.setPwd("New passfirst");
 		assertThrows(ClientPassedNullException.class,()-> clientService.saveClient(client));
@@ -130,7 +130,7 @@ class ClientServiceImplTest {
 	void test_saveClient_Given_Only_Client_loginName_Should_ThrowClientPassedNullException() 
 	{
 		Client client=new Client();
-		//client.setClientName("New Usersecond");
+		//client.setName("New Usersecond");
 		client.setLoginName("Loginsecond");
 //		client.setPwd("passsecond");
 		assertThrows(ClientPassedNullException.class,()-> clientService.saveClient(client));
@@ -146,7 +146,7 @@ class ClientServiceImplTest {
 	void test_saveClient_Given_Only_Client_Password_Should_ThrowClientPassedNullException() 
 	{
 		Client client=new Client();
-		//client.setClientName("New Userthird");
+		//client.setName("New Userthird");
 		//client..setLoginName("Loginthird");
 		client.setPwd("passthird");
 		assertThrows(ClientPassedNullException.class,()-> clientService.saveClient(client));
@@ -161,7 +161,7 @@ class ClientServiceImplTest {
 	void test_saveClient_Given_Client_Should_Return_The_Saved_Client() 
 	{
 		Client client=new Client();
-		client.setClientName("NameOne");
+		client.setName("NameOne");
 		client.setLoginName("LoginOne");
 		client.setPwd("passOne");
 		Client savedClient=clientService.saveClient(client);
@@ -187,7 +187,7 @@ class ClientServiceImplTest {
 	void test_findByLoginName_given_String_loginName_Return_Client()
 	{
 		Client client=new Client();
-		client.setClientName("NameTwo");
+		client.setName("NameTwo");
 		client.setLoginName("LoginTwo");
 		client.setPwd("passTwo");
 		Client savedClient2=clientRepository.save(client);
@@ -205,7 +205,7 @@ class ClientServiceImplTest {
 	void test_deleteClientByLoginName_Given_String_loginName_Removes_Client()
 	{
 		Client client=new Client();
-		client.setClientName("NameThree");
+		client.setName("NameThree");
 		client.setLoginName("LoginThree");
 		client.setPwd("passThree");
 		Client savedClient3=clientRepository.save(client);
@@ -228,7 +228,7 @@ class ClientServiceImplTest {
 	void test_authenticateClient_Given_String_loginName_String_Password_Return_User()
 	{
 		Client client = new Client();
-		client.setClientName("Test Client");
+		client.setName("Test Client");
 		client.setLoginName("Test1");
 		client.setPwd("Test1");
 		Client savedClient = clientService.saveClient(client); 
@@ -285,15 +285,15 @@ class ClientServiceImplTest {
 	void test_updateClient_Client_Returns_Updated_Client()
 	{
 		Client client=new Client();
-		client.setClientName("NameFive");
+		client.setName("NameFive");
 		client.setLoginName("LoginFive");
 		client.setPwd("passFive");
 		Client savedClient=clientService.saveClient(client);
 		assertEquals("LoginFive",savedClient.getLoginName());
-		client.setClientName("NameSix");
+		client.setName("NameSix");
 		client.setPwd("passSix");
 		Client updatedClient=clientService.updateClient(client);
-		assertEquals("NameSix",updatedClient.getClientName());
+		assertEquals("NameSix",updatedClient.getName());
 		
 		clientRepository.delete(client);
 		

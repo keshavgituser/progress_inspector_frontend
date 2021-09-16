@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 
@@ -36,17 +37,17 @@ public class Client {
 	/**
 	 * client name and it cannot be blank
 	 */
-	@NotBlank(message = "Please enter Name.")
-	private String clientName;
+	@NotBlank(message = "Please Enter Name.")
+	private String name;
 	/**
 	 * login name of client
 	 */
-	@NotBlank(message = "Please enter Login Name.")
+	@NotBlank(message = "Please Enter Login Name.")
 	private String loginName;
 	/**
 	 * password of client
 	 */
-	@NotBlank(message = "Please enter Password.")
+	@NotBlank(message = "Please Enter Password.")
 	private String pwd;
 	/**
 	 * Status of client
@@ -61,8 +62,8 @@ public class Client {
 	private List<Task> task;
 	
 	
-	public Client(String clientName, String loginName, String pwd) {
-		this.clientName = clientName;
+	public Client(String name, String loginName, String pwd) {
+		this.name = name;
 		this.loginName = loginName;
 		this.pwd = pwd;
 	}
@@ -87,12 +88,12 @@ public class Client {
 		this.id = id;
 	}
 
-	public String getClientName() {
-		return clientName;
+	public String getName() {
+		return name;
 	}
 
-	public void setClientName(String clientName) {
-		this.clientName = clientName;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public String getLoginName() {

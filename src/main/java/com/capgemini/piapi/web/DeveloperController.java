@@ -1,5 +1,7 @@
 package com.capgemini.piapi.web;
 
+import java.util.List;
+
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
@@ -128,12 +130,15 @@ public class DeveloperController {
 	 *         else You do not have Access message is appeared with Http Status
 	 */
 	@PostMapping("/addremark/{taskId}/{developerLoginName}")
-	public ResponseEntity<?> addRemarkInTask(@PathVariable String taskId, @PathVariable String developerLoginName,
-			@RequestBody Remark remark, HttpSession session) {
+	public ResponseEntity<?> addRemarkInTask(@Valid @RequestBody Remark remark, BindingResult result,
+			@PathVariable String taskId, @PathVariable String developerLoginName, HttpSession session) {
 		if (session.getAttribute("userType") != null && session.getAttribute("userType").equals("Developer")
 				&& session.getAttribute("developerLoginName").equals(developerLoginName)) {
-			Task addRemark = developerService.addRemark(taskId, developerLoginName, remark);
-			return new ResponseEntity<Task>(addRemark, HttpStatus.OK);
+		ResponseEntity<?> errorMap = mapValidationErrorService.mapValidationError(result);
+		if (errorMap != null)
+			return errorMap;
+		Task addRemark = developerService.addRemark(taskId, developerLoginName, remark);
+		return new ResponseEntity<Task>(addRemark, HttpStatus.OK);
 		}
 		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.UNAUTHORIZED);
 	}
@@ -180,11 +185,21 @@ public class DeveloperController {
 	@GetMapping("/viewbytaskid/{taskID}/{developerLoginName}")
 	public ResponseEntity<?> getTaskByTaskIdentifier(@PathVariable String taskID,
 			@PathVariable String developerLoginName, HttpSession session) {
-		if (session.getAttribute("userType") != null && session.getAttribute("userType").equals("TeamLeader")
+		if (session.getAttribute("userType") != null && session.getAttribute("userType").equals("Developer")
 				&& session.getAttribute("developerLoginName").equals(developerLoginName)) {
 			Task developer = developerService.findTaskByTaskIdentifierAndDevelpoerLoginName(taskID, developerLoginName);
 			return new ResponseEntity<Task>(developer, HttpStatus.OK);
 		}
+		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.UNAUTHORIZED);
+	}
+	
+	@GetMapping("/all/tasks/{developerLoginName}")
+	public ResponseEntity<?> getAllTasks(@PathVariable String developerLoginName, HttpSession session) {
+		if (session.getAttribute("userType") != null && session.getAttribute("userType").equals("Developer")
+				&& session.getAttribute("developerLoginName").equals(developerLoginName)) {
+		List<Task> tasks = developerService.viewAllTaskByDeveloperLoginName(developerLoginName);
+		return new ResponseEntity<List<Task>>(tasks, HttpStatus.OK);
+	}
 		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.UNAUTHORIZED);
 	}
 }

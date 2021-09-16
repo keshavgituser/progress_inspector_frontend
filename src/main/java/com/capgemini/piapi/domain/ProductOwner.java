@@ -11,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -31,24 +32,24 @@ public class ProductOwner {
 	/**
 	 * name of the ProductOwner
 	 */
-	@NotNull(message = "Product Owner Name is required")
+	@NotBlank(message = "Please Enter Name.")
 	private String name;
 	/**
 	 * Login Name of the ProductOwner
 	 */
-	@NotNull(message = "User Name is required")
+	@NotBlank(message = "Please Enter Login Name.")
 	@Column(unique = true, updatable = false)
 	private String loginName;
 	/**
 	 * password of the ProductOwner
 	 */
-	@NotNull(message = "Password is required")
+	@NotBlank(message = "Password is required")
 	private String pwd;
 	/**
 	 * List of the tasks in the sprint
 	 */
 	@JsonIgnore
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "productOwner")
+	@OneToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER, mappedBy = "productOwner")
 	private List<Task> task;
 	
 	/**

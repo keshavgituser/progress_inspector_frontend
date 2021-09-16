@@ -1,5 +1,7 @@
 package com.capgemini.piapi.web;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -177,15 +179,33 @@ public class ProductOwnerController {
 	 * @return client if task is authorized
 	 */
 
-	@GetMapping("/addClient/{clientLoginName}/{taskIdentifier}")
+	@GetMapping("/authorizeClient/{clientLoginName}/{taskIdentifier}")
 	public ResponseEntity<?> addTaskToClient(@PathVariable String clientLoginName, @PathVariable String taskIdentifier,
 			HttpSession session) {
-		if (session.getAttribute("userType") != null && session.getAttribute("userType").equals("ProductOwner")) {
+//		if (session.getAttribute("userType") != null && session.getAttribute("userType").equals("ProductOwner")) {
 
 			Client client = productOwnerService.addTaskToClient(clientLoginName, taskIdentifier.toUpperCase());
-			return new ResponseEntity<Client>(client, HttpStatus.OK);
-		}
-		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.UNAUTHORIZED);
+			return new ResponseEntity<String>("Client authorised to View Task", HttpStatus.OK);
+//		}
+//		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.UNAUTHORIZED);
 
 	}
+	
+	@GetMapping("/test")
+	public ResponseEntity<?> test(HttpSession session) {
+			
+		ProductOwner loggedInOwner = productOwnerService.authenticateProductOwner("owner","owner", session);
+		ArrayList<String> al = new ArrayList<>();
+		al.add((String) session.getAttribute("userType"));
+		al.add((String) session.getAttribute("loginName"));
+		
+		HashMap<String, String> hm = new HashMap<>();
+			hm.put("userType", (String) session.getAttribute("userType"));
+			hm.put("loginName", (String) session.getAttribute("loginName"));
+			return new ResponseEntity<HashMap<String, String>>(hm, HttpStatus.OK);
+//			return new ResponseEntity<HttpSession>(session, HttpStatus.OK);
+			
+
+	}
+	
 }

@@ -49,9 +49,8 @@ public class Remark {
 	@JsonIgnore
 	private Task task;
 
-
-	@JsonFormat(pattern = "yyyy-MM-dd")
-  private Date createdAt;
+	@JsonFormat(pattern = "dd-MM-yyyy HH:mm", timezone="Asia/Kolkata")
+	private Date createdAt;
 	@JsonFormat(pattern = "yyyy-MM-dd")
 	private Date updatedAt;
 
@@ -102,12 +101,15 @@ public class Remark {
 	public Date getCreatedAt() {
 		return createdAt;
 	}
+
 	public void setCreatedAt(Date createdAt) {
 		this.createdAt = createdAt;
 	}
+
 	public Date getUpdatedAt() {
 		return updatedAt;
 	}
+
 	public void setUpdatedAt(Date updatedAt) {
 		this.updatedAt = updatedAt;
 	}

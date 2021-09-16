@@ -114,4 +114,6 @@ public interface TeamLeaderService {
 	 * @return updated TeamLeader
 	 */
 	TeamLeader updateTeamLeader(TeamLeader teamLeader);
+
+	Task updateTask(Task task);
 }

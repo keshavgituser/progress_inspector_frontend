@@ -12,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -35,18 +36,18 @@ public class Developer {
 	/**
 	 * Name of developer
 	 */
-	@NotNull(message = "Developer Name is required")
+	@NotBlank(message = "Please Enter Name.")
 	private String name;
 	/**
 	 * Login name of developer
 	 */
-	@NotNull(message = "Login name can not be null")
+	@NotBlank(message = "Please Enter Login Name.")
 	@Column(unique = true, updatable = false)
 	private String loginName;
 	/**
 	 * Password of developer
 	 */
-	@NotNull(message = "Password is required")
+	@NotBlank(message = "Please Enter Password.")
 	@Size(min = 8, max = 20, message = "Please Enter password of Minimum 8 and Maximum 20")
 	private String pwd;
 	/**
@@ -56,7 +57,7 @@ public class Developer {
 	/**
 	 * Relationship of one developer to many task
 	 */
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "developer")
+	@OneToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER, mappedBy = "developer")
 	private List<Task> tasks = new ArrayList<>();
 
 	public Developer() {

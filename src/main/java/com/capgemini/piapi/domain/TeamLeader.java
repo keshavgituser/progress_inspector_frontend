@@ -26,15 +26,15 @@ public class TeamLeader {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	@NotNull(message = "Team Leader name is required")
+	@NotBlank(message = "Please Enter Name.")
 	private String name;
 	@Column(unique = true)
-	@NotBlank(message = "LoginName is Required")
+	@NotBlank(message = "Please Enter Login Name.")
 	private String loginName;
-	@NotBlank(message = "pwd is Required")
+	@NotBlank(message = "Please Enter Password.")
 	private String pwd;
 	@JsonIgnore
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "teamLeader")
+	@OneToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER, mappedBy = "teamLeader",orphanRemoval = true)
 	private List<Task> task;
 
 	public TeamLeader() {

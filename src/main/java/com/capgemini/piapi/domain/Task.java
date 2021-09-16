@@ -18,6 +18,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -41,19 +42,19 @@ public class Task {
 	/**
 	 * Title of the task
 	 */
-	@NotNull(message = "Task title is required")
+	@NotBlank(message = "Task title is required")
 	private String title;
 	/**
 	 * Unique Identifier of the task
 	 */
-	@NotNull(message = "Task identifier is required")
+	@NotBlank(message = "Task identifier is required")
 	@Column(unique = true, updatable = false)
 	@Size(min = 2, max = 4, message = "Please enter valid task identifier")
 	private String taskIdentifier;
 	/**
 	 * Description of the task
 	 */
-	@NotNull(message = "Task description is required")
+	@NotBlank(message = "Task description is required")
 	private String description;
 	/**
 	 * Progress of the task
@@ -71,7 +72,7 @@ public class Task {
 	 */
   
 	@JsonIgnore
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@ManyToOne( fetch = FetchType.EAGER)
 	private TeamLeader teamLeader;
 	/**
 	 * List of remarks on the task Given By Developer as well as client
@@ -87,7 +88,7 @@ public class Task {
 	/**
 	 * List of developers on the task Given By Team Leader
 	 */
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@ManyToOne( fetch = FetchType.EAGER)
 	@JsonIgnore
 	private Developer developer;
 	/**

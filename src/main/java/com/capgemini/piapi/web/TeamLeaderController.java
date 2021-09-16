@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -30,6 +31,7 @@ import com.capgemini.piapi.serviceImpl.MapValidationErrorService;
 
 @RestController
 @RequestMapping("/api/teamLeader")
+@CrossOrigin
 public class TeamLeaderController {
 
 	private static final Logger logger = LoggerFactory.getLogger(TeamLeaderController.class);
@@ -293,6 +295,26 @@ public class TeamLeaderController {
 		if (session.getAttribute("userType") != null && session.getAttribute("userType").equals("TeamLeader")) {
 			List<Remark> remarks = teamLeaderService.viewAllRemark(taskIdentifer);
 			return new ResponseEntity<List<Remark>>(remarks, HttpStatus.OK);
+		}
+		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.UNAUTHORIZED);
+	}
+	
+	/**
+	 * This method is used to update task if teamleader is loged in
+	 * @param task
+	 * @param result
+	 * @param session
+	 * @return updated task if executed successfully
+	 */
+	@PatchMapping("/update/{taskIdentifier}")
+	public ResponseEntity<?> updateTask(@Valid @RequestBody Task task, BindingResult result,
+			HttpSession session) {
+		if (session.getAttribute("userType") != null && session.getAttribute("userType").equals("TeamLeader")) {
+			ResponseEntity<?> errorMap = mapValidationErrorService.mapValidationError(result);
+			if (errorMap != null)
+				return errorMap;
+			Task updatedTask = teamLeaderService.updateTask(task);
+			return new ResponseEntity<Task>(updatedTask, HttpStatus.OK);
 		}
 		return new ResponseEntity<String>("You do not have Access!!!", HttpStatus.UNAUTHORIZED);
 	}

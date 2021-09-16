@@ -219,4 +219,24 @@ public class TeamLeaderServiceImpl implements TeamLeaderService {
 		return developerList;
 	}
 
+	@Override
+	public Task updateTask(Task task) {
+		// checking for null task
+		if (task.getTaskIdentifier() == null) {
+			throw new NullPointerException("Please Fill the Required Fields");
+		}
+		// finding Task with provided taskIdentifier
+		Task oldTask = taskRepository.findByTaskIdentifier(task.getTaskIdentifier());
+		if (oldTask == null) {
+			throw new TaskIdException("Task with taskIdentifier : " + task.getTaskIdentifier() + " does not exists");
+		}
+		task.setId(oldTask.getId());
+
+		oldTask.setTitle(task.getTitle());
+		oldTask.setDescription(task.getDescription());
+
+		// returning updated Task
+		return taskRepository.save(oldTask);
+	}
+
 }
